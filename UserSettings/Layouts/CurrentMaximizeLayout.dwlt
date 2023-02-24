@@ -167,7 +167,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 100}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 320
+  controlID: 10003
 --- !u!114 &5
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -226,23 +226,23 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: c68cffff
-      m_LastClickedID: -29498
-      m_ExpandedIDs: 8e87ffffc08cffffc68cffffd68cffff6ca1fffff6a3fffff6abffffc8acffff84aeffff22b5ffff58dbffff6edcffff08e8ffff70e9ffff32fbffff
+      m_SelectedIDs: 8e87ffff
+      m_LastClickedID: -30834
+      m_ExpandedIDs: 8e87ffffb08cffffb48cffffc08cffffc68cffffd68cffff6ca1fffff6a3fffff6abffffc8acffff84aeffff22b5ffff58dbffff6edcffff08e8ffff70e9ffff32fbffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
-        m_Name: Quantum Console (SRP)
-        m_OriginalName: Quantum Console (SRP)
+        m_Name: 
+        m_OriginalName: 
         m_EditFieldRect:
           serializedVersion: 2
           x: 0
           y: 0
           width: 0
           height: 0
-        m_UserData: -29482
+        m_UserData: 0
         m_IsWaitingForDelay: 0
         m_IsRenaming: 0
-        m_OriginalEventType: 0
+        m_OriginalEventType: 11
         m_IsRenamingFilename: 0
         m_ClientGUIView: {fileID: 5}
       m_SearchString: 
@@ -558,9 +558,9 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: -0.060271554, y: -0.0068901423, z: 0.0004160427, w: -0.99815816}
   m_Size:
-    m_Target: 412.77264
+    m_Target: 394.19788
     speed: 2
-    m_Value: 412.77264
+    m_Value: 394.19788
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -708,22 +708,22 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Plugins/QFSW/Quantum Console/Source/Prefabs
+    - Assets/Photon/Fusion/Scripts/Prototyping
     m_Globs: []
     m_OriginalText: 
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Plugins/QFSW/Quantum Console/Source/Prefabs
+  - Assets/Photon/Fusion/Scripts/Prototyping
   m_LastFoldersGridSize: -1
   m_LastProjectPath: E:\unity shit\PhotonFusionTest
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 24670000
-    m_LastClickedID: 26404
-    m_ExpandedIDs: 00000000ac5d0000ca5d0000f85e00009066000094660000b8660000d8660000ffffff7f
+    m_SelectedIDs: f07e0000
+    m_LastClickedID: 32496
+    m_ExpandedIDs: 00000000ac5d0000ca5d0000f85e00000e5f0000ffffff7f
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -776,10 +776,10 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: c68cffff
-    m_LastClickedInstanceID: -29498
-    m_HadKeyboardFocusLastEvent: 1
-    m_ExpandedInstanceIDs: c6230000
+    m_SelectedInstanceIDs: 8e87ffff
+    m_LastClickedInstanceID: -30834
+    m_HadKeyboardFocusLastEvent: 0
+    m_ExpandedInstanceIDs: c623000076180000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 

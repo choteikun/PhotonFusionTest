@@ -33,9 +33,9 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
         });
     }
 
-    public void OnConnectedToServer(NetworkRunner runner)
+    public void OnConnectedToServer(NetworkRunner runner)//host 不會觸發
     {
-        
+        Debug.Log(runner.SessionInfo+"The INFO");
     }
 
     public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason)
@@ -98,6 +98,7 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
         NetworkObject networkPlayerObject = runner.Spawn(playerPrefab, spawnPos, Quaternion.identity, player);//讓這個進入的玩家擁有這個生成的Prefab
 
         playerList.Add(player, networkPlayerObject);//用list把玩家存起來
+        Debug.Log(player.PlayerId+"Join");
     }
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
@@ -106,6 +107,7 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
         {
             runner.Despawn(networkObject);
             playerList.Remove(player);
+            Debug.Log(player.PlayerId + "Left");
         }
     }
 
