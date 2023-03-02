@@ -98,6 +98,7 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
         NetworkObject networkPlayerObject = runner.Spawn(playerPrefab, spawnPos, Quaternion.identity, player);//讓這個進入的玩家擁有這個生成的Prefab
 
         playerList.Add(player, networkPlayerObject);//用list把玩家存起來
+
     }
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
