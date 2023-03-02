@@ -15,6 +15,7 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
     private Dictionary<PlayerRef, NetworkObject> playerList = new Dictionary<PlayerRef, NetworkObject>();//用PlayerRef當Key存放剛剛生成的可以操控的角色，是為了可以記錄所有玩家的名單
 
+
     void Start()
     {
         StartGame(GameMode.AutoHostOrClient);//第一位進入的玩家偵測有沒host，如果沒有的話自己成為host(GameMode是指要以什麼樣的身分進入遊戲)
@@ -33,9 +34,9 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
         });
     }
 
-    public void OnConnectedToServer(NetworkRunner runner)
+    public void OnConnectedToServer(NetworkRunner runner)//host 不會觸發
     {
-        
+        Debug.Log(runner.SessionInfo+"The INFO");
     }
 
     public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason)
@@ -98,7 +99,7 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
         NetworkObject networkPlayerObject = runner.Spawn(playerPrefab, spawnPos, Quaternion.identity, player);//讓這個進入的玩家擁有這個生成的Prefab
 
         playerList.Add(player, networkPlayerObject);//用list把玩家存起來
-
+        Debug.Log(player.PlayerId+"Join");
     }
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
@@ -107,6 +108,7 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
         {
             runner.Despawn(networkObject);
             playerList.Remove(player);
+            Debug.Log(player.PlayerId + "Left");
         }
     }
 
