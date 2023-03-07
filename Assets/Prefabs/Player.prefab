@@ -129,6 +129,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
   networkCharacterController: {fileID: 675846266647909115}
+  ballPrefab: {fileID: 4954077133058968847, guid: 181e3edaa8ffba94c811ef45a4992691,
+    type: 3}
   moveSpeed: 15
 --- !u!1 &1102103818199165901
 GameObject:
