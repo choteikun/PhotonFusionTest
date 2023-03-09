@@ -26,4 +26,16 @@ public class Ball : NetworkBehaviour
             transform.position += bulletSpeed * transform.forward * Runner.DeltaTime;
         }        
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            var player = other.GetComponent<PlayerController>();
+
+            player.TakeDamage(10);
+
+            Runner.Despawn(Object);
+        }
+    }
 }
