@@ -16,6 +16,9 @@ public class PlayerController : NetworkBehaviour
     private Image CurHpBar = null;
 
     [SerializeField]
+    private MeshRenderer meshRenderer = null;
+
+    [SerializeField]
     private float moveSpeed = 15f;
 
     [SerializeField]
@@ -65,6 +68,34 @@ public class PlayerController : NetworkBehaviour
         {
             Respawn();
         }
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            ChangeColor_RPC(Color.red);
+        }
+
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            ChangeColor_RPC(Color.green);
+        }
+
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            ChangeColor_RPC(Color.blue);
+        }
+    }
+
+
+    //RPC可以遠端呼叫其他網路裝置的函數或方法
+    //RPC適用於同步那些狀態更新頻率比較低的資料，雖然他看上去非常簡單易用，但因為RPC並不是以Tick同步的，也不會保存狀態，這意味者RPC的同步不及時，且後加入的玩家會無法更新加入前的RPC，所以RPC通常不會是同步資料的最佳選擇。
+    //RPC使用時機：發送訊息、設定玩家資料、商城購買等等單一一次性的事件。
+    [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
+    private void ChangeColor_RPC(Color newColor)
+    {
+        meshRenderer.material.color = newColor;
     }
 
     private void Respawn()//重生

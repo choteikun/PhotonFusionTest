@@ -132,6 +132,7 @@ MonoBehaviour:
   ballPrefab: {fileID: 4954077133058968847, guid: 181e3edaa8ffba94c811ef45a4992691,
     type: 3}
   CurHpBar: {fileID: 8608127966763844117}
+  meshRenderer: {fileID: 5954348160298632950}
   moveSpeed: 15
   maxHp: 100
   _CurHp: 0
