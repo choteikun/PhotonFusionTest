@@ -15,7 +15,7 @@ Material:
   m_LightmapFlags: 6
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 3000
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
@@ -54,7 +54,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainNoremal:
-        m_Texture: {fileID: 2800000, guid: d3c8b0596ce789843b310a92063db8dd, type: 3}
+        m_Texture: {fileID: 2800000, guid: b73aa378b76702b42abcfd606f889c69, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
@@ -74,7 +74,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SecondNormal:
-        m_Texture: {fileID: 2800000, guid: 79cde08b353073d498b8b587e122f90c, type: 3}
+        m_Texture: {fileID: 2800000, guid: 004abce6f4d5ffd4f855fa2d6e6a561c, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
@@ -111,28 +111,33 @@ Material:
     - _DecalMeshBiasType: 0
     - _DecalMeshDepthBias: 0
     - _DecalMeshViewBias: 0
-    - _Depth: 53.36
+    - _Depth: 49.45
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
+    - _Displacement: 0.41
     - _DrawOrder: 0
     - _DstBlend: 10
     - _EnvironmentReflections: 1
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _HorizonDistance: 0
     - _Metallic: 0
-    - _NormalStrength: 0.499
+    - _NormalStrength: 0.298
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
+    - _SMOOTH: 1
+    - _SPEED: 0
     - _SampleGI: 0
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
+    - _Speed: 4.41
     - _SrcBlend: 5
-    - _Strength: 0.07
+    - _Strength: 2
     - _Surface: 1
     - _WorkflowMode: 1
     - _ZTest: 4
@@ -142,15 +147,17 @@ Material:
     - _BadColor: {r: 1, g: 0, b: 0, a: 1}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _Deepwatercolor: {r: 0, g: 0.05882353, b: 0.40392157, a: 0.78431374}
+    - _Deepwatercolor: {r: 0.5518868, g: 1, b: 0.9606115, a: 0.5294118}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FlagColor: {r: 1, g: 1, b: 0, a: 1}
     - _GoodColor: {r: 0, g: 1, b: 0, a: 1}
+    - _HorizonColor: {r: 0, g: 0, b: 0, a: 0}
     - _InvalidColor: {r: 0, g: 1, b: 1, a: 1}
     - _NoneColor: {r: 0, g: 0, b: 0, a: 0}
-    - _Shadowwatercolor: {r: 1.4240837, g: 3.979057, b: 3.9999995, a: 0.5882353}
+    - _Shadowwatercolor: {r: 0, g: 0.38082585, b: 0.6037736, a: 0.5882353}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _WarnColor: {r: 0.9, g: 0.6, b: 0, a: 1}
+    - _WaterSpeed: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &7333296475879426262
 MonoBehaviour:
