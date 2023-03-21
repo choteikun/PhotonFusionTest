@@ -24,6 +24,7 @@ namespace StarterAssets
 		public void OnMove(InputValue value)
 		{
 			MoveInput(value.Get<Vector2>());
+			//move = value.Get<Vector2>();
 		}
 
 		public void OnLook(InputValue value)
@@ -45,7 +46,7 @@ namespace StarterAssets
 		}
 #endif
 
-
+		//以下四個method都是跟搖桿有關
 		public void MoveInput(Vector2 newMoveDirection)
 		{
 			move = newMoveDirection;

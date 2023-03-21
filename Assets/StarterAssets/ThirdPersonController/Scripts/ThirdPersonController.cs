@@ -1,4 +1,4 @@
-﻿ using UnityEngine;
+ using UnityEngine;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
 #endif
@@ -19,6 +19,7 @@ namespace StarterAssets
         public float MoveSpeed = 2.0f;
 
         [Tooltip("Sprint speed of the character in m/s")]
+        //衝刺速度
         public float SprintSpeed = 5.335f;
 
         [Tooltip("How fast the character turns to face movement direction")]
@@ -26,6 +27,7 @@ namespace StarterAssets
         public float RotationSmoothTime = 0.12f;
 
         [Tooltip("Acceleration and deceleration")]
+        //運動速度達到最大值之前的速度數值，數值越大達到最大值的時間越快
         public float SpeedChangeRate = 10.0f;
 
         public AudioClip LandingAudioClip;
@@ -41,38 +43,49 @@ namespace StarterAssets
 
         [Space(10)]
         [Tooltip("Time required to pass before being able to jump again. Set to 0f to instantly jump again")]
+        //跳躍落地後再次跳躍的時間。在著陸後這段時間過去之前，不能跳躍
         public float JumpTimeout = 0.50f;
 
         [Tooltip("Time required to pass before entering the fall state. Useful for walking down stairs")]
+        //離開地面時過渡到墜落動畫的時間。當下樓梯時，防止在每一步後播放跌倒動畫的時間
         public float FallTimeout = 0.15f;
 
         [Header("Player Grounded")]
         [Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
+        //是判斷是否落地
         public bool Grounded = true;
 
         [Tooltip("Useful for rough ground")]
+        //落地偏移植(適用於粗糙的地面)
         public float GroundedOffset = -0.14f;
 
         [Tooltip("The radius of the grounded check. Should match the radius of the CharacterController")]
+        //設置落地的collider範圍。使其與 CharacterController 組件的碰撞器半徑相同。
         public float GroundedRadius = 0.28f;
 
         [Tooltip("What layers the character uses as ground")]
+        //設置判斷為地面的圖層
         public LayerMask GroundLayers;
 
         [Header("Cinemachine")]
         [Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
+        //相機將跟隨的 Cinemachine 虛擬相機中設置的跟隨目標
         public GameObject CinemachineCameraTarget;
 
         [Tooltip("How far in degrees can you move the camera up")]
+        //設置相機向上旋轉多少
         public float TopClamp = 70.0f;
 
         [Tooltip("How far in degrees can you move the camera down")]
+        //設置相機向下旋轉多少
         public float BottomClamp = -30.0f;
 
         [Tooltip("Additional degress to override the camera. Useful for fine tuning camera position when locked")]
+        //用於微調相機角度
         public float CameraAngleOverride = 0.0f;
 
         [Tooltip("For locking the camera position on all axis")]
+        //檢查 LockCameraPosition 以鎖定當前相機角度
         public bool LockCameraPosition = false;
 
         // cinemachine
@@ -156,6 +169,8 @@ namespace StarterAssets
         {
             _hasAnimator = TryGetComponent(out _animator);
 
+            
+
             JumpAndGravity();
             GroundedCheck();
             Move();
@@ -180,6 +195,7 @@ namespace StarterAssets
             // set sphere position, with offset
             Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset,
                 transform.position.z);
+            //QueryTriggerInteraction.Ignore 可以有效的避免RaycastHit觸發單純的Collider的物件
             Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers,
                 QueryTriggerInteraction.Ignore);
 
@@ -192,10 +208,10 @@ namespace StarterAssets
 
         private void CameraRotation()
         {
-            // if there is an input and camera position is not fixed
+            // if there is an input and camera position is not fixed //防止不必要的相機旋轉，並且只在需要旋轉時才旋轉
             if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
             {
-                //Don't multiply mouse input by Time.deltaTime;
+                //Don't multiply mouse input by Time.deltaTime;滑鼠不應該乘Time.deltaTime
                 float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
 
                 _cinemachineTargetYaw += _input.look.x * deltaTimeMultiplier;
@@ -225,7 +241,11 @@ namespace StarterAssets
             // a reference to the players current horizontal velocity
             float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
 
+            
             float speedOffset = 0.1f;
+            //為了提供一個容錯範圍。當當前速度與目標速度之間的差值小於容錯範圍時，就不需要進行加速或減速操作，
+            //因為這時候已經非常接近目標速度了，再進行微小的變化可能會導致速度上下抖動，產生不良的遊戲體驗。
+            //因此，這個容錯範圍可以幫助確保角色在接近目標速度時保持穩定。
             float inputMagnitude = _input.analogMovement ? _input.move.magnitude : 1f;
 
             // accelerate or decelerate to target speed
