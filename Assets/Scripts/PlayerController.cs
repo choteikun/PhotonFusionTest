@@ -149,7 +149,7 @@ public class PlayerController : NetworkBehaviour
     
     public override void FixedUpdateNetwork()//逐每個tick更新(一個tick相當1.666毫秒)
     {
-        Debug.Log("speed : " + networkCharacterController.acceleration + "sprintSpeed : " + sprintSpeed + "moveSpeed : " + moveSpeed + "Vecolity : " + networkCharacterController.Velocity);
+        Debug.Log("speed : " + speed + "sprintSpeed : " + sprintSpeed + "moveSpeed : " + moveSpeed + "Vecolity : " + networkCharacterController.Velocity + "Acceleration : " + networkCharacterController.acceleration);
         Move();
         CameraRotation();
         //if (GetInput(out NetworkInputData data))
@@ -224,7 +224,8 @@ public class PlayerController : NetworkBehaviour
             //    }
             //}
             // set target speed based on move speed, sprint speed and if sprint is pressed
-            networkCharacterController.acceleration = pressed.IsSet(InputButtons.Sprint) ? sprintSpeed : released.IsSet(InputButtons.Sprint) ? moveSpeed : speed;
+            networkCharacterController.acceleration = pressed.IsSet(InputButtons.Sprint) ? sprintSpeed : released.IsSet(InputButtons.Sprint) ? moveSpeed : networkCharacterController.acceleration;
+            if (data.Move == Vector3.zero) networkCharacterController.acceleration = 0.0f;
 
             //animationBlend = Mathf.Lerp(animationBlend, speed, Runner.DeltaTime * speedChangeRate);
             //if (animationBlend < 0.01f) animationBlend = 0f;
