@@ -6,8 +6,11 @@ using Fusion.Sockets;
 using System;
 using UnityEngine.SceneManagement;
 
+
 public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
 {
+    
+
     [SerializeField]
     private NetworkRunner networkRunner = null;
 
@@ -68,29 +71,29 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
         var data = new NetworkInputData();
-
         if (Input.GetKey(KeyCode.W))
         {
-            data.movementInput += Vector3.forward;
+            data.Move += Vector3.forward;
         }
         if (Input.GetKey(KeyCode.A))
         {
-            data.movementInput += Vector3.left;
+            data.Move += Vector3.left;
         }
         if (Input.GetKey(KeyCode.S))
         {
-            data.movementInput += Vector3.back;
+            data.Move += Vector3.back;
         }
         if (Input.GetKey(KeyCode.D))
         {
-            data.movementInput += Vector3.right;
+            data.Move += Vector3.right;
         }
-        data.buttons.Set(InputButtons.JUMP, Input.GetKey(KeyCode.Space));
-        data.buttons.Set(InputButtons.FIRE, Input.GetKey(KeyCode.Mouse0));
 
+        data.buttons.Set(InputButtons.JUMP, Input.GetKey(KeyCode.Space));
+        data.buttons.Set(InputButtons.Sprint, Input.GetKey(KeyCode.LeftShift));
+        data.buttons.Set(InputButtons.FIRE, Input.GetKey(KeyCode.Mouse0));
         input.Set(data);//提供輸入
     }
-
+   
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input)
     {
         
@@ -100,6 +103,7 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
     {
         Vector3 spawnPos = Vector3.up * 2;
         NetworkObject networkPlayerObject = runner.Spawn(playerPrefab, spawnPos, Quaternion.identity, player);//讓這個進入的玩家擁有這個生成的Prefab
+
 
         playerList.Add(player, networkPlayerObject);//用list把玩家存起來
         Debug.Log(player.PlayerId+"Join");
