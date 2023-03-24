@@ -5,6 +5,7 @@ using Fusion;
 using Fusion.Sockets;
 using System;
 using UnityEngine.SceneManagement;
+using Cinemachine;
 
 
 public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
@@ -106,6 +107,7 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
 
         playerList.Add(player, networkPlayerObject);//用list把玩家存起來
+        Bind_Camera(networkPlayerObject.gameObject);
         Debug.Log(player.PlayerId+"Join");
     }
 
@@ -147,5 +149,11 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
     public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message)
     {
         
+    }
+    public void Bind_Camera(GameObject Player)
+    {
+        var CinemachineVirtualCamera = Camera.main.gameObject.transform.Find("CM vcam1").GetComponent<CinemachineVirtualCamera>();
+        CinemachineVirtualCamera.LookAt = Player.transform;
+        CinemachineVirtualCamera.Follow = Player.transform;
     }
 }
