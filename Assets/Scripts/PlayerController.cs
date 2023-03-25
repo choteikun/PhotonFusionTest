@@ -28,9 +28,9 @@ public class PlayerController : NetworkBehaviour
     [SerializeField, Tooltip("衝刺狀態")]
     private bool sprintStatus;
 
-    [SerializeField, Tooltip("角色轉向移動方向的平滑速度")]
-    [Range(0.0f, 0.3f)]
-    private float rotationSmoothTime = 0.12f;
+    //[SerializeField, Tooltip("角色轉向移動方向的平滑速度")]
+    //[Range(0.0f, 0.3f)]
+    //private float rotationSmoothTime = 0.12f;
 
     public AudioClip LandingAudioClip;
     public AudioClip[] FootstepAudioClips;
