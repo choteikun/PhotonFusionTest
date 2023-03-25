@@ -11,7 +11,7 @@ using UnityEngine.UI;
 public class PlayerController : NetworkBehaviour
 {
     [SerializeField]
-    private NetworkCharacterControllerPrototype networkCharacterController = null;
+    private NetworkCharacterControllerPrototype networkCharacterControllerPrototype = null;
 
     [SerializeField]
     private Ball ballPrefab;
@@ -21,9 +21,6 @@ public class PlayerController : NetworkBehaviour
 
     [SerializeField]
     private MeshRenderer meshRenderer = null;
-
-    [SerializeField, Tooltip("移動速度")]
-    private float moveSpeed;
 
     [SerializeField, Tooltip("衝刺速度")]
     private float sprintSpeed;
@@ -113,9 +110,6 @@ public class PlayerController : NetworkBehaviour
     // player
     private float speed;
     private float animationBlend;
-    private float targetRotation = 0.0f;
-    private float rotationVelocity;
-    private float verticalVelocity;
 
     // timeout deltatime
     private float jumpTimeoutDelta;
@@ -137,7 +131,7 @@ public class PlayerController : NetworkBehaviour
 
         if (Object.HasStateAuthority)//只會在伺服器端上運行
         {
-            speed = moveSpeed;
+            speed = networkCharacterControllerPrototype.MoveSpeed;
             CurHp = maxHp;//初始化血量
 
             // reset our timeouts on start
@@ -149,118 +143,55 @@ public class PlayerController : NetworkBehaviour
     
     public override void FixedUpdateNetwork()//逐每個tick更新(一個tick相當1.666毫秒)
     {
-        //Debug.Log("speed : " + speed + "sprintSpeed : " + sprintSpeed + "moveSpeed : " + moveSpeed + "Vecolity : " + networkCharacterController.Velocity + "Acceleration : " + networkCharacterController.acceleration);
+        Debug.Log("speed : " + speed + "Acceleration : " + networkCharacterControllerPrototype.MoveSpeed + "SprintSpeed : " + sprintSpeed);
         Move();
-        CameraRotation();
-        //if (GetInput(out NetworkInputData data))
-        //{
-        //    NetworkButtons buttons = data.buttons;
-        //    var pressed = buttons.GetPressed(ButtonsPrevious);//跟上一個按鈕去做比較
-        //    ButtonsPrevious = buttons;
-
-        //    Vector3 moveVector = data.Move.normalized;
-        //    networkCharacterController.Move(moveSpeed * moveVector * Runner.DeltaTime);//Runner不同於Delta是以每Tick去計算的而不是不是每秒
-
-        //    if (pressed.IsSet(InputButtons.JUMP))
-        //    {
-        //        networkCharacterController.Jump();
-        //    }
-
-        //    if (pressed.IsSet(InputButtons.FIRE))
-        //    {
-        //        Runner.Spawn(
-        //            ballPrefab,
-        //            transform.position + transform.TransformDirection(Vector3.forward),
-        //            Quaternion.LookRotation(transform.TransformDirection(Vector3.forward)),
-        //            Object.InputAuthority
-        //            );
-        //    }
-        //}
         if (CurHp <= 0)
         {
             Respawn();
         }
     }
 
-    private void CameraRotation()
-    {
-        if(GetInput(out NetworkInputData data))
-        {
-            //防止不必要的相機旋轉，並且只在需要旋轉時才旋轉
-            if (data.Look.sqrMagnitude >= threshold && !LockCameraPosition)
-            {
-                cinemachineTargetYaw += data.Look.x * 1.0f;
-                cinemachineTargetPitch += data.Look.y * 1.0f;
-            }
-        }
-        // clamp our rotations so our values are limited 360 degrees
-        cinemachineTargetYaw = ClampAngle(cinemachineTargetYaw, float.MinValue, float.MaxValue);
-        cinemachineTargetPitch = ClampAngle(cinemachineTargetPitch, BottomClamp, TopClamp);
-
-        // Cinemachine will follow this target
-        CinemachineCameraTarget.transform.rotation = Quaternion.Euler(cinemachineTargetPitch + CameraAngleOverride,
-            cinemachineTargetYaw, 0.0f);
-    }
-
     private void Move()
     {
         if(GetInput(out NetworkInputData data))
         {
-            NetworkButtons buttons = data.buttons;
+            NetworkButtons buttons = data.Buttons;
             var pressed = buttons.GetPressed(ButtonsPrevious);//跟上一個按鈕去做比較
             var released = buttons.GetReleased(ButtonsPrevious);
             ButtonsPrevious = buttons;
 
-
-            //if (pressed.IsSet(InputButtons.Sprint))
-            //{
-            //    speed = sprintSpeed;
-            //}
-            //else
-            //{  
-            //    if (released.IsSet(InputButtons.Sprint))
-            //    {
-            //        speed = moveSpeed;
-            //    }
-            //}
-            // set target speed based on move speed, sprint speed and if sprint is pressed
-            networkCharacterController.acceleration = pressed.IsSet(InputButtons.Sprint) ? sprintSpeed : released.IsSet(InputButtons.Sprint) ? moveSpeed : networkCharacterController.acceleration;
+            networkCharacterControllerPrototype.MoveSpeed = pressed.IsSet(InputButtons.Sprint) ? sprintSpeed : released.IsSet(InputButtons.Sprint) ? speed : networkCharacterControllerPrototype.MoveSpeed;
             //if (data.Move == Vector3.zero) networkCharacterController.acceleration = 0.0f;
 
             //animationBlend = Mathf.Lerp(animationBlend, speed, Runner.DeltaTime * speedChangeRate);
             //if (animationBlend < 0.01f) animationBlend = 0f;
 
             // normalise input direction
-            Vector3 inputDirection = new Vector3(data.Move.x, 0.0f, data.Move.y).normalized;
+            //Vector3 inputDirection = new Vector3(data.Move.x, 0.0f, data.Move.y).normalized;
 
             // note: Vector3's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
             // if there is a move input rotate player when the player is moving
-            if (data.Move != default)
-            {
-                targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
-                                  mainCamera.transform.eulerAngles.y;
-                float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetRotation, ref rotationVelocity,
-                    rotationSmoothTime);
+            //if (data.Move != default)
+            //{
+            //    targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
+            //                      mainCamera.transform.eulerAngles.y;
+            //    float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetRotation, ref rotationVelocity,
+            //        rotationSmoothTime);
 
-                // rotate to face input direction relative to camera position
-                transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
-            }
-
-
-            Vector3 targetDirection = Quaternion.Euler(0.0f, targetRotation, 0.0f) * Vector3.forward;
+            //    // rotate to face input direction relative to camera position
+            //    transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+            //}
+            //Vector3 targetDirection = Quaternion.Euler(0.0f, targetRotation, 0.0f) * Vector3.forward;
 
             // move the player
             Vector3 moveVector = data.Move.normalized;
-            networkCharacterController.Move(moveVector * Runner.DeltaTime);
-            //networkCharacterController.Move(targetDirection.normalized * (speed * Runner.DeltaTime));//Runner不同於Delta是以每Tick去計算的而不是不是每秒
+            networkCharacterControllerPrototype.Move(moveVector * Runner.DeltaTime);
             if (pressed.IsSet(InputButtons.JUMP))
             {
-                networkCharacterController.Jump();
+                networkCharacterControllerPrototype.Jump();
             }
         }
     }
-
-    
 
     private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
     {
@@ -299,7 +230,7 @@ public class PlayerController : NetworkBehaviour
 
     private void Respawn()//重生
     {
-        networkCharacterController.transform.position = Vector3.up * 2;
+        networkCharacterControllerPrototype.transform.position = Vector3.up * 2;
         CurHp = maxHp;
     }
     public void TakeDamage(int damage)

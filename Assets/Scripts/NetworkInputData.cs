@@ -13,7 +13,7 @@ public enum InputButtons
 
 public struct NetworkInputData : INetworkInput
 {
-    public NetworkButtons buttons;
+    public NetworkButtons Buttons;
     public Vector3 Move;
     public Vector3 Look;
 

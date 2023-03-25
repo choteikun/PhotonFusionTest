@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7466434920408439818}
   - component: {fileID: 4750491071164793271}
   - component: {fileID: 5953763114585908816}
-  - component: {fileID: 675846266647909115}
+  - component: {fileID: -6690832166453164651}
   - component: {fileID: 1477196240836849409}
   - component: {fileID: 8761922990159066607}
   m_Layer: 0
@@ -60,7 +60,7 @@ MonoBehaviour:
     RawGuidValue: e187594900bb3294e8dba797f7406ed4
   NestedObjects: []
   NetworkedBehaviours:
-  - {fileID: 675846266647909115}
+  - {fileID: -6690832166453164651}
   - {fileID: 1477196240836849409}
   SimulationBehaviours: []
 --- !u!143 &5953763114585908816
@@ -81,7 +81,7 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &675846266647909115
+--- !u!114 &-6690832166453164651
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -95,7 +95,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
   InterpolationSpace: 0
-  InterpolationTarget: {fileID: 5312320628524297766}
+  InterpolationTarget: {fileID: 0}
   InterpolateErrorCorrection: 1
   InterpolatedErrorCorrectionSettings:
     MinRate: 3.3
@@ -109,12 +109,12 @@ MonoBehaviour:
     RotTeleportRadians: 1.5
   UseLegacySharedModeInterpolation: 0
   TargetInterpolationDelay: 0.03
-  gravity: -20
-  jumpImpulse: 8
-  acceleration: 10
-  braking: 50
-  maxSpeed: 500
-  rotationSpeed: 10
+  Gravity: -20
+  JumpImpulse: 8
+  MoveSpeed: 50
+  Braking: 10
+  MaxSpeed: 200
+  RotationSpeed: 15
   _IsGrounded: 0
   _Velocity: {x: 0, y: 0, z: 0}
 --- !u!114 &1477196240836849409
@@ -130,13 +130,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
-  networkCharacterController: {fileID: 675846266647909115}
+  networkCharacterControllerPrototype: {fileID: -6690832166453164651}
   ballPrefab: {fileID: 4954077133058968847, guid: 181e3edaa8ffba94c811ef45a4992691,
     type: 3}
   CurHpBar: {fileID: 8608127966763844117}
   meshRenderer: {fileID: 5954348160298632950}
-  moveSpeed: 10
-  sprintSpeed: 50
+  sprintSpeed: 100
   sprintStatus: 0
   rotationSmoothTime: 0.12
   LandingAudioClip: {fileID: 0}
