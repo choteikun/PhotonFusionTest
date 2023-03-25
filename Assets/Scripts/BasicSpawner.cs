@@ -105,13 +105,12 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
         Vector3 spawnPos = Vector3.up * 2;
         NetworkObject networkPlayerObject = runner.Spawn(playerPrefab, spawnPos, Quaternion.identity, player);//讓這個進入的玩家擁有這個生成的Prefab
 
-
         playerList.Add(player, networkPlayerObject);//用list把玩家存起來
+        Debug.Log(player.PlayerId + "Join");
         Bind_Camera(networkPlayerObject.gameObject);
-        Debug.Log(player.PlayerId+"Join");
     }
 
-    public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
+    public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)//只有host會觸發
     {
         if (playerList.TryGetValue(player,out NetworkObject networkObject))//檢查玩家是否還在list裡面
         {

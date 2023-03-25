@@ -138,12 +138,16 @@ public class PlayerController : NetworkBehaviour
             jumpTimeoutDelta = JumpTimeout;
             fallTimeoutDelta = FallTimeout;
         }
+        if (Object.HasInputAuthority)//只會在客戶端上運行
+        {
+
+        }
     }
 
     
     public override void FixedUpdateNetwork()//逐每個tick更新(一個tick相當1.666毫秒)
     {
-        Debug.Log("speed : " + speed + "Acceleration : " + networkCharacterControllerPrototype.MoveSpeed + "SprintSpeed : " + sprintSpeed);
+        //Debug.Log("speed : " + speed + "Acceleration : " + networkCharacterControllerPrototype.MoveSpeed + "SprintSpeed : " + sprintSpeed);
         Move();
         if (CurHp <= 0)
         {
