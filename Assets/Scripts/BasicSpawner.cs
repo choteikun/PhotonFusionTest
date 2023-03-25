@@ -89,9 +89,9 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
             data.Move += Vector3.right;
         }
 
-        data.buttons.Set(InputButtons.JUMP, Input.GetKey(KeyCode.Space));
-        data.buttons.Set(InputButtons.Sprint, Input.GetKey(KeyCode.LeftShift));
-        data.buttons.Set(InputButtons.FIRE, Input.GetKey(KeyCode.Mouse0));
+        data.Buttons.Set(InputButtons.JUMP, Input.GetKey(KeyCode.Space));
+        data.Buttons.Set(InputButtons.Sprint, Input.GetKey(KeyCode.LeftShift));
+        data.Buttons.Set(InputButtons.FIRE, Input.GetKey(KeyCode.Mouse0));
         input.Set(data);//提供輸入
     }
    
