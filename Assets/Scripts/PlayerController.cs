@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 using UnityEngine;
 using Fusion;
 using UnityEngine.UI;
-
+using Cinemachine;
 
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(PlayerInput))]
@@ -128,19 +128,18 @@ public class PlayerController : NetworkBehaviour
             mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
         }
         cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
-
         if (Object.HasStateAuthority)//只會在伺服器端上運行
         {
             speed = networkCharacterControllerPrototype.MoveSpeed;
-            CurHp = maxHp;//初始化血量
-
+            CurHp = maxHp;//初始化血量           
             // reset our timeouts on start
             jumpTimeoutDelta = JumpTimeout;
             fallTimeoutDelta = FallTimeout;
         }
-        if (Object.HasInputAuthority)//只會在客戶端上運行
+        if (Object.HasInputAuthority)
         {
-
+            Debug.Log(this.gameObject.name);
+            Bind_Camera(this.gameObject);
         }
     }
 
@@ -259,5 +258,11 @@ public class PlayerController : NetworkBehaviour
     private void SetCursorState(bool newState)
     {
         Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;//將滑鼠鎖定狀態設置為true，以將滑鼠固定在遊戲中心點
+    }
+    public void Bind_Camera(GameObject Player)
+    {
+        var CinemachineVirtualCamera = Camera.main.gameObject.transform.Find("CM vcam1").GetComponent<CinemachineVirtualCamera>();
+        CinemachineVirtualCamera.LookAt = Player.transform;
+        CinemachineVirtualCamera.Follow = Player.transform;
     }
 }
