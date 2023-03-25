@@ -5,7 +5,7 @@ using Fusion;
 using Fusion.Sockets;
 using System;
 using UnityEngine.SceneManagement;
-using Cinemachine;
+
 
 
 public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
@@ -42,6 +42,7 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
     public void OnConnectedToServer(NetworkRunner runner)//host 不會觸發
     {
         Debug.Log(runner.SessionInfo+"The INFO");
+        Debug.LogWarning("MyPlayerIDis" + runner.GetPlayerUserId());
     }
 
     public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason)
@@ -104,10 +105,7 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
     {
         Vector3 spawnPos = Vector3.up * 2;
         NetworkObject networkPlayerObject = runner.Spawn(playerPrefab, spawnPos, Quaternion.identity, player);//讓這個進入的玩家擁有這個生成的Prefab
-
-
-        playerList.Add(player, networkPlayerObject);//用list把玩家存起來
-        Bind_Camera(networkPlayerObject.gameObject);
+        playerList.Add(player, networkPlayerObject);//用list把玩家存起來                                                                         
         Debug.Log(player.PlayerId+"Join");
     }
 
@@ -150,10 +148,5 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
     {
         
     }
-    public void Bind_Camera(GameObject Player)
-    {
-        var CinemachineVirtualCamera = Camera.main.gameObject.transform.Find("CM vcam1").GetComponent<CinemachineVirtualCamera>();
-        CinemachineVirtualCamera.LookAt = Player.transform;
-        CinemachineVirtualCamera.Follow = Player.transform;
-    }
+   
 }
