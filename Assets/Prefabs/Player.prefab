@@ -137,7 +137,6 @@ MonoBehaviour:
   meshRenderer: {fileID: 5954348160298632950}
   sprintSpeed: 100
   sprintStatus: 0
-  rotationSmoothTime: 0.12
   LandingAudioClip: {fileID: 0}
   FootstepAudioClips: []
   FootstepAudioVolume: 0.5
