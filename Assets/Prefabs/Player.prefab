@@ -95,7 +95,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
   InterpolationSpace: 0
-  InterpolationTarget: {fileID: 0}
+  InterpolationTarget: {fileID: 5312320628524297766}
   InterpolateErrorCorrection: 1
   InterpolatedErrorCorrectionSettings:
     MinRate: 3.3
@@ -137,7 +137,6 @@ MonoBehaviour:
   meshRenderer: {fileID: 5954348160298632950}
   sprintSpeed: 100
   sprintStatus: 0
-  rotationSmoothTime: 0.12
   LandingAudioClip: {fileID: 0}
   FootstepAudioClips: []
   FootstepAudioVolume: 0.5
