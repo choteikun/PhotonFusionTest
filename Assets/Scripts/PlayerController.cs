@@ -127,16 +127,18 @@ public class PlayerController : NetworkBehaviour
         {
             mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
         }
-        cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
+
+        //cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
+
+        speed = networkCharacterControllerPrototype.MoveSpeed;
         if (Object.HasStateAuthority)//只會在伺服器端上運行
         {
-            speed = networkCharacterControllerPrototype.MoveSpeed;
             CurHp = maxHp;//初始化血量           
             // reset our timeouts on start
             jumpTimeoutDelta = JumpTimeout;
             fallTimeoutDelta = FallTimeout;
         }
-        if (Object.HasInputAuthority)
+        if (Object.HasInputAuthority)//也會在客戶端上運行
         {
             Debug.Log(this.gameObject.name);
             Bind_Camera(this.gameObject);
@@ -164,6 +166,7 @@ public class PlayerController : NetworkBehaviour
             ButtonsPrevious = buttons;
 
             networkCharacterControllerPrototype.MoveSpeed = pressed.IsSet(InputButtons.Sprint) ? sprintSpeed : released.IsSet(InputButtons.Sprint) ? speed : networkCharacterControllerPrototype.MoveSpeed;
+            
             //if (data.Move == Vector3.zero) networkCharacterController.acceleration = 0.0f;
 
             //animationBlend = Mathf.Lerp(animationBlend, speed, Runner.DeltaTime * speedChangeRate);
