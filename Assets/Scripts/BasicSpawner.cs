@@ -29,10 +29,7 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
         networkRunner.AddCallbacks(this);
 
-
         SpawnAllPlayers();
-        //StartGame(GameMode.AutoHostOrClient);//第一位進入的玩家偵測有沒host，如果沒有的話自己成為host(GameMode是指要以什麼樣的身分進入遊戲)
-
     }
 
     private void SpawnAllPlayers()
@@ -69,18 +66,6 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
             Debug.Log(player.PlayerId + "Left");
         }
     }
-    //async void StartGame(GameMode mode)
-    //{
-    //    networkRunner.ProvideInput = true;//提供input
-
-    //    await networkRunner.StartGame(new StartGameArgs()
-    //    {
-    //        GameMode = mode,
-    //        SessionName = "Fusion Room",
-    //        Scene = SceneManager.GetActiveScene().buildIndex,
-    //        SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>() //管控跟scene有關的操作
-    //    });
-    //}
 
     public void OnConnectedToServer(NetworkRunner runner)//host 不會觸發
     {
@@ -135,7 +120,7 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
         data.Buttons.Set(InputButtons.JUMP, Input.GetKey(KeyCode.Space));
         data.Buttons.Set(InputButtons.Sprint, Input.GetKey(KeyCode.LeftShift));
-        data.Buttons.Set(InputButtons.FIRE, Input.GetKey(KeyCode.Mouse0));
+        data.Buttons.Set(InputButtons.Attack, Input.GetKey(KeyCode.Mouse0));
         input.Set(data);//提供輸入
     }
    
@@ -172,6 +157,5 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
     public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message)
     {
         
-    }
-   
+    }   
 }

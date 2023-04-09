@@ -20,7 +20,7 @@ public class InRoomPanel : MonoBehaviour, IPanel
     private void Awake()
     {
         gameManager = GameManager.Instance;
-        //Debug.Log(gameManager.Runner);
+
         gameManager.OnPlayerListUpdated += UpdatePlayerList;
     }
 
