@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5953763114585908816}
   - component: {fileID: -6690832166453164651}
   - component: {fileID: 1477196240836849409}
+  - component: {fileID: 4496731450087106735}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -132,10 +133,12 @@ MonoBehaviour:
   networkCharacterControllerPrototype: {fileID: -6690832166453164651}
   ballPrefab: {fileID: 4954077133058968847, guid: 181e3edaa8ffba94c811ef45a4992691,
     type: 3}
+  handCollider: {fileID: 0}
   CurHpBar: {fileID: 8608127966763844117}
   meshRenderer: {fileID: 5954348160298632950}
   sprintSpeed: 100
   sprintStatus: 0
+  pushForce: 0
   LandingAudioClip: {fileID: 0}
   FootstepAudioClips: []
   FootstepAudioVolume: 0.5
@@ -158,6 +161,19 @@ MonoBehaviour:
   cursorLocked: 1
   cursorInputForLook: 1
   _CurHp: 0
+--- !u!135 &4496731450087106735
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 617869745945056140}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 0
+  serializedVersion: 2
+  m_Radius: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &677998434967444091
 GameObject:
   m_ObjectHideFlags: 0
