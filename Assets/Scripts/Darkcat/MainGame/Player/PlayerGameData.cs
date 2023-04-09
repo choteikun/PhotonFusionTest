@@ -13,6 +13,7 @@ public class PlayerGameData
     public int playerID { get; private set; }
     public float hitPercentage { get; set; }
     public bool gearCharge  { get; set; }
+    public int playerScoreGet { get; set; }
     public ItemEnum held_ItemEnum{ get; set; }
     public PlayerStatusEnum m_PlayerStatus { get; set; }
 
@@ -45,4 +46,15 @@ public class PlayerGameData
     {
         hitPercentage += damage;
     }
+    public void PlayerScore()
+    {
+        playerScoreGet++;
+    }
+    public void PlayerRevive()
+    {
+        hitPercentage = 0;
+        gearCharge = false;
+        held_ItemEnum = ItemEnum.NoItem;
+    }
+
 }
