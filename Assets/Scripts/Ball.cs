@@ -13,7 +13,7 @@ public class Ball : NetworkBehaviour
 
     public override void Spawned()
     {
-        life = TickTimer.CreateFromSeconds(Runner, 5.0f);//(可以在任何有NetworkBehavior的地方下調用Runner)倒數5秒
+        life = TickTimer.CreateFromSeconds(Runner, 5.0f);//(可以在任何有NetworkBehavior的地方下調用Runner)倒數5秒，這裡的秒數指的是創建一個持續時間為5秒的計時器實例，存儲在life變量中。計時器創建後，可以使用它來執行特定的操作，例如在計時器結束時銷毀對像或執行其他遊戲邏輯。
     }
 
     public override void FixedUpdateNetwork()
@@ -45,6 +45,11 @@ public class Ball : NetworkBehaviour
                 playerController.TakeDamage(10);
 
                 Runner.Despawn(Object);
+            }
+            else
+            {
+                // 沒有找到組件
+                // 做一些錯誤處理
             }
         }
     }

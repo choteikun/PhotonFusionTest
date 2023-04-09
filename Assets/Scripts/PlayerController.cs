@@ -7,7 +7,7 @@ using UnityEngine.UI;
 using Cinemachine;
 
 [RequireComponent(typeof(CharacterController))]
-[RequireComponent(typeof(PlayerInput))]
+//[RequireComponent(typeof(PlayerInput))]
 public class PlayerController : NetworkBehaviour
 {
     [SerializeField]
@@ -15,6 +15,9 @@ public class PlayerController : NetworkBehaviour
 
     [SerializeField]
     private Ball ballPrefab;
+
+    [SerializeField]
+    private GameObject handCollider;//手掌Collider(用於偵測其他人的PlayerController腳本)
 
     [SerializeField]
     private Image CurHpBar = null;
@@ -27,6 +30,9 @@ public class PlayerController : NetworkBehaviour
 
     [SerializeField, Tooltip("衝刺狀態")]
     private bool sprintStatus;
+
+    [SerializeField, Tooltip("角色巴掌力度")]
+    private float pushForce;
 
     //[SerializeField, Tooltip("角色轉向移動方向的平滑速度")]
     //[Range(0.0f, 0.3f)]
@@ -149,7 +155,11 @@ public class PlayerController : NetworkBehaviour
     public override void FixedUpdateNetwork()//逐每個tick更新(一個tick相當1.666毫秒)
     {
         //Debug.Log("speed : " + speed + "Acceleration : " + networkCharacterControllerPrototype.MoveSpeed + "SprintSpeed : " + sprintSpeed);
+
         Move();
+
+        //PushCollision();
+
         if (CurHp <= 0)
         {
             Respawn();
@@ -192,9 +202,15 @@ public class PlayerController : NetworkBehaviour
             // move the player
             Vector3 moveVector = data.Move.normalized;
             networkCharacterControllerPrototype.Move(moveVector * Runner.DeltaTime);
+
             if (pressed.IsSet(InputButtons.JUMP))
             {
                 networkCharacterControllerPrototype.Jump();
+            }
+
+            if (pressed.IsSet(InputButtons.Attack))
+            {
+                
             }
         }
     }
@@ -239,6 +255,37 @@ public class PlayerController : NetworkBehaviour
         networkCharacterControllerPrototype.transform.position = Vector3.up * 2;
         CurHp = maxHp;
     }
+
+    //private void PushCollision()//fusion官方不推薦使用unity的 OnTriggerEnter & OnTriggerCollision做網路上的物裡碰撞，是因為Fusion網路狀態的更新率和Unity物理引擎的更新率不相同，而且無法做客戶端預測
+    //{
+    //    if (Object = null) return;//檢測網路物件是否為空
+    //    if (!Object.HasStateAuthority) return;//只會在伺服器端做檢測
+
+    //    var colliders = Physics.OverlapSphere(handCollider.transform.position, radius: 175f);//畫一顆球，並檢測球裡的所有collider並回傳
+
+    //    foreach (var collider in colliders)
+    //    {
+    //        if (collider.TryGetComponent<PlayerController>(out PlayerController playerController))//判斷collider身上是否有PlayerController的腳本
+    //        {
+    //            // 計算推力方向
+    //            Vector3 pushDir = playerController.transform.position - transform.position;
+    //            pushDir.y = 0f;
+    //            pushDir.Normalize();
+
+    //            // 推動其他角色
+    //            playerController.networkCharacterControllerPrototype.Move(pushDir * pushForce * Runner.DeltaTime);
+    //            playerController.TakeDamage(10);
+
+    //            Runner.Despawn(Object);
+    //        }
+    //        else
+    //        {
+    //            // 沒有找到組件
+    //            // 做一些錯誤處理
+    //        }
+    //    }
+    //}
+
     public void TakeDamage(int damage)
     {
         if (Object.HasStateAuthority)//只會在伺服器端上運行
@@ -252,16 +299,16 @@ public class PlayerController : NetworkBehaviour
     }
 
 
-
+    #region - Player Mouse Setting -
     private void OnApplicationFocus(bool hasFocus)//當應用程式窗口的焦點狀態發生改變時，hasFocus為false；當應用程式窗口獲得焦點時，該函式的參數hasFocus為true
     {
         SetCursorState(cursorLocked);
     }
-
     private void SetCursorState(bool newState)
     {
         Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;//將滑鼠鎖定狀態設置為true，以將滑鼠固定在遊戲中心點
     }
+    #endregion
     public void Bind_Camera(GameObject Player)
     {
         var CinemachineVirtualCamera = Camera.main.gameObject.transform.Find("CM vcam1").GetComponent<CinemachineVirtualCamera>();

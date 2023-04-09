@@ -39,6 +39,29 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     }
 
     #region - Create Lobby & Room -
+    public void AutoHostOrClientGameMode()
+    {
+        if (gameManager.Runner.LobbyInfo.IsValid)
+        {
+            StartGame(GameMode.AutoHostOrClient);//第一位進入的玩家偵測有沒host，如果沒有的話自己成為host(GameMode是指要以什麼樣的身分進入遊戲)
+        }
+        else
+        {
+            Debug.Log("Not Ready!!");
+        }
+    }
+    async void StartGame(GameMode mode)
+    {
+        //gameManager.Runner.ProvideInput = true;//提供input
+        await gameManager.Runner.StartGame(new StartGameArgs()
+        {
+            GameMode = mode,
+            SessionName = "Fusion Room",
+            Scene = SceneManager.GetActiveScene().buildIndex,
+            SceneManager = gameManager.gameObject.AddComponent<NetworkSceneManagerDefault>() //管控跟scene有關的操作
+        });
+        gameManager.Runner.SetActiveScene("GamePlay");
+    }
     public async Task JoinLobby(NetworkRunner runner)
     {
         var result = await runner.JoinSessionLobby(SessionLobby.ClientServer);
@@ -46,7 +69,6 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         if (!result.Ok)
             Debug.LogError($"Failed to Start: {result.ShutdownReason}");
     }
-
     public async Task CreateRoom(string roomName, int maxPlayer)
     {
         var result = await gameManager.Runner.StartGame(new StartGameArgs()
