@@ -10,6 +10,9 @@ using Cinemachine;
 //[RequireComponent(typeof(PlayerInput))]
 public class PlayerController : NetworkBehaviour
 {
+    PlayerGameData playerGameData;
+
+
     [SerializeField]
     private NetworkCharacterControllerPrototype networkCharacterControllerPrototype = null;
 
@@ -144,11 +147,12 @@ public class PlayerController : NetworkBehaviour
             jumpTimeoutDelta = JumpTimeout;
             fallTimeoutDelta = FallTimeout;
         }
-        if (Object.HasInputAuthority)//也會在客戶端上運行
+        if (Object.HasInputAuthority)//在客戶端上運行
         {
             Debug.Log(this.gameObject.name);
             Bind_Camera(this.gameObject);
         }
+
     }
 
     
@@ -158,7 +162,7 @@ public class PlayerController : NetworkBehaviour
 
         Move();
 
-        //PushCollision();
+        PushCollision();
 
         if (CurHp <= 0)
         {
@@ -256,35 +260,35 @@ public class PlayerController : NetworkBehaviour
         CurHp = maxHp;
     }
 
-    //private void PushCollision()//fusion官方不推薦使用unity的 OnTriggerEnter & OnTriggerCollision做網路上的物裡碰撞，是因為Fusion網路狀態的更新率和Unity物理引擎的更新率不相同，而且無法做客戶端預測
-    //{
-    //    if (Object = null) return;//檢測網路物件是否為空
-    //    if (!Object.HasStateAuthority) return;//只會在伺服器端做檢測
+    private void PushCollision()//fusion官方不推薦使用unity的 OnTriggerEnter & OnTriggerCollision做網路上的物裡碰撞，是因為Fusion網路狀態的更新率和Unity物理引擎的更新率不相同，而且無法做客戶端預測
+    {
+        //if (Object = null) return;//檢測網路物件是否為空
+        //if (!Object.HasStateAuthority) return;//只會在伺服器端做檢測
 
-    //    var colliders = Physics.OverlapSphere(transform.position, radius: 1000f);//畫一顆球，並檢測球裡的所有collider並回傳
+        var colliders = Physics.OverlapSphere(handCollider.transform.position, radius: 0.5f);//畫一顆球，並檢測球裡的所有collider並回傳
 
-    //    foreach (var collider in colliders)
-    //    {
-    //        if (collider.TryGetComponent<PlayerController>(out PlayerController playerController))//判斷collider身上是否有PlayerController的腳本
-    //        {
-    //            // 計算推力方向
-    //            Vector3 pushDir = playerController.GetComponentInParent<PlayerController>().transform.position - transform.position;
-    //            pushDir.y = 0f;
-    //            pushDir.Normalize();
+        foreach (var collider in colliders)
+        {
+            if (collider.TryGetComponent<PlayerController>(out PlayerController playerController))//判斷collider身上是否有PlayerController的腳本
+            {
+                // 計算推力方向
+                Vector3 pushDir = (playerController.GetComponentInParent<PlayerController>().transform.position - transform.position).normalized;
+                //pushDir.y = 0f;
 
-    //            // 推動其他角色
-    //            playerController.networkCharacterControllerPrototype.Move(pushDir * pushForce * Runner.DeltaTime);
-    //            //playerController.GetComponentInParent<PlayerController>().TakeDamage(10);
-    //            Debug.Log("Push!!!!!!!");
-    //            //Runner.Despawn(Object);
-    //        }
-    //        else
-    //        {
-    //            // 沒有找到組件
-    //            // 做一些錯誤處理
-    //        }
-    //    }
-    //}
+                // 推動其他角色
+                playerController.networkCharacterControllerPrototype.Move(pushDir * pushForce * Runner.DeltaTime);
+                playerController.networkCharacterControllerPrototype.Jump();
+                //playerController.GetComponentInParent<PlayerController>().TakeDamage(10);
+                Debug.Log("Push!!!!!!!");
+                //Runner.Despawn(Object);
+            }
+            else
+            {
+                // 沒有找到組件
+                // 做一些錯誤處理
+            }
+        }
+    }
 
     public void TakeDamage(int damage)
     {

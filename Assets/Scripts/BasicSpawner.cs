@@ -42,7 +42,7 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
             //設置關聯的網絡對象
             networkRunner.SetPlayerObject(player, networkPlayerObject);
-
+            
             playerList.Add(player, networkPlayerObject);
         }
     }
