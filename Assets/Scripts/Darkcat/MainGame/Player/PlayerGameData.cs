@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// ª±®a¸ê®Æ
+/// çŽ©å®¶è³‡æ–™
 /// </summary>
 
 [System.Serializable]
@@ -15,7 +15,7 @@ public class PlayerGameData
     public bool gearCharge  { get; set; }
     public int playerScoreGet { get; set; }
     public ItemEnum held_ItemEnum{ get; set; }
-    public PlayerStatusEnum m_PlayerStatus { get; set; }
+    public PlayerStatusEnum m_PlayerStatus;
 
     public PlayerGameData(string name,int playerid)
     {
@@ -24,7 +24,7 @@ public class PlayerGameData
         hitPercentage = 0;
         gearCharge = false;
         held_ItemEnum = ItemEnum.NoItem;
-        m_PlayerStatus = PlayerStatusEnum.Waiting;
+        m_PlayerStatus = PlayerStatusEnum.Playing;
     }
     public void Player_GetItem(ItemEnum itemGet)
     {

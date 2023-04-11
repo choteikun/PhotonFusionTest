@@ -5,16 +5,21 @@ using UnityEngine;
 using Fusion;
 using UnityEngine.UI;
 using Cinemachine;
+using UnityEngine.VFX;
 
 [RequireComponent(typeof(CharacterController))]
 //[RequireComponent(typeof(PlayerInput))]
 public class PlayerController : NetworkBehaviour
 {
-    PlayerGameData playerGameData;
 
+    public PlayerGameData playerGameData;
+
+    public GameObject[] Vfx_EffectObj;
 
     [SerializeField]
     private NetworkCharacterControllerPrototype networkCharacterControllerPrototype = null;
+    [SerializeField]
+    private CharacterController cc = null;
 
     [SerializeField]
     private Ball ballPrefab;
@@ -30,74 +35,15 @@ public class PlayerController : NetworkBehaviour
 
     [SerializeField, Tooltip("衝刺速度")]
     private float sprintSpeed;
-
-    [SerializeField, Tooltip("衝刺狀態")]
-    private bool sprintStatus;
+    
 
     [SerializeField, Tooltip("角色巴掌力度")]
     private float pushForce;
 
-    //[SerializeField, Tooltip("角色轉向移動方向的平滑速度")]
-    //[Range(0.0f, 0.3f)]
-    //private float rotationSmoothTime = 0.12f;
 
     public AudioClip LandingAudioClip;
     public AudioClip[] FootstepAudioClips;
     [Range(0, 1)] public float FootstepAudioVolume = 0.5f;
-
-    [Space(10)]
-    [Tooltip("The height the player can jump")]
-    public float JumpHeight = 1.2f;
-
-    [Tooltip("The character uses its own gravity value. The engine default is -9.81f")]
-    public float Gravity = -15.0f;
-
-    [Space(10)]
-    [Tooltip("Time required to pass before being able to jump again. Set to 0f to instantly jump again")]
-    //跳躍落地後再次跳躍的時間。在著陸後這段時間過去之前，不能跳躍
-    public float JumpTimeout = 0.50f;
-
-    [Tooltip("Time required to pass before entering the fall state. Useful for walking down stairs")]
-    //離開地面時過渡到墜落動畫的時間。當下樓梯時，防止在每一步後播放跌倒動畫的時間
-    public float FallTimeout = 0.15f;
-
-    [Header("Player Grounded")]
-    [Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
-    //是判斷是否落地
-    public bool Grounded = true;
-
-    [Tooltip("Useful for rough ground")]
-    //落地偏移植(適用於粗糙的地面)
-    public float GroundedOffset = -0.14f;
-
-    [Tooltip("The radius of the grounded check. Should match the radius of the CharacterController")]
-    //設置落地的collider範圍。使其與 CharacterController 組件的碰撞器半徑相同。
-    public float GroundedRadius = 0.28f;
-
-    [Tooltip("What layers the character uses as ground")]
-    //設置判斷為地面的圖層
-    public LayerMask GroundLayers;
-
-    [Header("Cinemachine")]
-    [Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
-    //相機將跟隨的 Cinemachine 虛擬相機中設置的跟隨目標
-    public GameObject CinemachineCameraTarget;
-
-    [Tooltip("How far in degrees can you move the camera up")]
-    //設置相機向上旋轉多少
-    public float TopClamp = 70.0f;
-
-    [Tooltip("How far in degrees can you move the camera down")]
-    //設置相機向下旋轉多少
-    public float BottomClamp = -30.0f;
-
-    [Tooltip("Additional degress to override the camera. Useful for fine tuning camera position when locked")]
-    //用於微調相機角度
-    public float CameraAngleOverride = 0.0f;
-
-    [Tooltip("For locking the camera position on all axis")]
-    //檢查 LockCameraPosition 以鎖定當前相機角度
-    public bool LockCameraPosition = false;
 
     [SerializeField]
     private int maxHp = 100;
@@ -117,6 +63,7 @@ public class PlayerController : NetworkBehaviour
     private float cinemachineTargetPitch;
 
     // player
+    private bool sprintStatus;//衝刺狀態
     private float speed;
     private float animationBlend;
 
@@ -127,11 +74,17 @@ public class PlayerController : NetworkBehaviour
     private GameObject mainCamera;
     private Animator animator;
 
-    private const float threshold = 0.01f;
+    private VisualEffect jumpVisualEffect;
+    private VisualEffect sprintVisualEffect;
 
-   
+
     public override void Spawned()
     {
+        sprintStatus = false;
+        cc = GetComponent<CharacterController>();
+        jumpVisualEffect = Vfx_EffectObj[0].GetComponent<VisualEffect>();
+        sprintVisualEffect = Vfx_EffectObj[1].GetComponent<VisualEffect>();
+
         if (mainCamera == null)
         {
             mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
@@ -143,9 +96,6 @@ public class PlayerController : NetworkBehaviour
         if (Object.HasStateAuthority)//只會在伺服器端上運行
         {
             CurHp = maxHp;//初始化血量           
-            // reset our timeouts on start
-            jumpTimeoutDelta = JumpTimeout;
-            fallTimeoutDelta = FallTimeout;
         }
         if (Object.HasInputAuthority)//在客戶端上運行
         {
@@ -161,8 +111,7 @@ public class PlayerController : NetworkBehaviour
         //Debug.Log("speed : " + speed + "Acceleration : " + networkCharacterControllerPrototype.MoveSpeed + "SprintSpeed : " + sprintSpeed);
 
         Move();
-
-        PushCollision();
+        
 
         if (CurHp <= 0)
         {
@@ -179,8 +128,27 @@ public class PlayerController : NetworkBehaviour
             var released = buttons.GetReleased(ButtonsPrevious);
             ButtonsPrevious = buttons;
 
+
             networkCharacterControllerPrototype.MoveSpeed = pressed.IsSet(InputButtons.Sprint) ? sprintSpeed : released.IsSet(InputButtons.Sprint) ? speed : networkCharacterControllerPrototype.MoveSpeed;
-            
+
+            if (pressed.IsSet(InputButtons.Sprint))
+            {
+                sprintStatus = true;
+            }
+            else if (released.IsSet(InputButtons.Sprint))
+            {
+                sprintStatus = false;
+            }
+
+            if (sprintStatus && networkCharacterControllerPrototype.IsGrounded)//衝刺狀態下&&在地面時
+            {
+                sprintVisualEffect.Play();
+            }
+            else
+            {
+                sprintVisualEffect.Stop();
+            }
+
             //if (data.Move == Vector3.zero) networkCharacterController.acceleration = 0.0f;
 
             //animationBlend = Mathf.Lerp(animationBlend, speed, Runner.DeltaTime * speedChangeRate);
@@ -210,11 +178,17 @@ public class PlayerController : NetworkBehaviour
             if (pressed.IsSet(InputButtons.JUMP))
             {
                 networkCharacterControllerPrototype.Jump();
+                Debug.Log(transform.position);
+                if (networkCharacterControllerPrototype.IsGrounded)
+                {
+                    jumpVisualEffect.Play();
+                }
             }
 
             if (pressed.IsSet(InputButtons.Attack))
             {
-                
+                Debug.Log("Attack");
+                PushCollision();
             }
         }
     }
@@ -270,16 +244,26 @@ public class PlayerController : NetworkBehaviour
         foreach (var collider in colliders)
         {
             if (collider.TryGetComponent<PlayerController>(out PlayerController playerController))//判斷collider身上是否有PlayerController的腳本
-            {
+            {               
                 // 計算推力方向
-                Vector3 pushDir = (playerController.GetComponentInParent<PlayerController>().transform.position - transform.position).normalized;
-                //pushDir.y = 0f;
+                var targetOriginPos = playerController.transform.position;
+                Vector3 pushDir = targetOriginPos - transform.position;
+                var targetFinalPos = targetOriginPos + pushDir.normalized * pushForce;
+
+                Debug.Log(pushDir.magnitude);
 
                 // 推動其他角色
-                playerController.networkCharacterControllerPrototype.Move(pushDir * pushForce * Runner.DeltaTime);
-                playerController.networkCharacterControllerPrototype.Jump();
+                //playerController.networkCharacterControllerPrototype.Move(pushDir * pushForce);
+                if (Object.HasStateAuthority)//只會在伺服器端上運行
+                {
+                    playerController.networkCharacterControllerPrototype.Jump();
+                    playerController.networkCharacterControllerPrototype.Velocity += pushDir * pushForce;
+
+                    //playerController.GetComponentInParent<CharacterController>().Move(pushDir.normalized * pushForce * Runner.DeltaTime);
+                    //playerController.transform.position = Vector3.Lerp(targetOriginPos, targetFinalPos, Runner.DeltaTime);
+                }
                 //playerController.GetComponentInParent<PlayerController>().TakeDamage(10);
-                Debug.Log("Push!!!!!!!");
+                //Debug.Log("Push!!!!!!!");
                 //Runner.Despawn(Object);
             }
             else

@@ -95,7 +95,6 @@ public class NetworkCharacterControllerPrototype : NetworkTransform {
     /// </summary>
     public virtual void Move(Vector3 direction)
     {
-        
         var deltaTime = Runner.DeltaTime;
         var previousPos = transform.position;
         var moveVelocity = Velocity;
@@ -134,5 +133,4 @@ public class NetworkCharacterControllerPrototype : NetworkTransform {
         Velocity = (transform.position - previousPos) * Runner.Simulation.Config.TickRate;
         IsGrounded = Controller.isGrounded;
     }
-
 }
