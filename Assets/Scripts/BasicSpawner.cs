@@ -10,7 +10,7 @@ using UnityEngine.SceneManagement;
 
 public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
 {
-    
+    private GameManager gameManager = null;
 
     [SerializeField]
     private NetworkRunner networkRunner = null;
@@ -23,20 +23,48 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
     void Start()
     {
-        StartGame(GameMode.AutoHostOrClient);//第一位進入的玩家偵測有沒host，如果沒有的話自己成為host(GameMode是指要以什麼樣的身分進入遊戲)
+        gameManager = GameManager.Instance;
+
+        networkRunner = gameManager.Runner;
+
+        networkRunner.AddCallbacks(this);
+
+        SpawnAllPlayers();
     }
 
-    async void StartGame(GameMode mode)
+    private void SpawnAllPlayers()
     {
-        networkRunner.ProvideInput = true;//提供input
-
-        await networkRunner.StartGame(new StartGameArgs()
+        //拿gameManager裡的PlayerList存的Key(PlayerRef)
+        foreach (var player in gameManager.PlayerList.Keys)
         {
-            GameMode = mode,
-            SessionName = "Fusion Room",
-            Scene = SceneManager.GetActiveScene().buildIndex,
-            SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>() //管控跟scene有關的操作
-        });
+            Vector3 spawnPos = Vector3.up * 2;
+            NetworkObject networkPlayerObject = networkRunner.Spawn(playerPrefab, spawnPos, Quaternion.identity, player);
+
+            //設置關聯的網絡對象
+            networkRunner.SetPlayerObject(player, networkPlayerObject);
+            
+            playerList.Add(player, networkPlayerObject);
+        }
+    }
+    public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)//傳入的runner會是場景中的Network Runner，PlayerRef則是代表實際進入的玩家
+    {
+        Vector3 spawnPos = Vector3.up * 2;
+        NetworkObject networkPlayerObject = runner.Spawn(playerPrefab, spawnPos, Quaternion.identity, player);//讓這個進入的玩家擁有這個生成的Prefab
+
+        runner.SetPlayerObject(player, networkPlayerObject);
+
+        playerList.Add(player, networkPlayerObject);//用list把玩家存起來                                                                         
+        Debug.Log(player.PlayerId + "Join");
+    }
+
+    public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
+    {
+        if (playerList.TryGetValue(player, out NetworkObject networkObject))//檢查玩家是否還在list裡面
+        {
+            runner.Despawn(networkObject);
+            playerList.Remove(player);
+            Debug.Log(player.PlayerId + "Left");
+        }
     }
 
     public void OnConnectedToServer(NetworkRunner runner)//host 不會觸發
@@ -92,31 +120,13 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
         data.Buttons.Set(InputButtons.JUMP, Input.GetKey(KeyCode.Space));
         data.Buttons.Set(InputButtons.Sprint, Input.GetKey(KeyCode.LeftShift));
-        data.Buttons.Set(InputButtons.FIRE, Input.GetKey(KeyCode.Mouse0));
+        data.Buttons.Set(InputButtons.Attack, Input.GetKey(KeyCode.Mouse0));
         input.Set(data);//提供輸入
     }
    
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input)
     {
         
-    }
-
-    public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)//傳入的runner會是場景中的Network Runner，PlayerRef則是代表實際進入的玩家
-    {
-        Vector3 spawnPos = Vector3.up * 2;
-        NetworkObject networkPlayerObject = runner.Spawn(playerPrefab, spawnPos, Quaternion.identity, player);//讓這個進入的玩家擁有這個生成的Prefab
-        playerList.Add(player, networkPlayerObject);//用list把玩家存起來
-        Debug.Log(player.PlayerId+"Join");       
-    }
-
-    public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
-    {
-        if (playerList.TryGetValue(player,out NetworkObject networkObject))//檢查玩家是否還在list裡面
-        {
-            runner.Despawn(networkObject);
-            playerList.Remove(player);
-            Debug.Log(player.PlayerId + "Left");
-        }
     }
 
     public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ArraySegment<byte> data)
@@ -147,6 +157,5 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
     public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message)
     {
         
-    }
-   
+    }   
 }

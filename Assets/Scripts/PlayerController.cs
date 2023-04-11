@@ -5,16 +5,27 @@ using UnityEngine;
 using Fusion;
 using UnityEngine.UI;
 using Cinemachine;
+using UnityEngine.VFX;
 
 [RequireComponent(typeof(CharacterController))]
-[RequireComponent(typeof(PlayerInput))]
+//[RequireComponent(typeof(PlayerInput))]
 public class PlayerController : NetworkBehaviour
 {
+
+    public PlayerGameData playerGameData;
+
+    public GameObject[] Vfx_EffectObj;
+
     [SerializeField]
     private NetworkCharacterControllerPrototype networkCharacterControllerPrototype = null;
+    [SerializeField]
+    private CharacterController cc = null;
 
     [SerializeField]
     private Ball ballPrefab;
+
+    [SerializeField]
+    private GameObject handCollider;//手掌Collider(用於偵測其他人的PlayerController腳本)
 
     [SerializeField]
     private Image CurHpBar = null;
@@ -24,71 +35,15 @@ public class PlayerController : NetworkBehaviour
 
     [SerializeField, Tooltip("衝刺速度")]
     private float sprintSpeed;
+    
 
-    [SerializeField, Tooltip("衝刺狀態")]
-    private bool sprintStatus;
+    [SerializeField, Tooltip("角色巴掌力度")]
+    private float pushForce;
 
-    //[SerializeField, Tooltip("角色轉向移動方向的平滑速度")]
-    //[Range(0.0f, 0.3f)]
-    //private float rotationSmoothTime = 0.12f;
 
     public AudioClip LandingAudioClip;
     public AudioClip[] FootstepAudioClips;
     [Range(0, 1)] public float FootstepAudioVolume = 0.5f;
-
-    [Space(10)]
-    [Tooltip("The height the player can jump")]
-    public float JumpHeight = 1.2f;
-
-    [Tooltip("The character uses its own gravity value. The engine default is -9.81f")]
-    public float Gravity = -15.0f;
-
-    [Space(10)]
-    [Tooltip("Time required to pass before being able to jump again. Set to 0f to instantly jump again")]
-    //跳躍落地後再次跳躍的時間。在著陸後這段時間過去之前，不能跳躍
-    public float JumpTimeout = 0.50f;
-
-    [Tooltip("Time required to pass before entering the fall state. Useful for walking down stairs")]
-    //離開地面時過渡到墜落動畫的時間。當下樓梯時，防止在每一步後播放跌倒動畫的時間
-    public float FallTimeout = 0.15f;
-
-    [Header("Player Grounded")]
-    [Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
-    //是判斷是否落地
-    public bool Grounded = true;
-
-    [Tooltip("Useful for rough ground")]
-    //落地偏移植(適用於粗糙的地面)
-    public float GroundedOffset = -0.14f;
-
-    [Tooltip("The radius of the grounded check. Should match the radius of the CharacterController")]
-    //設置落地的collider範圍。使其與 CharacterController 組件的碰撞器半徑相同。
-    public float GroundedRadius = 0.28f;
-
-    [Tooltip("What layers the character uses as ground")]
-    //設置判斷為地面的圖層
-    public LayerMask GroundLayers;
-
-    [Header("Cinemachine")]
-    [Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
-    //相機將跟隨的 Cinemachine 虛擬相機中設置的跟隨目標
-    public GameObject CinemachineCameraTarget;
-
-    [Tooltip("How far in degrees can you move the camera up")]
-    //設置相機向上旋轉多少
-    public float TopClamp = 70.0f;
-
-    [Tooltip("How far in degrees can you move the camera down")]
-    //設置相機向下旋轉多少
-    public float BottomClamp = -30.0f;
-
-    [Tooltip("Additional degress to override the camera. Useful for fine tuning camera position when locked")]
-    //用於微調相機角度
-    public float CameraAngleOverride = 0.0f;
-
-    [Tooltip("For locking the camera position on all axis")]
-    //檢查 LockCameraPosition 以鎖定當前相機角度
-    public bool LockCameraPosition = false;
 
     [SerializeField]
     private int maxHp = 100;
@@ -108,6 +63,7 @@ public class PlayerController : NetworkBehaviour
     private float cinemachineTargetPitch;
 
     // player
+    private bool sprintStatus;//衝刺狀態
     private float speed;
     private float animationBlend;
 
@@ -118,36 +74,45 @@ public class PlayerController : NetworkBehaviour
     private GameObject mainCamera;
     private Animator animator;
 
-    private const float threshold = 0.01f;
+    private VisualEffect jumpVisualEffect;
+    private VisualEffect sprintVisualEffect;
 
-   
+
     public override void Spawned()
     {
+        sprintStatus = false;
+        cc = GetComponent<CharacterController>();
+        jumpVisualEffect = Vfx_EffectObj[0].GetComponent<VisualEffect>();
+        sprintVisualEffect = Vfx_EffectObj[1].GetComponent<VisualEffect>();
+
         if (mainCamera == null)
         {
             mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
         }
-        cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
+
+        //cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
+
+        speed = networkCharacterControllerPrototype.MoveSpeed;
         if (Object.HasStateAuthority)//只會在伺服器端上運行
         {
-            speed = networkCharacterControllerPrototype.MoveSpeed;
             CurHp = maxHp;//初始化血量           
-            // reset our timeouts on start
-            jumpTimeoutDelta = JumpTimeout;
-            fallTimeoutDelta = FallTimeout;
         }
-        if (Object.HasInputAuthority)
+        if (Object.HasInputAuthority)//在客戶端上運行
         {
             Debug.Log(this.gameObject.name);
             Bind_Camera(this.gameObject);
         }
+
     }
 
     
     public override void FixedUpdateNetwork()//逐每個tick更新(一個tick相當1.666毫秒)
     {
         //Debug.Log("speed : " + speed + "Acceleration : " + networkCharacterControllerPrototype.MoveSpeed + "SprintSpeed : " + sprintSpeed);
+
         Move();
+        
+
         if (CurHp <= 0)
         {
             Respawn();
@@ -163,7 +128,27 @@ public class PlayerController : NetworkBehaviour
             var released = buttons.GetReleased(ButtonsPrevious);
             ButtonsPrevious = buttons;
 
+
             networkCharacterControllerPrototype.MoveSpeed = pressed.IsSet(InputButtons.Sprint) ? sprintSpeed : released.IsSet(InputButtons.Sprint) ? speed : networkCharacterControllerPrototype.MoveSpeed;
+
+            if (pressed.IsSet(InputButtons.Sprint))
+            {
+                sprintStatus = true;
+            }
+            else if (released.IsSet(InputButtons.Sprint))
+            {
+                sprintStatus = false;
+            }
+
+            if (sprintStatus && networkCharacterControllerPrototype.IsGrounded)//衝刺狀態下&&在地面時
+            {
+                sprintVisualEffect.Play();
+            }
+            else
+            {
+                sprintVisualEffect.Stop();
+            }
+
             //if (data.Move == Vector3.zero) networkCharacterController.acceleration = 0.0f;
 
             //animationBlend = Mathf.Lerp(animationBlend, speed, Runner.DeltaTime * speedChangeRate);
@@ -189,9 +174,21 @@ public class PlayerController : NetworkBehaviour
             // move the player
             Vector3 moveVector = data.Move.normalized;
             networkCharacterControllerPrototype.Move(moveVector * Runner.DeltaTime);
+
             if (pressed.IsSet(InputButtons.JUMP))
             {
                 networkCharacterControllerPrototype.Jump();
+                Debug.Log(transform.position);
+                if (networkCharacterControllerPrototype.IsGrounded)
+                {
+                    jumpVisualEffect.Play();
+                }
+            }
+
+            if (pressed.IsSet(InputButtons.Attack))
+            {
+                Debug.Log("Attack");
+                PushCollision();
             }
             //if (pressed.IsSet(InputButtons.FIRE))
             //{
@@ -244,6 +241,47 @@ public class PlayerController : NetworkBehaviour
         networkCharacterControllerPrototype.transform.position = Vector3.up * 2;
         CurHp = maxHp;
     }
+
+    private void PushCollision()//fusion官方不推薦使用unity的 OnTriggerEnter & OnTriggerCollision做網路上的物裡碰撞，是因為Fusion網路狀態的更新率和Unity物理引擎的更新率不相同，而且無法做客戶端預測
+    {
+        //if (Object = null) return;//檢測網路物件是否為空
+        //if (!Object.HasStateAuthority) return;//只會在伺服器端做檢測
+
+        var colliders = Physics.OverlapSphere(handCollider.transform.position, radius: 0.5f);//畫一顆球，並檢測球裡的所有collider並回傳
+
+        foreach (var collider in colliders)
+        {
+            if (collider.TryGetComponent<PlayerController>(out PlayerController playerController))//判斷collider身上是否有PlayerController的腳本
+            {               
+                // 計算推力方向
+                var targetOriginPos = playerController.transform.position;
+                Vector3 pushDir = targetOriginPos - transform.position;
+                var targetFinalPos = targetOriginPos + pushDir.normalized * pushForce;
+
+                Debug.Log(pushDir.magnitude);
+
+                // 推動其他角色
+                //playerController.networkCharacterControllerPrototype.Move(pushDir * pushForce);
+                if (Object.HasStateAuthority)//只會在伺服器端上運行
+                {
+                    playerController.networkCharacterControllerPrototype.Jump();
+                    playerController.networkCharacterControllerPrototype.Velocity += pushDir * pushForce;
+
+                    //playerController.GetComponentInParent<CharacterController>().Move(pushDir.normalized * pushForce * Runner.DeltaTime);
+                    //playerController.transform.position = Vector3.Lerp(targetOriginPos, targetFinalPos, Runner.DeltaTime);
+                }
+                //playerController.GetComponentInParent<PlayerController>().TakeDamage(10);
+                //Debug.Log("Push!!!!!!!");
+                //Runner.Despawn(Object);
+            }
+            else
+            {
+                // 沒有找到組件
+                // 做一些錯誤處理
+            }
+        }
+    }
+
     public void TakeDamage(int damage)
     {
         if (Object.HasStateAuthority)//只會在伺服器端上運行
@@ -257,16 +295,16 @@ public class PlayerController : NetworkBehaviour
     }
 
 
-
+    #region - Player Mouse Setting -
     private void OnApplicationFocus(bool hasFocus)//當應用程式窗口的焦點狀態發生改變時，hasFocus為false；當應用程式窗口獲得焦點時，該函式的參數hasFocus為true
     {
         SetCursorState(cursorLocked);
     }
-
     private void SetCursorState(bool newState)
     {
         Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;//將滑鼠鎖定狀態設置為true，以將滑鼠固定在遊戲中心點
     }
+    #endregion
     public void Bind_Camera(GameObject Player)
     {
         var CinemachineVirtualCamera = Camera.main.gameObject.transform.Find("CM vcam1").GetComponent<CinemachineVirtualCamera>();
