@@ -193,6 +193,14 @@ public class PlayerController : NetworkBehaviour
             {
                 networkCharacterControllerPrototype.Jump();
             }
+            //if (pressed.IsSet(InputButtons.FIRE))
+            //{
+            //    Runner.Spawn(
+            //        ballPrefab,
+            //        transform.position + transform.TransformDirection(Vector3.forward),
+            //        Quaternion.LookRotation(transform.TransformDirection(Vector3.forward)),
+            //        Object.InputAuthority);
+            //}
         }
     }
 
