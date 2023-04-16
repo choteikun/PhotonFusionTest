@@ -5,21 +5,15 @@ using UnityEngine;
 using Fusion;
 using UnityEngine.UI;
 using Cinemachine;
-using UnityEngine.VFX;
 
 [RequireComponent(typeof(CharacterController))]
 //[RequireComponent(typeof(PlayerInput))]
 public class PlayerController : NetworkBehaviour
 {
-
     public PlayerGameData playerGameData;
-
-    public GameObject[] Vfx_EffectObj;
 
     [SerializeField]
     private NetworkCharacterControllerPrototype networkCharacterControllerPrototype = null;
-    [SerializeField]
-    private CharacterController cc = null;
 
     [SerializeField]
     private Ball ballPrefab;
@@ -34,8 +28,7 @@ public class PlayerController : NetworkBehaviour
     private MeshRenderer meshRenderer = null;
 
     [SerializeField, Tooltip("衝刺速度")]
-    private float sprintSpeed;
-    
+    private float drivingSpeed;
 
     [SerializeField, Tooltip("角色巴掌力度")]
     private float pushForce;
@@ -63,7 +56,12 @@ public class PlayerController : NetworkBehaviour
     private float cinemachineTargetPitch;
 
     // player
-    private bool sprintStatus;//衝刺狀態
+    
+    [Networked]
+    public bool DrivingKeyStatus { get; private set; }//衝刺鍵狀態
+    [Networked]
+    public bool JumpEffectTrigger { get; private set; }//防止不斷播放跳躍特效，false為不可播放
+
     private float speed;
     private float animationBlend;
 
@@ -71,19 +69,20 @@ public class PlayerController : NetworkBehaviour
     private float jumpTimeoutDelta;
     private float fallTimeoutDelta;
 
+    private PlayerEffectVisual playerEffectVisual;
     private GameObject mainCamera;
     private Animator animator;
 
-    private VisualEffect jumpVisualEffect;
-    private VisualEffect sprintVisualEffect;
+    
 
 
     public override void Spawned()
     {
-        sprintStatus = false;
-        cc = GetComponent<CharacterController>();
-        jumpVisualEffect = Vfx_EffectObj[0].GetComponent<VisualEffect>();
-        sprintVisualEffect = Vfx_EffectObj[1].GetComponent<VisualEffect>();
+        DrivingKeyStatus = false;
+        playerEffectVisual = GetComponent<PlayerEffectVisual>();
+        playerEffectVisual.InitializeVisualEffect();
+        playerEffectVisual.InitializeParticleEffect();
+
 
         if (mainCamera == null)
         {
@@ -117,6 +116,7 @@ public class PlayerController : NetworkBehaviour
         {
             Respawn();
         }
+        
     }
 
     private void Move()
@@ -129,25 +129,18 @@ public class PlayerController : NetworkBehaviour
             ButtonsPrevious = buttons;
 
 
-            networkCharacterControllerPrototype.MoveSpeed = pressed.IsSet(InputButtons.Sprint) ? sprintSpeed : released.IsSet(InputButtons.Sprint) ? speed : networkCharacterControllerPrototype.MoveSpeed;
+            networkCharacterControllerPrototype.MoveSpeed = pressed.IsSet(InputButtons.Sprint) ? drivingSpeed : released.IsSet(InputButtons.Sprint) ? speed : networkCharacterControllerPrototype.MoveSpeed;
 
             if (pressed.IsSet(InputButtons.Sprint))
             {
-                sprintStatus = true;
+                DrivingKeyStatus = true;
             }
             else if (released.IsSet(InputButtons.Sprint))
             {
-                sprintStatus = false;
+                DrivingKeyStatus = false;
             }
 
-            if (sprintStatus && networkCharacterControllerPrototype.IsGrounded)//衝刺狀態下&&在地面時
-            {
-                sprintVisualEffect.Play();
-            }
-            else
-            {
-                sprintVisualEffect.Stop();
-            }
+            
 
             //if (data.Move == Vector3.zero) networkCharacterController.acceleration = 0.0f;
 
@@ -177,13 +170,15 @@ public class PlayerController : NetworkBehaviour
 
             if (pressed.IsSet(InputButtons.JUMP))
             {
+                JumpEffectTrigger = true;
                 networkCharacterControllerPrototype.Jump();
-                Debug.Log(transform.position);
-                if (networkCharacterControllerPrototype.IsGrounded)
+                if (!networkCharacterControllerPrototype.IsGrounded)
                 {
-                    jumpVisualEffect.Play();
+                    JumpEffectTrigger = false;
                 }
+                Debug.Log(transform.position);
             }
+
 
             if (pressed.IsSet(InputButtons.Attack))
             {
@@ -207,26 +202,46 @@ public class PlayerController : NetworkBehaviour
         if (lfAngle > 360f) lfAngle -= 360f;
         return Mathf.Clamp(lfAngle, lfMin, lfMax);
     }
-
-    private void Update()
+    public override void Render()
     {
-        
-        if (Input.GetKeyDown(KeyCode.R))
+        if (DrivingKeyStatus && networkCharacterControllerPrototype.IsGrounded)//衝刺狀態下&&在地面時
         {
-            ChangeColor_RPC(Color.red);
+            playerEffectVisual.DrivingDustEffectPlay();//播放衝刺特效
         }
-
-        if (Input.GetKeyDown(KeyCode.G))
+        else
         {
-            ChangeColor_RPC(Color.green);
+            playerEffectVisual.DrivingDustEffectStop();
         }
-
-        if (Input.GetKeyDown(KeyCode.B))
+        if (JumpEffectTrigger)
         {
-            ChangeColor_RPC(Color.blue);
+            playerEffectVisual.JumpingDustEffectPlay();//播放跳躍特效
+            JumpEffectTrigger = false;
+        }
+        else
+        {
+            playerEffectVisual.JumpingDustEffectStop();
         }
     }
+    private void Update()
+    {
+        if (Object.HasInputAuthority)
+        {
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                ChangeColor_RPC(Color.red);
+            }
 
+            if (Input.GetKeyDown(KeyCode.G))
+            {
+                ChangeColor_RPC(Color.green);
+            }
+
+            if (Input.GetKeyDown(KeyCode.B))
+            {
+                ChangeColor_RPC(Color.blue);
+            }
+        }
+    }
     /*RPC可以遠端呼叫其他網路裝置的函數或方法
     RPC適用於同步那些狀態更新頻率比較低的資料，雖然他看上去非常簡單易用，但因為RPC並不是以Tick同步的，也不會保存狀態，這意味者RPC的同步不及時，且後加入的玩家會無法更新加入前的RPC，所以RPC通常不會是同步資料的最佳選擇。
     RPC使用時機：發送訊息、設定玩家資料、商城購買等等單一一次性的事件。*/
@@ -293,6 +308,7 @@ public class PlayerController : NetworkBehaviour
     {
         changed.Behaviour.CurHpBar.fillAmount = (float)changed.Behaviour.CurHp / changed.Behaviour.maxHp;
     }
+
 
 
     #region - Player Mouse Setting -
