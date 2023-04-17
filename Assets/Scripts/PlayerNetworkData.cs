@@ -8,7 +8,7 @@ public class PlayerNetworkData : NetworkBehaviour
 
 	[Networked(OnChanged = nameof(OnPlayerNameChanged))] public string PlayerName { get; set; }
 	[Networked(OnChanged = nameof(OnIsReadyChanged))] public NetworkBool IsReady { get; set; }
-
+	public string PlayerID { get; set; }
 	public override void Spawned()
 	{
 		gameManager = GameManager.Instance;
@@ -18,7 +18,7 @@ public class PlayerNetworkData : NetworkBehaviour
 		gameManager.PlayerList.Add(Object.InputAuthority, this);
         gameManager.UpdatePlayerList();
 
-        if (Object.HasInputAuthority)
+		if (Object.HasInputAuthority)
 		{
 			SetPlayerName_RPC(gameManager.PlayerName);
 		}

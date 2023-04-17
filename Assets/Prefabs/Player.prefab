@@ -270,7 +270,7 @@ MonoBehaviour:
   CurHpBar: {fileID: 8608127966763844117}
   meshRenderer: {fileID: 5954348160298632950}
   drivingSpeed: 100
-  pushForce: 20
+  _PushForce: 100
   LandingAudioClip: {fileID: 0}
   FootstepAudioClips: []
   FootstepAudioVolume: 0.5
@@ -278,7 +278,8 @@ MonoBehaviour:
   cursorLocked: 1
   cursorInputForLook: 1
   _CurHp: 0
-  drivingStatus: 0
+  _DrivingKeyStatus: 0
+  _JumpEffectTrigger: 0
 --- !u!135 &4496731450087106735
 SphereCollider:
   m_ObjectHideFlags: 0

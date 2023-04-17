@@ -30,8 +30,9 @@ public class PlayerController : NetworkBehaviour
     [SerializeField, Tooltip("衝刺速度")]
     private float drivingSpeed;
 
-    [SerializeField, Tooltip("角色巴掌力度")]
-    private float pushForce;
+    [Tooltip("角色巴掌力度")]
+    [Networked]
+    public float PushForce { get; private set; }
 
 
     public AudioClip LandingAudioClip;
@@ -80,9 +81,8 @@ public class PlayerController : NetworkBehaviour
     {
         DrivingKeyStatus = false;
         playerEffectVisual = GetComponent<PlayerEffectVisual>();
-        playerEffectVisual.InitializeVisualEffect();
+        playerEffectVisual.InitializeVisualEffect();//因為是所有客戶端都要看到的特效，所以放在外面
         playerEffectVisual.InitializeParticleEffect();
-
 
         if (mainCamera == null)
         {
@@ -98,10 +98,14 @@ public class PlayerController : NetworkBehaviour
         }
         if (Object.HasInputAuthority)//在客戶端上運行
         {
+            if (GameManager.Instance.PlayerList.TryGetValue(Object.InputAuthority, out var playerNetworkData))
+            {
+                playerGameData = new PlayerGameData(playerNetworkData.PlayerName, Object.InputAuthority.PlayerId);
+                Debug.Log("PlayerName : " + playerGameData.playerName + "/PlayerId : " + playerGameData.playerID);
+            }
             Debug.Log(this.gameObject.name);
             Bind_Camera(this.gameObject);
         }
-
     }
 
     
@@ -271,7 +275,6 @@ public class PlayerController : NetworkBehaviour
                 // 計算推力方向
                 var targetOriginPos = playerController.transform.position;
                 Vector3 pushDir = targetOriginPos - transform.position;
-                var targetFinalPos = targetOriginPos + pushDir.normalized * pushForce;
 
                 Debug.Log(pushDir.magnitude);
 
@@ -280,11 +283,12 @@ public class PlayerController : NetworkBehaviour
                 if (Object.HasStateAuthority)//只會在伺服器端上運行
                 {
                     playerController.networkCharacterControllerPrototype.Jump();
-                    playerController.networkCharacterControllerPrototype.Velocity += pushDir * pushForce;
-
+                    playerController.networkCharacterControllerPrototype.Velocity += pushDir * PushForce;
+                    PushForce += 10;
                     //playerController.GetComponentInParent<CharacterController>().Move(pushDir.normalized * pushForce * Runner.DeltaTime);
-                    //playerController.transform.position = Vector3.Lerp(targetOriginPos, targetFinalPos, Runner.DeltaTime);
                 }
+
+                Debug.Log("pushForce : "+ PushForce);
                 //playerController.GetComponentInParent<PlayerController>().TakeDamage(10);
                 //Debug.Log("Push!!!!!!!");
                 //Runner.Despawn(Object);
@@ -308,7 +312,10 @@ public class PlayerController : NetworkBehaviour
     {
         changed.Behaviour.CurHpBar.fillAmount = (float)changed.Behaviour.CurHp / changed.Behaviour.maxHp;
     }
-
+    //private static void OnPushForceChanged(Changed<PlayerController> changed)//changed代表變化後的值，可以透過changed來存取資料
+    //{
+    //    //changed.Behaviour.pushForce;
+    //}
 
 
     #region - Player Mouse Setting -
