@@ -10,6 +10,7 @@ using Cinemachine;
 //[RequireComponent(typeof(PlayerInput))]
 public class PlayerController : NetworkBehaviour
 {
+
     public PlayerGameData playerGameData;
 
     [SerializeField]
@@ -22,7 +23,7 @@ public class PlayerController : NetworkBehaviour
     private GameObject handCollider;//手掌Collider(用於偵測其他人的PlayerController腳本)
 
     [SerializeField]
-    private Image CurHpBar = null;
+    private Image CurBKBar = null;
 
     [SerializeField]
     private MeshRenderer meshRenderer = null;
@@ -34,30 +35,45 @@ public class PlayerController : NetworkBehaviour
     [Networked]
     public float PushForce { get; private set; }
 
-
     public AudioClip LandingAudioClip;
     public AudioClip[] FootstepAudioClips;
     [Range(0, 1)] public float FootstepAudioVolume = 0.5f;
 
-    [SerializeField]
-    private int maxHp = 100;
+    
 
     [SerializeField, Tooltip("Mouse Cursor Settings")]
     private bool cursorLocked = true;
     public bool cursorInputForLook = true;
 
-    [Networked(OnChanged =nameof(OnHpChanged))]//血量數值每次一有變化就刷新
-    public int CurHp { get; set; }
+    //[SerializeField]
+    //private int maxHp = 100;
+    //[Networked(OnChanged =nameof(OnHpChanged))]//血量數值每次一有變化就刷新
+    //public int CurHp { get; set; }
 
     [Networked]
     public NetworkButtons ButtonsPrevious { get; set; }//上一個按鈕的資料
+
+
+    //BK
+    [Header("BK值浮動曲線")][SerializeField]
+    private AnimationCurve breakDownPointCurve;
+
+    [Networked][Tooltip("角色BK係數")]
+
+    public float CoefficientOfBreakDownPoint { get; private set; }
+    
+    [Networked(OnChanged = nameof(BreakDownPointChanged))][Tooltip("cur角色BK值")]
+    public float CurBreakDownPoint { get; private set; }
+    [Tooltip("角色普攻BK值")][SerializeField]
+    private int normalAttackBK;
+    //[Tooltip("角色蓄力BK值")][SerializeField]
+    //private int chargeAttackBK;
 
     // cinemachine
     private float cinemachineTargetYaw;
     private float cinemachineTargetPitch;
 
     // player
-    
     [Networked]
     public bool DrivingKeyStatus { get; private set; }//衝刺鍵狀態
     [Networked]
@@ -94,7 +110,8 @@ public class PlayerController : NetworkBehaviour
         speed = networkCharacterControllerPrototype.MoveSpeed;
         if (Object.HasStateAuthority)//只會在伺服器端上運行
         {
-            CurHp = maxHp;//初始化血量           
+            //CurHp = maxHp;//初始化血量
+            CoefficientOfBreakDownPoint = 0.0f;//初始化角色BK值
         }
         if (Object.HasInputAuthority)//在客戶端上運行
         {
@@ -116,10 +133,10 @@ public class PlayerController : NetworkBehaviour
         Move();
         
 
-        if (CurHp <= 0)
-        {
-            Respawn();
-        }
+        //if (CurHp <= 0)
+        //{
+        //    Respawn();
+        //}
         
     }
 
@@ -258,7 +275,7 @@ public class PlayerController : NetworkBehaviour
     private void Respawn()//重生
     {
         networkCharacterControllerPrototype.transform.position = Vector3.up * 2;
-        CurHp = maxHp;
+        //CurHp = maxHp;
     }
 
     private void PushCollision()//fusion官方不推薦使用unity的 OnTriggerEnter & OnTriggerCollision做網路上的物裡碰撞，是因為Fusion網路狀態的更新率和Unity物理引擎的更新率不相同，而且無法做客戶端預測
@@ -282,9 +299,9 @@ public class PlayerController : NetworkBehaviour
                 //playerController.networkCharacterControllerPrototype.Move(pushDir * pushForce);
                 if (Object.HasStateAuthority)//只會在伺服器端上運行
                 {
+                    playerController.AddCoefficientOfBreakDownPoint(normalAttackBK);//代入普攻BK係數
                     playerController.networkCharacterControllerPrototype.Jump();
-                    playerController.networkCharacterControllerPrototype.Velocity += pushDir * PushForce;
-                    PushForce += 10;
+                    playerController.networkCharacterControllerPrototype.Velocity += pushDir * (PushForce + playerController.CurBreakDownPoint);//推力計算
                     //playerController.GetComponentInParent<CharacterController>().Move(pushDir.normalized * pushForce * Runner.DeltaTime);
                 }
 
@@ -305,17 +322,30 @@ public class PlayerController : NetworkBehaviour
     {
         if (Object.HasStateAuthority)//只會在伺服器端上運行
         {
-            CurHp -= damage;//初始化血量
+            //CurHp -= damage;
         }
     }
-    private static void OnHpChanged(Changed<PlayerController> changed)//changed代表變化後的值，可以透過changed來存取資料
+    public void AddCoefficientOfBreakDownPoint(float cob)
     {
-        changed.Behaviour.CurHpBar.fillAmount = (float)changed.Behaviour.CurHp / changed.Behaviour.maxHp;
+        CoefficientOfBreakDownPoint += cob;
+        CurBreakDownPoint = breakDownPointCurve.Evaluate(CoefficientOfBreakDownPoint);//依據BK曲線計算BK值
     }
-    //private static void OnPushForceChanged(Changed<PlayerController> changed)//changed代表變化後的值，可以透過changed來存取資料
+    //private static void OnHpChanged(Changed<PlayerController> changed)//changed代表變化後的值，可以透過changed來存取資料
     //{
-    //    //changed.Behaviour.pushForce;
+    //    changed.Behaviour.CurHpBar.fillAmount = (float)changed.Behaviour.CurHp / changed.Behaviour.maxHp;
     //}
+    private static void BreakDownPointChanged(Changed<PlayerController> changed)//changed代表變化後的值，可以透過changed來存取資料
+    {
+        if (changed.Behaviour.CoefficientOfBreakDownPoint >= 120.0f)
+        {
+            changed.Behaviour.CurBKBar.color = Color.red;
+        }
+        else
+        {
+            changed.Behaviour.CurBKBar.color = Color.green;
+        }
+        changed.Behaviour.CurBKBar.fillAmount = changed.Behaviour.CoefficientOfBreakDownPoint / 200.0f; 
+    }
 
 
     #region - Player Mouse Setting -
