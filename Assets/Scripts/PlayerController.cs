@@ -118,7 +118,7 @@ public class PlayerController : NetworkBehaviour
             if (GameManager.Instance.PlayerList.TryGetValue(Object.InputAuthority, out var playerNetworkData))
             {
                 playerGameData = new PlayerGameData(playerNetworkData.PlayerName, Object.InputAuthority.PlayerId);
-                Debug.Log("PlayerName : " + playerGameData.playerName + "/PlayerId : " + playerGameData.playerID);
+                Debug.Log("PlayerName : " + playerGameData.PlayerName + "/PlayerId : " + playerGameData.PlayerID);
             }
             Debug.Log(this.gameObject.name);
             Bind_Camera(this.gameObject);

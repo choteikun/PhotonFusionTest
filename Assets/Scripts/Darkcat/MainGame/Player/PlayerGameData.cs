@@ -9,20 +9,41 @@ using UnityEngine;
 [System.Serializable]
 public class PlayerGameData 
 {
-    public string playerName { get; private set; }
-    public int playerID { get; private set; }
-    public float hitPercentage { get; set; }
-    public bool gearCharge  { get; set; }
-    public int playerScoreGet { get; set; }
+    /// <summary>
+    /// 玩家姓名
+    /// </summary>
+    public string PlayerName { get; private set; }
+    /// <summary>
+    /// 玩家ID
+    /// </summary>
+    public int PlayerID { get; private set; }
+    /// <summary>
+    /// 玩家BK值
+    /// </summary>
+    public float BreakPoint { get; set; } 
+    /// <summary>
+    /// 玩家是否有被充能
+    /// </summary>
+    public bool GearChargeOrNot  { get; set; }
+    /// <summary>
+    /// 玩家拿到的分數
+    /// </summary>
+    public int PlayerScore { get; set; }
+    /// <summary>
+    /// 玩家身上的道具
+    /// </summary>
     public ItemEnum held_ItemEnum{ get; set; }
+    /// <summary>
+    /// 玩家狀態
+    /// </summary>
     public PlayerStatusEnum m_PlayerStatus;
 
     public PlayerGameData(string name,int playerid)
     {
-        playerName = name;
-        playerID = playerid;
-        hitPercentage = 0;
-        gearCharge = false;
+        PlayerName = name;
+        PlayerID = playerid;
+        BreakPoint = 0;
+        GearChargeOrNot = false;
         held_ItemEnum = ItemEnum.NoItem;
         m_PlayerStatus = PlayerStatusEnum.Playing;
     }
@@ -40,20 +61,20 @@ public class PlayerGameData
 
     public void Player_Charge()
     {
-        gearCharge = true;
+        GearChargeOrNot = true;
     }
     public void Player_Be_Damage(float damage)
     {
-        hitPercentage += damage;
+        BreakPoint += damage;
     }
-    public void PlayerScore()
+    public void PlayerAddScore()
     {
-        playerScoreGet++;
+        PlayerScore++;
     }
     public void PlayerRevive()
     {
-        hitPercentage = 0;
-        gearCharge = false;
+        BreakPoint = 0;
+        GearChargeOrNot = false;
         held_ItemEnum = ItemEnum.NoItem;
     }
 
