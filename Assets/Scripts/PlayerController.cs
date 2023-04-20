@@ -61,13 +61,14 @@ public class PlayerController : NetworkBehaviour
     [Networked][Tooltip("角色BK係數")]
 
     public float CoefficientOfBreakDownPoint { get; private set; }
-    
-    [Networked(OnChanged = nameof(BreakDownPointChanged))][Tooltip("cur角色BK值")]
+
+    [Networked(OnChanged = nameof(BreakDownPointChanged))]
+    [Tooltip("cur角色BK值")]
     public float CurBreakDownPoint { get; private set; }
     [Tooltip("角色普攻BK值")][SerializeField]
     private int normalAttackBK;
-    //[Tooltip("角色蓄力BK值")][SerializeField]
-    //private int chargeAttackBK;
+    [Tooltip("角色蓄力BK值")][SerializeField]
+    private int chargeAttackBK;
 
     // cinemachine
     private float cinemachineTargetYaw;
@@ -336,7 +337,7 @@ public class PlayerController : NetworkBehaviour
     //}
     private static void BreakDownPointChanged(Changed<PlayerController> changed)//changed代表變化後的值，可以透過changed來存取資料
     {
-        if (changed.Behaviour.CoefficientOfBreakDownPoint >= 120.0f)
+        if (changed.Behaviour.CoefficientOfBreakDownPoint >= 120.0f)//120是曲線x最陡的位置
         {
             changed.Behaviour.CurBKBar.color = Color.red;
         }
@@ -344,7 +345,7 @@ public class PlayerController : NetworkBehaviour
         {
             changed.Behaviour.CurBKBar.color = Color.green;
         }
-        changed.Behaviour.CurBKBar.fillAmount = changed.Behaviour.CoefficientOfBreakDownPoint / 200.0f; 
+        changed.Behaviour.CurBKBar.fillAmount = changed.Behaviour.CoefficientOfBreakDownPoint / 200.0f;//200是曲線x的最末端
     }
 
 

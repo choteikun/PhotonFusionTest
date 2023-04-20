@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Fusion;
 
 /// <summary>
 /// 玩家資料
@@ -20,11 +21,12 @@ public class PlayerGameData
     /// <summary>
     /// 玩家BK值
     /// </summary>
+    [Networked]
     public float BreakPoint { get; set; } 
     /// <summary>
     /// 玩家是否有被充能
     /// </summary>
-    public bool GearChargeOrNot  { get; set; }
+    public bool SuperSmashChargeOrNot { get; set; }
     /// <summary>
     /// 玩家拿到的分數
     /// </summary>
@@ -32,7 +34,7 @@ public class PlayerGameData
     /// <summary>
     /// 玩家身上的道具
     /// </summary>
-    public ItemEnum held_ItemEnum{ get; set; }
+    public ItemEnum Held_ItemEnum{ get; set; }
     /// <summary>
     /// 玩家狀態
     /// </summary>
@@ -43,15 +45,15 @@ public class PlayerGameData
         PlayerName = name;
         PlayerID = playerid;
         BreakPoint = 0;
-        GearChargeOrNot = false;
-        held_ItemEnum = ItemEnum.NoItem;
+        SuperSmashChargeOrNot = false;
+        Held_ItemEnum = ItemEnum.NoItem;
         m_PlayerStatus = PlayerStatusEnum.Playing;
     }
     public void Player_GetItem(ItemEnum itemGet)
     {
-        if (held_ItemEnum == ItemEnum.NoItem)
+        if (Held_ItemEnum == ItemEnum.NoItem)
         {
-            held_ItemEnum = itemGet;
+            Held_ItemEnum = itemGet;
         }
     }
     public void Player_ChangeStatus(PlayerStatusEnum status)
@@ -61,7 +63,7 @@ public class PlayerGameData
 
     public void Player_Charge()
     {
-        GearChargeOrNot = true;
+        SuperSmashChargeOrNot = true;
     }
     public void Player_Be_Damage(float damage)
     {
@@ -74,8 +76,8 @@ public class PlayerGameData
     public void PlayerRevive()
     {
         BreakPoint = 0;
-        GearChargeOrNot = false;
-        held_ItemEnum = ItemEnum.NoItem;
+        SuperSmashChargeOrNot = false;
+        Held_ItemEnum = ItemEnum.NoItem;
     }
 
 }
