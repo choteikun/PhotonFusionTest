@@ -40,6 +40,11 @@ public class PlayerGameData : NetworkBehaviour
     /// </summary>
     [field: SerializeField][Networked] public PlayerStatusEnum m_PlayerStatus { get; set; }
 
+    public void SetNameAID(string name, int playerid)
+    {
+        PlayerName = name;
+        PlayerID = playerid;
+    }
     public PlayerGameData(string name,int playerid)
     {
         PlayerName = name;
