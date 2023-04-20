@@ -69,6 +69,11 @@ public class PlayerController : NetworkBehaviour
     private int normalAttackBK;
     [Tooltip("角色蓄力BK值")][SerializeField]
     private int chargeAttackBK;
+    [Tooltip("角色蓄力條")][SerializeField]
+    private int chargeAttackBar;
+    [Tooltip("角色蓄力條")]
+    [SerializeField]
+    private bool chargeAttackOrNot;
 
     // cinemachine
     private float cinemachineTargetYaw;
@@ -80,6 +85,7 @@ public class PlayerController : NetworkBehaviour
     [Networked]
     public bool JumpEffectTrigger { get; private set; }//防止不斷播放跳躍特效，false為不可播放
 
+    private float chargeAttackBarTimer;
     private float speed;
     private float animationBlend;
 
@@ -112,7 +118,9 @@ public class PlayerController : NetworkBehaviour
         if (Object.HasStateAuthority)//只會在伺服器端上運行
         {
             //CurHp = maxHp;//初始化血量
+            chargeAttackOrNot = false;
             CoefficientOfBreakDownPoint = 0.0f;//初始化角色BK值
+            chargeAttackBarTimer = 0.0f;
         }
         if (Object.HasInputAuthority)//在客戶端上運行
         {
@@ -132,13 +140,22 @@ public class PlayerController : NetworkBehaviour
         //Debug.Log("speed : " + speed + "Acceleration : " + networkCharacterControllerPrototype.MoveSpeed + "SprintSpeed : " + sprintSpeed);
 
         Move();
-        
 
+        if (chargeAttackOrNot)
+        {
+            chargeAttackBarTimer++;
+            Debug.Log("chargeAttackBarTimer : " + chargeAttackBarTimer);
+            //chargeAttackBarTimer = (chargeAttackBarTimer >= (chargeAttackBar * 60)) ? (chargeAttackBar * 60) : chargeAttackBarTimer;
+        }
+        else
+        {
+            chargeAttackBarTimer = 0;
+        }
         //if (CurHp <= 0)
         //{
         //    Respawn();
         //}
-        
+
     }
 
     private void Move()
@@ -200,12 +217,15 @@ public class PlayerController : NetworkBehaviour
                 }
                 Debug.Log(transform.position);
             }
-
-
             if (pressed.IsSet(InputButtons.Attack))
             {
+                chargeAttackOrNot = true;
                 Debug.Log("Attack");
                 PushCollision();
+            }
+            if (released.IsSet(InputButtons.Attack))
+            {
+                chargeAttackOrNot = false;
             }
             //if (pressed.IsSet(InputButtons.FIRE))
             //{

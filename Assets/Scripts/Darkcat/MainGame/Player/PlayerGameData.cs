@@ -22,7 +22,7 @@ public class PlayerGameData : NetworkBehaviour
     /// <summary>
     /// 玩家BK值
     /// </summary>
-    [field: SerializeField][Networked] public float BreakPoint { get; set; }
+    [field: SerializeField] public float BreakPoint { get; set; }
     /// <summary>
     /// 玩家是否有被充能
     /// </summary>
