@@ -8,37 +8,38 @@ using Fusion;
 /// </summary>
 
 [System.Serializable]
-public class PlayerGameData 
+public class PlayerGameData : NetworkBehaviour
 {
+    [SerializeField] public AnimationCurve BKToKnockBackDistance_Curve;
     /// <summary>
     /// 玩家姓名
     /// </summary>
-    public string PlayerName { get; private set; }
+    [field:SerializeField] public string PlayerName { get; private set; }
     /// <summary>
     /// 玩家ID
     /// </summary>
-    public int PlayerID { get; private set; }
+    [field: SerializeField] public int PlayerID { get; private set; }
     /// <summary>
     /// 玩家BK值
     /// </summary>
     [Networked]
-    public float BreakPoint { get; set; } 
+    [field: SerializeField] public float BreakPoint { get; set; }
     /// <summary>
     /// 玩家是否有被充能
     /// </summary>
-    public bool SuperSmashChargeOrNot { get; set; }
+    [field: SerializeField] public bool SuperSmashChargeOrNot { get; set; }
     /// <summary>
     /// 玩家拿到的分數
     /// </summary>
-    public int PlayerScore { get; set; }
+    [field: SerializeField] public int PlayerScore { get; set; }
     /// <summary>
     /// 玩家身上的道具
     /// </summary>
-    public ItemEnum Held_ItemEnum{ get; set; }
+    [field: SerializeField] public ItemEnum Held_ItemEnum{ get; set; }
     /// <summary>
     /// 玩家狀態
     /// </summary>
-    public PlayerStatusEnum m_PlayerStatus;
+    [SerializeField] public PlayerStatusEnum m_PlayerStatus;
 
     public PlayerGameData(string name,int playerid)
     {
