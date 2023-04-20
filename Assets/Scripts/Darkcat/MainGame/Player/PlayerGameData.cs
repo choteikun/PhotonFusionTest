@@ -54,11 +54,6 @@ public class PlayerGameData : NetworkBehaviour
         Held_ItemEnum = ItemEnum.NoItem;
         m_PlayerStatus = PlayerStatusEnum.Playing;
     }
-    public void SetNameAID(string name, int playerid)
-    {
-        PlayerName = name;
-        PlayerID = playerid;
-    }
     public void Player_GetItem(ItemEnum itemGet)
     {
         if (Held_ItemEnum == ItemEnum.NoItem)
