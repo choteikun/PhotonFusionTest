@@ -8,7 +8,7 @@ using Fusion;
 /// </summary>
 
 [System.Serializable]
-public class PlayerGameData : NetworkBehaviour
+public class PlayerGameData
 {
     [SerializeField] public AnimationCurve BKToKnockBackDistance_Curve;
     /// <summary>
@@ -22,7 +22,6 @@ public class PlayerGameData : NetworkBehaviour
     /// <summary>
     /// 玩家BK值
     /// </summary>
-    [Networked]
     [field: SerializeField] public float BreakPoint { get; set; }
     /// <summary>
     /// 玩家是否有被充能

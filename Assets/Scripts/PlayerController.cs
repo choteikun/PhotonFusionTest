@@ -10,8 +10,8 @@ using Cinemachine;
 //[RequireComponent(typeof(PlayerInput))]
 public class PlayerController : NetworkBehaviour
 {
-
-    public PlayerGameData playerGameData;
+    [field: SerializeField]
+    private PlayerGameData playerGameData;
 
     [SerializeField]
     private NetworkCharacterControllerPrototype networkCharacterControllerPrototype = null;
