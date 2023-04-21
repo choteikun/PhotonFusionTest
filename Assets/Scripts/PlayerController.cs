@@ -10,7 +10,7 @@ using Cinemachine;
 //[RequireComponent(typeof(PlayerInput))]
 public class PlayerController : NetworkBehaviour
 {
-    [field: SerializeField]
+    [SerializeField]
     private PlayerGameData playerGameData;
 
     [SerializeField]
@@ -54,24 +54,19 @@ public class PlayerController : NetworkBehaviour
     public NetworkButtons ButtonsPrevious { get; set; }//上一個按鈕的資料
 
 
-    //BK
-    [Header("BK值浮動曲線")][SerializeField]
-    private AnimationCurve breakDownPointCurve;
 
     [Networked][Tooltip("角色BK係數")]
-
     public float CoefficientOfBreakDownPoint { get; private set; }
 
-    [Networked(OnChanged = nameof(BreakDownPointChanged))]
-    [Tooltip("cur角色BK值")]
-    public float CurBreakDownPoint { get; private set; }
     [Tooltip("角色普攻BK值")][SerializeField]
     private int normalAttackBK;
-    [Tooltip("角色蓄力BK值")][SerializeField]
-    private int chargeAttackBK;
-    [Tooltip("角色蓄力條")][SerializeField]
-    private int chargeAttackBar;
+    [Tooltip("角色蓄力BK的最大值")][SerializeField][Range(0,20)]
+    private int chargeAttackMaxBK;
+    [Tooltip("角色蓄力BK值")]
+    [SerializeField]
+    private int curChargeAttackBK;
     [Tooltip("角色蓄力條")]
+    private int chargeAttackBar = 5;
     [SerializeField]
     private bool chargeAttackOrNot;
 
@@ -111,7 +106,6 @@ public class PlayerController : NetworkBehaviour
         {
             mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
         }
-
         //cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
 
         speed = networkCharacterControllerPrototype.MoveSpeed;
@@ -126,7 +120,8 @@ public class PlayerController : NetworkBehaviour
         {
             if (GameManager.Instance.PlayerList.TryGetValue(Object.InputAuthority, out var playerNetworkData))
             {
-                playerGameData = new PlayerGameData(playerNetworkData.PlayerName, Object.InputAuthority.PlayerId);
+                //playerGameData = new PlayerGameData(playerNetworkData.PlayerName, Object.InputAuthority.PlayerId);
+                playerGameData.SetNameAID(playerNetworkData.PlayerName, Object.InputAuthority.PlayerId);
                 Debug.Log("PlayerName : " + playerGameData.PlayerName + "/PlayerId : " + playerGameData.PlayerID);
             }
             Debug.Log(this.gameObject.name);
@@ -138,14 +133,15 @@ public class PlayerController : NetworkBehaviour
     public override void FixedUpdateNetwork()//逐每個tick更新(一個tick相當1.666毫秒)
     {
         //Debug.Log("speed : " + speed + "Acceleration : " + networkCharacterControllerPrototype.MoveSpeed + "SprintSpeed : " + sprintSpeed);
-
+        ColorChangedByBreakDownPoint();
         Move();
 
         if (chargeAttackOrNot)
         {
             chargeAttackBarTimer++;
+            chargeAttackBarTimer = (chargeAttackBarTimer >= (chargeAttackBar * 60)) ? (chargeAttackBar * 60) : chargeAttackBarTimer;
+            curChargeAttackBK = (int)Mathf.Round((chargeAttackBarTimer / 60) * (chargeAttackMaxBK / chargeAttackBar));
             Debug.Log("chargeAttackBarTimer : " + chargeAttackBarTimer);
-            //chargeAttackBarTimer = (chargeAttackBarTimer >= (chargeAttackBar * 60)) ? (chargeAttackBar * 60) : chargeAttackBarTimer;
         }
         else
         {
@@ -321,8 +317,9 @@ public class PlayerController : NetworkBehaviour
                 if (Object.HasStateAuthority)//只會在伺服器端上運行
                 {
                     playerController.AddCoefficientOfBreakDownPoint(normalAttackBK);//代入普攻BK係數
+                    playerController.AddCoefficientOfBreakDownPoint(curChargeAttackBK);//代入蓄力BK係數
                     playerController.networkCharacterControllerPrototype.Jump();
-                    playerController.networkCharacterControllerPrototype.Velocity += pushDir * (PushForce + playerController.CurBreakDownPoint);//推力計算
+                    playerController.networkCharacterControllerPrototype.Velocity += pushDir * (PushForce + playerController.playerGameData.BreakPoint);//推力計算
                     //playerController.GetComponentInParent<CharacterController>().Move(pushDir.normalized * pushForce * Runner.DeltaTime);
                 }
 
@@ -349,23 +346,36 @@ public class PlayerController : NetworkBehaviour
     public void AddCoefficientOfBreakDownPoint(float cob)
     {
         CoefficientOfBreakDownPoint += cob;
-        CurBreakDownPoint = breakDownPointCurve.Evaluate(CoefficientOfBreakDownPoint);//依據BK曲線計算BK值
+        playerGameData.BreakPoint = playerGameData.BreakDownPointCurve.Evaluate(CoefficientOfBreakDownPoint);//依據BK曲線計算BK值
     }
     //private static void OnHpChanged(Changed<PlayerController> changed)//changed代表變化後的值，可以透過changed來存取資料
     //{
     //    changed.Behaviour.CurHpBar.fillAmount = (float)changed.Behaviour.CurHp / changed.Behaviour.maxHp;
     //}
-    private static void BreakDownPointChanged(Changed<PlayerController> changed)//changed代表變化後的值，可以透過changed來存取資料
+
+    //public static void BreakDownPointChanged(Changed<PlayerController> changed)//changed代表變化後的值，可以透過changed來存取資料
+    //{
+    //    if (changed.Behaviour.CoefficientOfBreakDownPoint >= 120.0f)//120是曲線x最陡的位置
+    //    {
+    //        changed.Behaviour.CurBKBar.color = Color.red;
+    //    }
+    //    else
+    //    {
+    //        changed.Behaviour.CurBKBar.color = Color.green;
+    //    }
+    //    changed.Behaviour.CurBKBar.fillAmount = changed.Behaviour.CoefficientOfBreakDownPoint / 200.0f;//200是曲線x的最末端
+    //}
+    public void ColorChangedByBreakDownPoint()
     {
-        if (changed.Behaviour.CoefficientOfBreakDownPoint >= 120.0f)//120是曲線x最陡的位置
+        if (CoefficientOfBreakDownPoint >= 120.0f)//120是曲線x最陡的位置
         {
-            changed.Behaviour.CurBKBar.color = Color.red;
+            CurBKBar.color = Color.red;
         }
         else
         {
-            changed.Behaviour.CurBKBar.color = Color.green;
+            CurBKBar.color = Color.green;
         }
-        changed.Behaviour.CurBKBar.fillAmount = changed.Behaviour.CoefficientOfBreakDownPoint / 200.0f;//200是曲線x的最末端
+        CurBKBar.fillAmount = CoefficientOfBreakDownPoint / 200.0f;//200是曲線x的最末端
     }
 
 

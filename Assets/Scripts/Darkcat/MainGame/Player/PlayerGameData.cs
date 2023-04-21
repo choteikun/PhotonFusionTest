@@ -10,7 +10,7 @@ using Fusion;
 [System.Serializable]
 public class PlayerGameData : NetworkBehaviour
 {
-    [SerializeField] public AnimationCurve BKToKnockBackDistance_Curve;
+    [Header("BK值浮動曲線")]public AnimationCurve BreakDownPointCurve;
     /// <summary>
     /// 玩家姓名
     /// </summary>
@@ -22,7 +22,7 @@ public class PlayerGameData : NetworkBehaviour
     /// <summary>
     /// 玩家BK值
     /// </summary>
-    [field: SerializeField] public float BreakPoint { get; set; }
+    [field: SerializeField][Networked] public float BreakPoint { get; set; }
     /// <summary>
     /// 玩家是否有被充能
     /// </summary>
@@ -40,11 +40,6 @@ public class PlayerGameData : NetworkBehaviour
     /// </summary>
     [field: SerializeField][Networked] public PlayerStatusEnum m_PlayerStatus { get; set; }
 
-    public void SetNameAID(string name, int playerid)
-    {
-        PlayerName = name;
-        PlayerID = playerid;
-    }
     public PlayerGameData(string name,int playerid)
     {
         PlayerName = name;

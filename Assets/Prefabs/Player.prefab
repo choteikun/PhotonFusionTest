@@ -140,6 +140,7 @@ GameObject:
   - component: {fileID: 4750491071164793271}
   - component: {fileID: 5953763114585908816}
   - component: {fileID: -6690832166453164651}
+  - component: {fileID: 163445914040923314}
   - component: {fileID: 1477196240836849409}
   - component: {fileID: 4496731450087106735}
   - component: {fileID: 6900384068349194113}
@@ -192,6 +193,7 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: -6690832166453164651}
+  - {fileID: 163445914040923314}
   - {fileID: 1477196240836849409}
   SimulationBehaviours: []
 --- !u!143 &5953763114585908816
@@ -248,7 +250,7 @@ MonoBehaviour:
   RotationSpeed: 15
   _IsGrounded: 0
   _Velocity: {x: 0, y: 0, z: 0}
---- !u!114 &1477196240836849409
+--- !u!114 &163445914040923314
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -257,55 +259,40 @@ MonoBehaviour:
   m_GameObject: {fileID: 617869745945056140}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d2c797d70ea0ff40966b4077f86ab05, type: 3}
+  m_Script: {fileID: 11500000, guid: 2a5aa581db56ad741a423bf092c0157d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
-  playerGameData:
-    m_PlayerStatus: 0
-  networkCharacterControllerPrototype: {fileID: -6690832166453164651}
-  ballPrefab: {fileID: 4954077133058968847, guid: 181e3edaa8ffba94c811ef45a4992691,
-    type: 3}
-  handCollider: {fileID: 184798211090027907}
-  CurBKBar: {fileID: 8233974266806686908}
-  meshRenderer: {fileID: 5954348160298632950}
-  drivingSpeed: 100
-  _PushForce: 50
-  LandingAudioClip: {fileID: 0}
-  FootstepAudioClips: []
-  FootstepAudioVolume: 0.5
-  cursorLocked: 1
-  cursorInputForLook: 1
-  breakDownPointCurve:
+  BreakDownPointCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 50
-      inSlope: 0.22737117
-      outSlope: 0.22737117
+      value: 100
+      inSlope: 0.47819367
+      outSlope: 0.47819367
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.06500236
+      outWeight: 0.13188647
     - serializedVersion: 3
-      time: 65
-      value: 80
-      inSlope: 1.4812808
-      outSlope: 1.4812808
+      time: 76.74484
+      value: 157.68292
+      inSlope: 0.9490744
+      outSlope: 0.9490744
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.24839942
-      outWeight: 0.1305496
+      outWeight: 0.16117804
     - serializedVersion: 3
       time: 106.49229
       value: 241.4219
-      inSlope: 7.61001
-      outSlope: 7.61001
+      inSlope: 6.481341
+      outSlope: 6.481341
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
-      outWeight: 0.52476186
+      outWeight: 0.8599616
     - serializedVersion: 3
       time: 115
       value: 330
@@ -354,9 +341,44 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  _PlayerName: 
+  _PlayerID: 0
+  _BreakPoint: 0
+  _SuperSmashChargeOrNot: 0
+  _PlayerScore: 0
+  _Held_ItemEnum: 0
+  _m_PlayerStatus: 0
+--- !u!114 &1477196240836849409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 617869745945056140}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d2c797d70ea0ff40966b4077f86ab05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
+  playerGameData: {fileID: 163445914040923314}
+  networkCharacterControllerPrototype: {fileID: -6690832166453164651}
+  ballPrefab: {fileID: 4954077133058968847, guid: 181e3edaa8ffba94c811ef45a4992691,
+    type: 3}
+  handCollider: {fileID: 184798211090027907}
+  CurBKBar: {fileID: 8233974266806686908}
+  meshRenderer: {fileID: 5954348160298632950}
+  drivingSpeed: 100
+  _PushForce: 50
+  LandingAudioClip: {fileID: 0}
+  FootstepAudioClips: []
+  FootstepAudioVolume: 0.5
+  cursorLocked: 1
+  cursorInputForLook: 1
   _CoefficientOfBreakDownPoint: 0
-  _CurBreakDownPoint: 0
   normalAttackBK: 5
+  chargeAttackBK: 20
+  chargeAttackOrNot: 0
   _DrivingKeyStatus: 0
   _JumpEffectTrigger: 0
 --- !u!135 &4496731450087106735
