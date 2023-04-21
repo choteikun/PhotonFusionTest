@@ -307,8 +307,10 @@ public class PlayerController : NetworkBehaviour
             if (collider.TryGetComponent<PlayerController>(out PlayerController playerController))//判斷collider身上是否有PlayerController的腳本
             {               
                 // 計算推力方向
+
                 var targetOriginPos = playerController.transform.position;
-                Vector3 pushDir = targetOriginPos - transform.position;
+                targetOriginPos = new Vector3(targetOriginPos.x, 0, targetOriginPos.z);
+                Vector3 pushDir = targetOriginPos - new Vector3(transform.position.x, 0, transform.position.z);
 
                 Debug.Log(pushDir.magnitude);
 
