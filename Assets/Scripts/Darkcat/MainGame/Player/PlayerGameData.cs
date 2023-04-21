@@ -40,6 +40,7 @@ public class PlayerGameData : NetworkBehaviour
     /// </summary>
     [field: SerializeField][Networked] public PlayerStatusEnum m_PlayerStatus { get; set; }
 
+
     public PlayerGameData(string name,int playerid)
     {
         PlayerName = name;
@@ -48,6 +49,11 @@ public class PlayerGameData : NetworkBehaviour
         SuperSmashChargeOrNot = false;
         Held_ItemEnum = ItemEnum.NoItem;
         m_PlayerStatus = PlayerStatusEnum.Playing;
+    }
+    public void SetNameAID(string name, int playerid)
+    {
+        PlayerName = name;
+        PlayerID = playerid;
     }
     public void Player_GetItem(ItemEnum itemGet)
     {

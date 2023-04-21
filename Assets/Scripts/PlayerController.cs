@@ -55,7 +55,7 @@ public class PlayerController : NetworkBehaviour
 
 
 
-    [Networked][Tooltip("角色BK係數")]
+    [Networked][Tooltip("角色BK係數(曲線X軸)")]
     public float CoefficientOfBreakDownPoint { get; private set; }
 
     [Tooltip("角色普攻BK值")][SerializeField]
