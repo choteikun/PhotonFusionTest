@@ -141,7 +141,7 @@ public class PlayerController : NetworkBehaviour
             chargeAttackBarTimer++;
             chargeAttackBarTimer = (chargeAttackBarTimer >= (chargeAttackBar * 60)) ? (chargeAttackBar * 60) : chargeAttackBarTimer;
             curChargeAttackBK = (int)Mathf.Round((chargeAttackBarTimer / 60) * (chargeAttackMaxBK / chargeAttackBar));
-            Debug.Log("chargeAttackBarTimer : " + chargeAttackBarTimer);
+            //Debug.Log("chargeAttackBarTimer : " + chargeAttackBarTimer);
         }
         else
         {
@@ -319,11 +319,12 @@ public class PlayerController : NetworkBehaviour
                     playerController.AddCoefficientOfBreakDownPoint(normalAttackBK);//代入普攻BK係數
                     playerController.AddCoefficientOfBreakDownPoint(curChargeAttackBK);//代入蓄力BK係數
                     playerController.networkCharacterControllerPrototype.Jump();
+                    playerController.networkCharacterControllerPrototype.Velocity = Vector3.zero;
                     playerController.networkCharacterControllerPrototype.Velocity += pushDir * (PushForce + playerController.playerGameData.BreakPoint);//推力計算
                     //playerController.GetComponentInParent<CharacterController>().Move(pushDir.normalized * pushForce * Runner.DeltaTime);
                 }
 
-                Debug.Log("pushForce : "+ PushForce);
+                Debug.Log(playerController.networkCharacterControllerPrototype.Velocity);
                 //playerController.GetComponentInParent<PlayerController>().TakeDamage(10);
                 //Debug.Log("Push!!!!!!!");
                 //Runner.Despawn(Object);
