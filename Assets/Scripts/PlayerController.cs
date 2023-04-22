@@ -242,7 +242,7 @@ public class PlayerController : NetworkBehaviour
     }
     public override void Render()
     {
-        if (DrivingKeyStatus && networkCharacterControllerPrototype.IsGrounded)//衝刺狀態下&&在地面時
+        if (DrivingKeyStatus && networkCharacterControllerPrototype.IsGrounded && (networkCharacterControllerPrototype.Velocity != Vector3.zero))//衝刺狀態下&&在地面時
         {
             playerEffectVisual.DrivingDustEffectPlay();//播放衝刺特效
         }
@@ -321,12 +321,14 @@ public class PlayerController : NetworkBehaviour
                     playerController.AddCoefficientOfBreakDownPoint(normalAttackBK);//代入普攻BK係數
                     playerController.AddCoefficientOfBreakDownPoint(curChargeAttackBK);//代入蓄力BK係數
                     playerController.networkCharacterControllerPrototype.Jump();
-                    playerController.networkCharacterControllerPrototype.Velocity = Vector3.zero;
                     playerController.networkCharacterControllerPrototype.Velocity += pushDir * (PushForce + playerController.playerGameData.BreakPoint);//推力計算
+                    playerController.networkCharacterControllerPrototype.Move(Vector3.zero);
+
+                    Debug.Log(playerController.networkCharacterControllerPrototype.Velocity);
                     //playerController.GetComponentInParent<CharacterController>().Move(pushDir.normalized * pushForce * Runner.DeltaTime);
                 }
 
-                Debug.Log(playerController.networkCharacterControllerPrototype.Velocity);
+                
                 //playerController.GetComponentInParent<PlayerController>().TakeDamage(10);
                 //Debug.Log("Push!!!!!!!");
                 //Runner.Despawn(Object);
