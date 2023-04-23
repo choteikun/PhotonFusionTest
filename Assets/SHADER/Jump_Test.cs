@@ -10,8 +10,6 @@ public class Jump_Test : MonoBehaviour
 
     private bool isMoving = false; // 是否正在移動
     private bool isGrounded = true; // 是否在地面上
-    public GameObject smokeJump;
-    public VisualEffect smokeJumpVFX;
     private Vector3 jumpPos;
 
     private void Start()
@@ -44,7 +42,6 @@ public class Jump_Test : MonoBehaviour
                 
                 isMoving = true;
             }
-           // smokeJump.transform.position = transform.position; // 火花位置跟隨角色
         }
         else // 如果沒有移動，停止火花效果
         {
@@ -58,9 +55,6 @@ public class Jump_Test : MonoBehaviour
             jumpPos = transform.position;
             // 添加向上的力量，讓角色跳躍
             GetComponent<Rigidbody>().AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            //smokeJump.SetActive(true);            
-            smokeJump.transform.position = jumpPos; // 火花位置跟隨角色
-            smokeJumpVFX.Play();
         }
 
         // 將移動量應用於角色位置
