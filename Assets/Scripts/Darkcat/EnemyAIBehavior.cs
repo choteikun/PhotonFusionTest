@@ -40,11 +40,13 @@ public class EnemyAIBehavior : NetworkBehaviour
     private void generateMovement()
     {
         var randomAngle = Random.Range(0.0f, 360.0f);
-        rotation_ = Quaternion.Euler(0, randomAngle, 0);      
+        rotation_ = Quaternion.Euler(0, randomAngle, 0);
+        Debug.Log("Turn");
     }
     private void enemyStartRotateBehavior()
     {
         InvokeRepeating("generateMovement", 1.5f, 5f);
+        Debug.Log("IntoBehavior");
     }
     private void enemyStraightFowardMovement()
     {
