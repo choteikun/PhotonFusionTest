@@ -342,6 +342,7 @@ GameObject:
   - component: {fileID: 403318549}
   - component: {fileID: 403318548}
   - component: {fileID: 403318551}
+  - component: {fileID: 403318552}
   m_Layer: 0
   m_Name: Spawn_
   m_TagString: Untagged
@@ -461,6 +462,20 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!136 &403318552
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 403318547}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 1.5303724
+  m_Height: 3.9600692
+  m_Direction: 1
+  m_Center: {x: -0.008661509, y: 1.4014218, z: -0.018482447}
 --- !u!1 &491972560
 GameObject:
   m_ObjectHideFlags: 0
@@ -1281,7 +1296,7 @@ MonoBehaviour:
   target: {fileID: 403318549}
   EventName: HIT
   colliders:
-  - {fileID: 1695632024}
+  - {fileID: 403318552}
   activation: 0
 --- !u!1 &1931274140
 GameObject:
