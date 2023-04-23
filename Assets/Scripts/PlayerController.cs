@@ -223,14 +223,6 @@ public class PlayerController : NetworkBehaviour
             {
                 chargeAttackOrNot = false;
             }
-            //if (pressed.IsSet(InputButtons.FIRE))
-            //{
-            //    Runner.Spawn(
-            //        ballPrefab,
-            //        transform.position + transform.TransformDirection(Vector3.forward),
-            //        Quaternion.LookRotation(transform.TransformDirection(Vector3.forward)),
-            //        Object.InputAuthority);
-            //}
         }
     }
 
@@ -321,8 +313,9 @@ public class PlayerController : NetworkBehaviour
                     playerController.AddCoefficientOfBreakDownPoint(normalAttackBK);//代入普攻BK係數
                     playerController.AddCoefficientOfBreakDownPoint(curChargeAttackBK);//代入蓄力BK係數
                     playerController.networkCharacterControllerPrototype.Jump();
-                    playerController.networkCharacterControllerPrototype.Velocity += pushDir * (PushForce + playerController.playerGameData.BreakPoint);//推力計算
                     playerController.networkCharacterControllerPrototype.Move(Vector3.zero);
+                    playerController.networkCharacterControllerPrototype.Velocity += pushDir * (PushForce + playerController.playerGameData.BreakPoint);//推力計算
+                    
 
                     Debug.Log(playerController.networkCharacterControllerPrototype.Velocity);
                     //playerController.GetComponentInParent<CharacterController>().Move(pushDir.normalized * pushForce * Runner.DeltaTime);
