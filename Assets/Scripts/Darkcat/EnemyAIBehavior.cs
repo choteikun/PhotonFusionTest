@@ -8,7 +8,7 @@ public class EnemyAIBehavior : NetworkBehaviour
 {
     [SerializeField] public NetworkObject EnemyObject;
     [SerializeField] private float rotateSpeed_;
-    [SerializeField] private Quaternion rotation_;
+    [field: SerializeField] [Networked] private Quaternion rotation_ { get; set; }
     private UnityEvent enemyRotateEvent_ = new UnityEvent();
     private UnityEvent enemyStraightFowardEvent_ = new UnityEvent();
     private UnityEvent enemyDectectWallEvent_ = new UnityEvent();
