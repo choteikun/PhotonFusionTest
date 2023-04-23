@@ -13,17 +13,28 @@ public class EnemyAIBehavior : NetworkBehaviour
     private UnityEvent enemyStraightFowardEvent_ = new UnityEvent();
     private UnityEvent enemyDectectWallEvent_ = new UnityEvent();
     [SerializeField] private float StraightSpeed = 20f;
-    void Start()
+    //void Start()
+    //{
+    //    enemyStartRotateBehavior();
+    //}
+
+    public override void Spawned()
     {
         enemyStartRotateBehavior();
     }
-
     // Update is called once per frame
-    void Update()
+    //void Update()
+    //{
+    //    EnemyObject.transform.rotation = Quaternion.Slerp(EnemyObject.transform.rotation, rotation_, rotateSpeed_);
+    //    enemyStraightFowardMovement();
+    //    enemyStraightFowardEvent_.Invoke();
+    //}
+    public override void FixedUpdateNetwork()
     {
         EnemyObject.transform.rotation = Quaternion.Slerp(EnemyObject.transform.rotation, rotation_, rotateSpeed_);
         enemyStraightFowardMovement();
         enemyStraightFowardEvent_.Invoke();
+
     }
 
     private void generateMovement()
@@ -37,6 +48,6 @@ public class EnemyAIBehavior : NetworkBehaviour
     }
     private void enemyStraightFowardMovement()
     {
-        EnemyObject.transform.position += transform.forward * StraightSpeed * Runner.DeltaTime;
+        EnemyObject.transform.position += EnemyObject.transform.forward * StraightSpeed * Runner.DeltaTime;
     }    
 }

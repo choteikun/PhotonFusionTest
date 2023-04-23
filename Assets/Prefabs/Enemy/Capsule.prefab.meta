@@ -1,13 +1,8 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:Assets/SHADER/AllIn1VfxToolkit/HdrpPackage(pre2020).unitypackage.meta
-guid: 9ae634111ecf44747b35d691b3797c99
-DefaultImporter:
-========
-guid: f9e5417f3f8efcd41b3dc6b9828b6975
+guid: 295045a2bf29020458058c936d9616d0
 labels:
 - FusionPrefab
 PrefabImporter:
->>>>>>>> 3469cce (enemyPrefab):Assets/Prefabs/Enemy/Capsule.prefab.meta
   externalObjects: {}
   userData: 
   assetBundleName: 
