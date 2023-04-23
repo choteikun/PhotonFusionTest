@@ -361,6 +361,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
+  enemyPrefab: {fileID: 7571370166665707169, guid: 295045a2bf29020458058c936d9616d0,
+    type: 3}
   playerGameData: {fileID: 163445914040923314}
   networkCharacterControllerPrototype: {fileID: -6690832166453164651}
   ballPrefab: {fileID: 4954077133058968847, guid: 181e3edaa8ffba94c811ef45a4992691,

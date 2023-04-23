@@ -11,6 +11,9 @@ using Cinemachine;
 public class PlayerController : NetworkBehaviour
 {
     [SerializeField]
+    private EnemyAIBehavior enemyPrefab;
+
+    [SerializeField]
     private PlayerGameData playerGameData;
 
     [SerializeField]
@@ -217,6 +220,8 @@ public class PlayerController : NetworkBehaviour
             {
                 chargeAttackOrNot = true;
                 Debug.Log("Attack");
+                Runner.Spawn(enemyPrefab, transform.position + new Vector3(1, 1, 0), Quaternion.identity, Object.InputAuthority);
+                Debug.Log("生產蜥蜴");
                 PushCollision();
             }
             if (released.IsSet(InputButtons.Attack))
