@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -8,7 +8,7 @@ public class EnemyAIBehavior : NetworkBehaviour
 {
     [SerializeField] public NetworkObject EnemyObject;
     [SerializeField] private float rotateSpeed_;
-    [field: SerializeField] [Networked] private Quaternion rotation_ { get; set; }
+    [field: SerializeField]private Quaternion rotation_ { get; set; }
     private UnityEvent enemyRotateEvent_ = new UnityEvent();
     private UnityEvent enemyStraightFowardEvent_ = new UnityEvent();
     private UnityEvent enemyDectectWallEvent_ = new UnityEvent();

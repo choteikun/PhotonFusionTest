@@ -117,9 +117,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
   EnemyObject: {fileID: 7571370166665707168}
-  rotateSpeed_: 0
-  rotation_: {x: 0, y: 0, z: 0, w: 0}
-  StraightSpeed: 20
+  rotateSpeed_: 1.5
+  _rotation_: {x: 0, y: 0, z: 0, w: 0}
+  StraightSpeed: 2
 --- !u!114 &7571370166665707168
 MonoBehaviour:
   m_ObjectHideFlags: 0
