@@ -21,7 +21,7 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
     private Dictionary<PlayerRef, NetworkObject> playerList = new Dictionary<PlayerRef, NetworkObject>();//用PlayerRef當Key存放剛剛生成的可以操控的角色，是為了可以記錄所有玩家的名單
 
 
-    void Start()
+    void Start() 
     {
         gameManager = GameManager.Instance;
 
