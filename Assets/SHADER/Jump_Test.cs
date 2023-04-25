@@ -5,59 +5,88 @@ using UnityEngine.VFX;
 
 public class Jump_Test : MonoBehaviour
 {
-    public float speed = 5f; // ²¾°Ê³t«×
-    public float jumpForce = 10f; // ¸õÅD¤O¶q
+    private CharacterController cc;
+    private Vector3 playerVelocity;
+    private float playerSpeed = 2.0f;
+    private float jumpHeight = 1.0f;
+    private float gravityValue = -9.81f;
 
-    private bool isMoving = false; // ¬O§_¥¿¦b²¾°Ê
-    private bool isGrounded = true; // ¬O§_¦b¦a­±¤W
+    private bool isGrounded = true; // æ˜¯å¦åœ¨åœ°é¢ä¸Š
     private Vector3 jumpPos;
 
     private void Start()
     {
-     
-
-
+        cc = GetComponent<CharacterController>();
     }
     void Update()
     {
-        // ÀË¬d¬O§_¦b¦a­±¤W
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, 0.5f);
+        
+        // æª¢æŸ¥æ˜¯å¦åœ¨åœ°é¢ä¸Š
+        //isGrounded = Physics.Raycast(transform.position, Vector3.down, 0.5f);
+        CharacterCollision();
+        if(isGrounded && playerVelocity.y < 0)
+        {
+            playerVelocity.y = 0;
+        }
 
-        // Àò¨ú¤ô¥­©M««ª½¶b¦Vªº¿é¤J
+        // ç²å–æ°´å¹³å’Œå‚ç›´è»¸å‘çš„è¼¸å…¥
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
 
-        // ­pºâ²¾°Ê¤è¦V©M¶ZÂ÷
+        // è¨ˆç®—ç§»å‹•æ–¹å‘å’Œè·é›¢
         Vector3 moveDirection = new Vector3(horizontalInput, 0f, verticalInput);
-        moveDirection.Normalize();
-
-        // ­pºâ²¾°Ê¶q
-        Vector3 moveAmount = moveDirection * speed * Time.deltaTime;
-
-        // ¦pªG¥¿¦b²¾°Ê¡A³Ğ«Ø¤õªá®ÄªG
-        if (moveAmount.magnitude > 0.000001f)
+        cc.Move(moveDirection * Time.deltaTime * playerSpeed);
+        if (moveDirection != Vector3.zero)
         {
-            if (!isMoving) // ¥u¦b²¾°Ê¶}©l®É³Ğ«Ø¤@¦¸
-            {
+            gameObject.transform.forward = moveDirection;
+        }
+        //moveDirection.Normalize();
+
+        //// è¨ˆç®—ç§»å‹•é‡
+        //Vector3 moveAmount = moveDirection * speed * Time.deltaTime;
+
+        //// å¦‚æœæ­£åœ¨ç§»å‹•ï¼Œå‰µå»ºç«èŠ±æ•ˆæœ
+        //if (moveAmount.magnitude > 0.000001f)
+        //{
+        //    if (!isMoving) // åªåœ¨ç§»å‹•é–‹å§‹æ™‚å‰µå»ºä¸€æ¬¡
+        //    {
                 
-                isMoving = true;
+        //        isMoving = true;
+        //    }
+        //}
+        //else // å¦‚æœæ²’æœ‰ç§»å‹•ï¼Œåœæ­¢ç«èŠ±æ•ˆæœ
+        //{
+           
+        //    isMoving = false;
+        //}
+
+        // æª¢æŸ¥æ˜¯å¦æŒ‰ä¸‹è·³èºéµä¸”åœ¨åœ°é¢ä¸Š
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        {
+            //jumpPos = transform.position;
+            //// æ·»åŠ å‘ä¸Šçš„åŠ›é‡ï¼Œè®“è§’è‰²è·³èº
+            //GetComponent<Rigidbody>().AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            playerVelocity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
+        }
+        playerVelocity.y += gravityValue * Time.deltaTime;
+        cc.Move(playerVelocity * Time.deltaTime);
+        //// å°‡ç§»å‹•é‡æ‡‰ç”¨æ–¼è§’è‰²ä½ç½®
+        //transform.position += moveAmount;
+    }
+    private void CharacterCollision()
+    {
+        var colliders = Physics.OverlapSphere(new Vector3(transform.position.x,transform.position.y-0.5f,transform.position.z), radius: 100f);//ç•«ä¸€é¡†çƒï¼Œä¸¦æª¢æ¸¬çƒè£¡çš„æ‰€æœ‰colliderä¸¦å›å‚³
+
+        foreach (var collider in colliders)
+        {
+            if (collider.CompareTag("Floor"))
+            {
+                isGrounded = true;
+            }
+            else
+            {
+                isGrounded = false;
             }
         }
-        else // ¦pªG¨S¦³²¾°Ê¡A°±¤î¤õªá®ÄªG
-        {
-           
-            isMoving = false;
-        }
-
-        // ÀË¬d¬O§_«ö¤U¸õÅDÁä¥B¦b¦a­±¤W
-        if (Input.GetButtonDown("Jump") && isGrounded)
-        {
-            jumpPos = transform.position;
-            // ²K¥[¦V¤Wªº¤O¶q¡AÅı¨¤¦â¸õÅD
-            GetComponent<Rigidbody>().AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-        }
-
-        // ±N²¾°Ê¶qÀ³¥Î©ó¨¤¦â¦ì¸m
-        transform.position += moveAmount;
     }
 }

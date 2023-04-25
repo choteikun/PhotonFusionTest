@@ -19,8 +19,8 @@ public class PlayerController : NetworkBehaviour
     [SerializeField]
     private NetworkCharacterControllerPrototype networkCharacterControllerPrototype = null;
 
-    [SerializeField]
-    private Ball ballPrefab;
+    //[SerializeField]
+    //private Ball ballPrefab;
 
     [SerializeField]
     private GameObject handCollider;//手掌Collider(用於偵測其他人的PlayerController腳本)
@@ -220,8 +220,8 @@ public class PlayerController : NetworkBehaviour
             {
                 chargeAttackOrNot = true;
                 Debug.Log("Attack");
-                Runner.Spawn(enemyPrefab, transform.position + new Vector3(1, 1, 0), Quaternion.identity, Object.InputAuthority);
-                Debug.Log("生產蜥蜴");
+                //Runner.Spawn(enemyPrefab, transform.position + new Vector3(1, 1, 0), Quaternion.identity, Object.InputAuthority);
+                //Debug.Log("生產蜥蜴");
                 PushCollision();
             }
             if (released.IsSet(InputButtons.Attack))

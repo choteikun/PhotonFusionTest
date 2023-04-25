@@ -51,7 +51,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7d4c867f6b72b714dbb5fd1780afe208, type: 3}
-  m_Name: Spawn_Item
+  m_Name: Catch_Item
   m_EditorClassIdentifier: 
   m_UIIgnoredErrors: []
   m_Parent: {fileID: 0}
@@ -166,7 +166,7 @@ VisualEffectResource:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Spawn_Item
+  m_Name: Catch_Item
   m_Graph: {fileID: 114350483966674976}
   m_Infos:
     m_RendererSettings:
@@ -219,16 +219,12 @@ MonoBehaviour:
   m_Tooltip: 
   m_Nodes:
   - m_Id: 0
-    linkedSlots:
-    - outputSlot: {fileID: 8926484042661614608}
-      inputSlot: {fileID: 8926484042661614604}
+    linkedSlots: []
     position: {x: 719, y: 1239}
     expandedSlots: []
     expanded: 0
   - m_Id: 1
-    linkedSlots:
-    - outputSlot: {fileID: 8926484042661614608}
-      inputSlot: {fileID: 8926484042661614774}
+    linkedSlots: []
     position: {x: 1891, y: 1866}
     expandedSlots: []
     expanded: 0
@@ -305,16 +301,12 @@ MonoBehaviour:
   m_Tooltip: 
   m_Nodes:
   - m_Id: 0
-    linkedSlots:
-    - outputSlot: {fileID: 8926484042661614614}
-      inputSlot: {fileID: 8926484042661614612}
+    linkedSlots: []
     position: {x: 675, y: 1440}
     expandedSlots: []
     expanded: 0
   - m_Id: 1
-    linkedSlots:
-    - outputSlot: {fileID: 8926484042661614614}
-      inputSlot: {fileID: 8926484042661614783}
+    linkedSlots: []
     position: {x: 1925, y: 2071}
     expandedSlots: []
     expanded: 0
@@ -391,9 +383,7 @@ MonoBehaviour:
   m_Tooltip: 
   m_Nodes:
   - m_Id: 0
-    linkedSlots:
-    - outputSlot: {fileID: 8926484042661614625}
-      inputSlot: {fileID: 8926484042661614616}
+    linkedSlots: []
     position: {x: 748, y: 405}
     expandedSlots: []
     expanded: 0
@@ -572,9 +562,7 @@ MonoBehaviour:
   m_Tooltip: 
   m_Nodes:
   - m_Id: 0
-    linkedSlots:
-    - outputSlot: {fileID: 8926484042661614675}
-      inputSlot: {fileID: 8926484042661614672}
+    linkedSlots: []
     position: {x: 406, y: 832}
     expandedSlots: []
     expanded: 0
@@ -651,9 +639,7 @@ MonoBehaviour:
   m_Tooltip: 
   m_Nodes:
   - m_Id: 0
-    linkedSlots:
-    - outputSlot: {fileID: 8926484042661614849}
-      inputSlot: {fileID: 8926484042661614864}
+    linkedSlots: []
     position: {x: 1489, y: 1666}
     expandedSlots: []
     expanded: 0
