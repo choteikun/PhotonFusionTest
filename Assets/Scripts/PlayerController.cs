@@ -114,6 +114,7 @@ public class PlayerController : NetworkBehaviour
         speed = networkCharacterControllerPrototype.MoveSpeed;
         if (Object.HasStateAuthority)//只會在伺服器端上運行
         {
+            
             //CurHp = maxHp;//初始化血量
             chargeAttackOrNot = false;
             CoefficientOfBreakDownPoint = 0.0f;//初始化角色BK值
@@ -220,7 +221,7 @@ public class PlayerController : NetworkBehaviour
             {
                 chargeAttackOrNot = true;
                 Debug.Log("Attack");
-                //Runner.Spawn(enemyPrefab, transform.position + new Vector3(1, 1, 0), Quaternion.identity, Object.InputAuthority);
+                //Runner.Spawn(enemyPrefab, transform.position + new Vector3(1, -1, 1), Quaternion.identity, Object.StateAuthority);
                 //Debug.Log("生產蜥蜴");
                 PushCollision();
             }
