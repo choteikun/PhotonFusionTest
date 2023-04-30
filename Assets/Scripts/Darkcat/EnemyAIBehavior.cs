@@ -34,8 +34,15 @@ public class EnemyAIBehavior : NetworkBehaviour
         EnemyObject.transform.rotation = Quaternion.Slerp(EnemyObject.transform.rotation, rotation_, rotateSpeed_);
         enemyStraightFowardMovement();
         enemyStraightFowardEvent_.Invoke();
-
+        rayCastTest();
     }
+    private void rayCastTest()
+    {
+        if (Runner.LagCompensation.Raycast(transform.position, Vector3.forward, length: 10, Object.InputAuthority, out var hit))
+        {
+            Debug.Log(hit.GameObject.name);
+        }
+    }    
 
     private void generateMovement()
     {
