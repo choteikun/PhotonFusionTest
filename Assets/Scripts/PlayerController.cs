@@ -10,8 +10,8 @@ using Cinemachine;
 //[RequireComponent(typeof(PlayerInput))]
 public class PlayerController : NetworkBehaviour
 {
-    //[SerializeField]
-    //private EnemyAIBehavior enemyPrefab;
+    [SerializeField]
+    private EnemyAIBehavior enemyPrefab;
 
     [SerializeField]
     private PlayerGameData playerGameData;
@@ -159,8 +159,6 @@ public class PlayerController : NetworkBehaviour
         {
             chargeAttackOrNot = true;
             //Debug.Log("Attack");
-            //Runner.Spawn(enemyPrefab, transform.position + new Vector3(1, -1, 1), Quaternion.identity, Object.StateAuthority);
-            //Debug.Log("生產蜥蜴");
             PushCollision();
         }
         if (networkCharacterControllerPrototype.IsGrounded)
@@ -235,6 +233,8 @@ public class PlayerController : NetworkBehaviour
             if (pressed.IsSet(InputButtons.Attack))
             {
                 FlapAnim = true;
+                //Runner.Spawn(enemyPrefab, transform.position + new Vector3(1, -1, 1), Quaternion.identity, Object.StateAuthority);
+                //Debug.Log("生產蜥蜴");
             }
             if (released.IsSet(InputButtons.Attack))
             {

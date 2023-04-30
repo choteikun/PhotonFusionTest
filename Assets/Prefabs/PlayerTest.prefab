@@ -172,6 +172,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
+  enemyPrefab: {fileID: 7571370166665707169, guid: 295045a2bf29020458058c936d9616d0,
+    type: 3}
   playerGameData: {fileID: 910929752672777384}
   networkCharacterControllerPrototype: {fileID: 910929752672777387}
   handCollider: {fileID: 1499923037587021060}

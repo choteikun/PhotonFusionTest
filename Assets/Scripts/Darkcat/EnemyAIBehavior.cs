@@ -6,6 +6,7 @@ using Fusion;
 
 public class EnemyAIBehavior : NetworkBehaviour
 {
+    [SerializeField] public GameObject CheckCollider;
     [SerializeField] public NetworkObject EnemyObject;
     [SerializeField] private float rotateSpeed_;
     [field: SerializeField]private Quaternion rotation_ { get; set; }
@@ -36,12 +37,25 @@ public class EnemyAIBehavior : NetworkBehaviour
         enemyStraightFowardEvent_.Invoke();
         rayCastTest();
     }
-    private void rayCastTest()
+    private bool rayCastTest()
     {
-        if (Runner.LagCompensation.Raycast(transform.position, Vector3.forward, length: 10, Object.InputAuthority, out var hit))
+        var colliders = Physics.OverlapSphere(CheckCollider.transform.position, radius: 0.002f);//畫一顆球，並檢測球裡的所有collider並回傳
+        foreach (var collider in colliders)
         {
-            Debug.Log(hit.GameObject.name);
+            if(collider.CompareTag("BreakbleWall"))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
+        return false;
+        //if (Runner.LagCompensation.Raycast(transform.position, Vector3.forward, length: 10, Object.InputAuthority, out var hit))
+        //{
+        //    Debug.Log(hit.GameObject.name);
+        //}
     }    
 
     private void generateMovement()
