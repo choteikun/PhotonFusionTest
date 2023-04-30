@@ -21,7 +21,7 @@ public class BreakableWallBehaviour : NetworkBehaviour
     public void HurtThisWall()
     {
         HealthPoint--;
-        if (HealthPoint <= 0)
+        if (HealthPoint == 0)
         {
             DestroyThisBox();
         }
