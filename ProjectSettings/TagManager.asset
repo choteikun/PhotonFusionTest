@@ -7,6 +7,7 @@ TagManager:
   - Gear
   - CinemachineTarget
   - Floor
+  - BreakbleWall
   layers:
   - Default
   - TransparentFX
