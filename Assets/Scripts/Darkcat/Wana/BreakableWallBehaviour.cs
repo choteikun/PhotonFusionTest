@@ -9,10 +9,7 @@ public class BreakableWallBehaviour : NetworkBehaviour
     private NetworkObject thisObject_;
     public override void Spawned()
     {
-        if (Object.HasStateAuthority)//只會在伺服器端上運行
-        {
-            thisObject_ = this.GetComponent<NetworkObject>();
-        }
+        thisObject_ = this.GetComponent<NetworkObject>();
     }
     //public override void FixedUpdateNetwork()
     //{
