@@ -9,26 +9,27 @@ public class BreakableWallBehaviour : NetworkBehaviour
     private NetworkObject thisObject_;
     public override void Spawned()
     {
-        if (Object.HasStateAuthority)//¥u·|¦b¦øªA¾¹ºİ¤W¹B¦æ
+        if (Object.HasStateAuthority)//åªæœƒåœ¨ä¼ºæœå™¨ç«¯ä¸Šé‹è¡Œ
         {
             thisObject_ = this.GetComponent<NetworkObject>();
         }
     }
-    public override void FixedUpdateNetwork()
+    //public override void FixedUpdateNetwork()
+    //{
+        
+    //}
+    public void HurtThisWall()
     {
+        HealthPoint--;
         if (HealthPoint <= 0)
         {
             DestroyThisBox();
         }
     }
-    public void HurtThisWall()
-    {
-        HealthPoint--;
-    }
 
     public void DestroyThisBox()
     {
-        if (Object.HasStateAuthority)//¥u·|¦b¦øªA¾¹ºİ¤W¹B¦æ
+        if (Object.HasStateAuthority)//åªæœƒåœ¨ä¼ºæœå™¨ç«¯ä¸Šé‹è¡Œ
         {
             Runner.Despawn(thisObject_);
         }
