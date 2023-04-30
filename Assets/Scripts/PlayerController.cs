@@ -10,8 +10,8 @@ using Cinemachine;
 //[RequireComponent(typeof(PlayerInput))]
 public class PlayerController : NetworkBehaviour
 {
-    [SerializeField]
-    private EnemyAIBehavior enemyPrefab;
+    //[SerializeField]
+    //private EnemyAIBehavior enemyPrefab;
 
     [SerializeField]
     private PlayerGameData playerGameData;
@@ -82,24 +82,28 @@ public class PlayerController : NetworkBehaviour
     public bool DrivingKeyStatus { get; private set; }//衝刺鍵狀態
     [Networked]
     public bool JumpEffectTrigger { get; private set; }//防止不斷播放跳躍特效，false為不可播放
+    [Networked]
+    public bool BeenHitOrNot { get; set; }//是否被擊中過
+
+
+
+    private bool FlapAnim;//播放攻擊動畫的狀態
+
 
     private float chargeAttackBarTimer;
     private float speed;
-    private float animationBlend;
 
-    // timeout deltatime
-    private float jumpTimeoutDelta;
-    private float fallTimeoutDelta;
 
     private PlayerEffectVisual playerEffectVisual;
     private GameObject mainCamera;
-    private Animator animator;
 
     
 
 
     public override void Spawned()
     {
+        FlapAnim = false;
+        BeenHitOrNot = false;
         DrivingKeyStatus = false;
         playerEffectVisual = GetComponent<PlayerEffectVisual>();
         playerEffectVisual.InitializeVisualEffect();//因為是所有客戶端都要看到的特效，所以放在外面
@@ -151,6 +155,18 @@ public class PlayerController : NetworkBehaviour
         {
             chargeAttackBarTimer = 0;
         }
+        if (FlapAnim)//按下攻擊鍵後播放拍巴掌的動畫中
+        {
+            chargeAttackOrNot = true;
+            //Debug.Log("Attack");
+            //Runner.Spawn(enemyPrefab, transform.position + new Vector3(1, -1, 1), Quaternion.identity, Object.StateAuthority);
+            //Debug.Log("生產蜥蜴");
+            PushCollision();
+        }
+        if (networkCharacterControllerPrototype.IsGrounded)
+        {
+            BeenHitOrNot = false;//被擊中後落地時變成可以再被擊中的狀態
+        }
         //if (CurHp <= 0)
         //{
         //    Respawn();
@@ -167,7 +183,6 @@ public class PlayerController : NetworkBehaviour
             var released = buttons.GetReleased(ButtonsPrevious);
             ButtonsPrevious = buttons;
 
-
             networkCharacterControllerPrototype.MoveSpeed = pressed.IsSet(InputButtons.Sprint) ? drivingSpeed : released.IsSet(InputButtons.Sprint) ? speed : networkCharacterControllerPrototype.MoveSpeed;
 
             if (pressed.IsSet(InputButtons.Sprint))
@@ -179,7 +194,7 @@ public class PlayerController : NetworkBehaviour
                 DrivingKeyStatus = false;
             }
 
-            
+
 
             //if (data.Move == Vector3.zero) networkCharacterController.acceleration = 0.0f;
 
@@ -219,11 +234,7 @@ public class PlayerController : NetworkBehaviour
             }
             if (pressed.IsSet(InputButtons.Attack))
             {
-                chargeAttackOrNot = true;
-                Debug.Log("Attack");
-                //Runner.Spawn(enemyPrefab, transform.position + new Vector3(1, -1, 1), Quaternion.identity, Object.StateAuthority);
-                //Debug.Log("生產蜥蜴");
-                PushCollision();
+                FlapAnim = true;
             }
             if (released.IsSet(InputButtons.Attack))
             {
@@ -232,12 +243,12 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
-    {
-        if (lfAngle < -360f) lfAngle += 360f;
-        if (lfAngle > 360f) lfAngle -= 360f;
-        return Mathf.Clamp(lfAngle, lfMin, lfMax);
-    }
+    //private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
+    //{
+    //    if (lfAngle < -360f) lfAngle += 360f;
+    //    if (lfAngle > 360f) lfAngle -= 360f;
+    //    return Mathf.Clamp(lfAngle, lfMin, lfMax);
+    //}
     public override void Render()
     {
         if (DrivingKeyStatus && networkCharacterControllerPrototype.IsGrounded && (networkCharacterControllerPrototype.Velocity != Vector3.zero))//衝刺狀態下&&在地面時
@@ -293,16 +304,13 @@ public class PlayerController : NetworkBehaviour
         //CurHp = maxHp;
     }
 
-    private void PushCollision()//fusion官方不推薦使用unity的 OnTriggerEnter & OnTriggerCollision做網路上的物裡碰撞，是因為Fusion網路狀態的更新率和Unity物理引擎的更新率不相同，而且無法做客戶端預測
+    private void PushCollision()//fusion官方不推薦使用unity的 OnTriggerEnter & OnTriggerCollision做網路上的物理碰撞，是因為Fusion網路狀態的更新率和Unity物理引擎的更新率不相同，而且無法做客戶端預測
     {
-        //if (Object = null) return;//檢測網路物件是否為空
-        //if (!Object.HasStateAuthority) return;//只會在伺服器端做檢測
-
-        var colliders = Physics.OverlapSphere(handCollider.transform.position, radius: 0.5f);//畫一顆球，並檢測球裡的所有collider並回傳
+        var colliders = Physics.OverlapSphere(handCollider.transform.position + new Vector3(-0.0015f, 0, 0), radius: 0.002f);//畫一顆球，並檢測球裡的所有collider並回傳
 
         foreach (var collider in colliders)
         {
-            if (collider.TryGetComponent<PlayerController>(out PlayerController playerController))//判斷collider身上是否有PlayerController的腳本
+            if (collider.TryGetComponent<PlayerController>(out PlayerController playerController) && !playerController.BeenHitOrNot)//判斷collider身上是否有PlayerController的腳本，並確認是否該對象被打擊過，如果沒有則
             {               
                 // 計算推力方向
 
@@ -313,7 +321,6 @@ public class PlayerController : NetworkBehaviour
                 Debug.Log(pushDir.magnitude);
 
                 // 推動其他角色
-                //playerController.networkCharacterControllerPrototype.Move(pushDir * pushForce);
                 if (Object.HasStateAuthority)//只會在伺服器端上運行
                 {
                     playerController.AddCoefficientOfBreakDownPoint(normalAttackBK);//代入普攻BK係數
@@ -322,12 +329,10 @@ public class PlayerController : NetworkBehaviour
                     playerController.networkCharacterControllerPrototype.Move(Vector3.zero);
                     playerController.networkCharacterControllerPrototype.Velocity += pushDir * (PushForce + playerController.playerGameData.BreakPoint);//推力計算
                     
-
-                    Debug.Log(playerController.networkCharacterControllerPrototype.Velocity);
                     //playerController.GetComponentInParent<CharacterController>().Move(pushDir.normalized * pushForce * Runner.DeltaTime);
                 }
-
-                
+                playerController.BeenHitOrNot = true;
+                Debug.Log(pushDir * (PushForce + playerController.playerGameData.BreakPoint));
                 //playerController.GetComponentInParent<PlayerController>().TakeDamage(10);
                 //Debug.Log("Push!!!!!!!");
                 //Runner.Despawn(Object);
@@ -357,18 +362,6 @@ public class PlayerController : NetworkBehaviour
     //    changed.Behaviour.CurHpBar.fillAmount = (float)changed.Behaviour.CurHp / changed.Behaviour.maxHp;
     //}
 
-    //public static void BreakDownPointChanged(Changed<PlayerController> changed)//changed代表變化後的值，可以透過changed來存取資料
-    //{
-    //    if (changed.Behaviour.CoefficientOfBreakDownPoint >= 120.0f)//120是曲線x最陡的位置
-    //    {
-    //        changed.Behaviour.CurBKBar.color = Color.red;
-    //    }
-    //    else
-    //    {
-    //        changed.Behaviour.CurBKBar.color = Color.green;
-    //    }
-    //    changed.Behaviour.CurBKBar.fillAmount = changed.Behaviour.CoefficientOfBreakDownPoint / 200.0f;//200是曲線x的最末端
-    //}
     public void ColorChangedByBreakDownPoint()
     {
         if (CoefficientOfBreakDownPoint >= 120.0f)//120是曲線x最陡的位置
@@ -380,6 +373,17 @@ public class PlayerController : NetworkBehaviour
             CurBKBar.color = Color.green;
         }
         CurBKBar.fillAmount = CoefficientOfBreakDownPoint / 200.0f;//200是曲線x的最末端
+    }
+
+
+
+    public void OnFlapAnimationStart()
+    {
+        
+    }
+    public void OnFlapAnimationEnd()
+    {
+
     }
 
 
