@@ -15,19 +15,19 @@ MonoBehaviour:
   active: 1
   threshold:
     m_OverrideState: 1
-    m_Value: 0.8
+    m_Value: 3.45
   intensity:
     m_OverrideState: 1
-    m_Value: 1.18
+    m_Value: 3.16
   scatter:
     m_OverrideState: 1
-    m_Value: 0.641
+    m_Value: 1
   clamp:
     m_OverrideState: 1
-    m_Value: 65545.34
+    m_Value: 0
   tint:
     m_OverrideState: 1
-    m_Value: {r: 1, g: 1, b: 1, a: 1}
+    m_Value: {r: 0.990566, g: 0.990566, b: 0.990566, a: 1}
   highQualityFiltering:
     m_OverrideState: 1
     m_Value: 1
@@ -35,12 +35,12 @@ MonoBehaviour:
     m_OverrideState: 1
     m_Value: 16
   dirtTexture:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: {fileID: 2800000, guid: dbfbfa1b75905914184201c9d8b64863, type: 3}
     dimension: 1
   dirtIntensity:
-    m_OverrideState: 0
-    m_Value: 0.46
+    m_OverrideState: 1
+    m_Value: 0
 --- !u!114 &-7011558710299706105
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -56,13 +56,13 @@ MonoBehaviour:
   active: 1
   color:
     m_OverrideState: 1
-    m_Value: {r: 0.3207547, g: 0.14133678, b: 0, a: 1}
+    m_Value: {r: 0, g: 0, b: 0, a: 1}
   center:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: {x: 0.5, y: 0.5}
   intensity:
     m_OverrideState: 1
-    m_Value: 0.18
+    m_Value: 0.11
   smoothness:
     m_OverrideState: 1
     m_Value: 0.91
@@ -84,7 +84,7 @@ MonoBehaviour:
   active: 1
   intensity:
     m_OverrideState: 1
-    m_Value: 0.128
+    m_Value: 0.469
 --- !u!114 &-4209728180717209566
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -100,10 +100,10 @@ MonoBehaviour:
   active: 1
   postExposure:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 0.57
   contrast:
     m_OverrideState: 1
-    m_Value: 32
+    m_Value: 35.2
   colorFilter:
     m_OverrideState: 1
     m_Value: {r: 0.8207547, g: 0.8207547, b: 0.8207547, a: 1}
@@ -112,7 +112,7 @@ MonoBehaviour:
     m_Value: 13
   saturation:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 8.5
 --- !u!114 &-3158307874111530387
 MonoBehaviour:
   m_ObjectHideFlags: 3

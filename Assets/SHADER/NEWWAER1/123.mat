@@ -7,11 +7,12 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: ocean_
+  m_Name: 123
   m_Shader: {fileID: -6465566751694194690, guid: ca58f5f0adf239b488083b3347e6c3ab,
     type: 3}
   m_ValidKeywords:
-  - _ALPHATEST_ON
+  - _ALPHAPREMULTIPLY_ON
+  - _RECEIVE_SHADOWS_OFF
   - _SURFACE_TYPE_TRANSPARENT
   m_InvalidKeywords: []
   m_LightmapFlags: 2
@@ -26,11 +27,11 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _Displacement:
-        m_Texture: {fileID: 2800000, guid: dbfbfa1b75905914184201c9d8b64863, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalMap:
-        m_Texture: {fileID: 2800000, guid: 414b9a14f90c0fd4ab49aa5a6c216372, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -47,36 +48,32 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AlphaClip: 1
-    - _Blend: 0
+    - _AlphaClip: 0
+    - _Blend: 1
     - _CastShadows: 1
-    - _Cull: 2
-    - _DecalMeshBiasType: 0
-    - _DecalMeshDepthBias: 0
-    - _DecalMeshViewBias: 0
-    - _Depth_Distance: 1.12
-    - _Depth_Strength: 1.29
-    - _Displacement_Strength: 0.24
-    - _DrawOrder: 0
+    - _Cull: 0
+    - _Depth_Distance: 0
+    - _Depth_Strength: 0
+    - _Displacement_Strength: 0
     - _DstBlend: 10
-    - _Normal_Strength: 0.576
-    - _Normal_tilling: 0.72
-    - _PAN_Speed: 0.11
+    - _Normal_Strength: 1
+    - _Normal_tilling: 0
+    - _PAN_Speed: 1
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _ReceiveShadows: 1
-    - _Relfract_Strength: 6.56
-    - _SrcBlend: 5
+    - _ReceiveShadows: 0
+    - _Relfract_Strength: 0
+    - _SrcBlend: 1
     - _Surface: 1
     - _WorkflowMode: 1
     - _ZTest: 4
     - _ZWrite: 0
     - _ZWriteControl: 0
     m_Colors:
-    - _Botton_color: {r: 0.16509432, g: 0.66085637, b: 1, a: 0.4392157}
-    - _Top_color: {r: 0.1637361, g: 2.670157, b: 2.2602093, a: 0.29803923}
+    - _Botton_color: {r: 0, g: 0.0972198, b: 0.4056604, a: 0}
+    - _Top_color: {r: 0.1745283, g: 0.8215233, b: 1, a: 0}
   m_BuildTextureStacks: []
---- !u!114 &7486811007562784269
+--- !u!114 &2870870944363431011
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
