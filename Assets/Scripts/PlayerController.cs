@@ -16,8 +16,7 @@ public class PlayerController : NetworkBehaviour
     [SerializeField]
     private PlayerGameData playerGameData;
 
-    [SerializeField]
-    private NetworkCharacterControllerPrototype networkCharacterControllerPrototype = null;
+    public NetworkCharacterControllerPrototype Network_CharacterControllerPrototype = null;
 
     //[SerializeField]
     //private Ball ballPrefab;
@@ -86,13 +85,12 @@ public class PlayerController : NetworkBehaviour
     public bool BeenHitOrNot { get; set; }//是否被擊中過
 
 
-
-    private bool FlapAnim;//播放攻擊動畫的狀態
+    [HideInInspector]
+    public bool FlapAnimPlay { get; private set; }//播放攻擊動畫的狀態
 
 
     private float chargeAttackBarTimer;
     private float speed;
-
 
     private PlayerEffectVisual playerEffectVisual;
     private GameObject mainCamera;
@@ -102,7 +100,7 @@ public class PlayerController : NetworkBehaviour
 
     public override void Spawned()
     {
-        FlapAnim = false;
+        FlapAnimPlay = false;
         BeenHitOrNot = false;
         DrivingKeyStatus = false;
         playerEffectVisual = GetComponent<PlayerEffectVisual>();
@@ -115,7 +113,7 @@ public class PlayerController : NetworkBehaviour
         }
         //cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
 
-        speed = networkCharacterControllerPrototype.MoveSpeed;
+        speed = Network_CharacterControllerPrototype.MoveSpeed;
         if (Object.HasStateAuthority)//只會在伺服器端上運行
         {
             
@@ -155,13 +153,13 @@ public class PlayerController : NetworkBehaviour
         {
             chargeAttackBarTimer = 0;
         }
-        if (FlapAnim)//按下攻擊鍵後播放拍巴掌的動畫中
+        if (FlapAnimPlay)//按下攻擊鍵後播放拍巴掌的動畫中
         {
             chargeAttackOrNot = true;
             //Debug.Log("Attack");
             PushCollision();
         }
-        if (networkCharacterControllerPrototype.IsGrounded)
+        if (Network_CharacterControllerPrototype.IsGrounded)
         {
             BeenHitOrNot = false;//被擊中後落地時變成可以再被擊中的狀態
         }
@@ -181,7 +179,7 @@ public class PlayerController : NetworkBehaviour
             var released = buttons.GetReleased(ButtonsPrevious);
             ButtonsPrevious = buttons;
 
-            networkCharacterControllerPrototype.MoveSpeed = pressed.IsSet(InputButtons.Sprint) ? drivingSpeed : released.IsSet(InputButtons.Sprint) ? speed : networkCharacterControllerPrototype.MoveSpeed;
+            Network_CharacterControllerPrototype.MoveSpeed = pressed.IsSet(InputButtons.Sprint) ? drivingSpeed : released.IsSet(InputButtons.Sprint) ? speed : Network_CharacterControllerPrototype.MoveSpeed;
 
             if (pressed.IsSet(InputButtons.Sprint))
             {
@@ -218,21 +216,22 @@ public class PlayerController : NetworkBehaviour
 
             // move the player
             Vector3 moveVector = data.Move.normalized;
-            networkCharacterControllerPrototype.Move(moveVector * Runner.DeltaTime);
+            Network_CharacterControllerPrototype.Move(moveVector * Runner.DeltaTime);
 
             if (pressed.IsSet(InputButtons.JUMP))
             {
                 JumpEffectTrigger = true;
-                networkCharacterControllerPrototype.Jump();
-                if (!networkCharacterControllerPrototype.IsGrounded)
+                Network_CharacterControllerPrototype.Jump();
+                
+                if (!Network_CharacterControllerPrototype.IsGrounded)
                 {
                     JumpEffectTrigger = false;
                 }
-                Debug.Log(transform.position);
             }
             if (pressed.IsSet(InputButtons.Attack))
             {
-                FlapAnim = true;
+                Debug.Log(data.Move);
+                FlapAnimPlay = true;
                 //Runner.Spawn(enemyPrefab, transform.position + new Vector3(1, -1, 1), Quaternion.identity, Object.StateAuthority);
                 //Debug.Log("生產蜥蜴");
             }
@@ -251,7 +250,7 @@ public class PlayerController : NetworkBehaviour
     //}
     public override void Render()
     {
-        if (DrivingKeyStatus && networkCharacterControllerPrototype.IsGrounded && (networkCharacterControllerPrototype.Velocity != Vector3.zero))//衝刺狀態下&&在地面時
+        if (DrivingKeyStatus && Network_CharacterControllerPrototype.IsGrounded && (Network_CharacterControllerPrototype.Velocity != Vector3.zero))//衝刺狀態下&&在地面時
         {
             playerEffectVisual.DrivingDustEffectPlay();//播放衝刺特效
         }
@@ -300,7 +299,7 @@ public class PlayerController : NetworkBehaviour
 
     private void Respawn()//重生
     {
-        networkCharacterControllerPrototype.transform.position = Vector3.up * 2;
+        Network_CharacterControllerPrototype.transform.position = Vector3.up * 2;
         //CurHp = maxHp;
     }
 
@@ -325,9 +324,9 @@ public class PlayerController : NetworkBehaviour
                 {
                     playerController.AddCoefficientOfBreakDownPoint(normalAttackBK);//代入普攻BK係數
                     playerController.AddCoefficientOfBreakDownPoint(curChargeAttackBK);//代入蓄力BK係數
-                    playerController.networkCharacterControllerPrototype.Jump();
-                    playerController.networkCharacterControllerPrototype.Move(Vector3.zero);
-                    playerController.networkCharacterControllerPrototype.Velocity += pushDir * (PushForce + playerController.playerGameData.BreakPoint);//推力計算
+                    playerController.Network_CharacterControllerPrototype.Jump();
+                    playerController.Network_CharacterControllerPrototype.Move(Vector3.zero);
+                    playerController.Network_CharacterControllerPrototype.Velocity += pushDir * (PushForce + playerController.playerGameData.BreakPoint);//推力計算
                     
                     //playerController.GetComponentInParent<CharacterController>().Move(pushDir.normalized * pushForce * Runner.DeltaTime);
                 }
@@ -342,10 +341,10 @@ public class PlayerController : NetworkBehaviour
                 // 沒有找到組件
                 // 做一些錯誤處理
             }
-            if (collider.TryGetComponent<BreakableWallBehaviour>(out BreakableWallBehaviour breakableWall))
-            {
-                breakableWall.HurtThisWall();
-            }
+            //if (collider.TryGetComponent<BreakableWallBehaviour>(out BreakableWallBehaviour breakableWall))
+            //{
+            //    breakableWall.HurtThisWall();
+            //}
         }
     }
 

@@ -175,7 +175,7 @@ MonoBehaviour:
   enemyPrefab: {fileID: 7571370166665707169, guid: 295045a2bf29020458058c936d9616d0,
     type: 3}
   playerGameData: {fileID: 910929752672777384}
-  networkCharacterControllerPrototype: {fileID: 910929752672777387}
+  Network_CharacterControllerPrototype: {fileID: 910929752672777387}
   handCollider: {fileID: 1499923037587021060}
   CurBKBar: {fileID: 7481192928184284880}
   meshRenderer: {fileID: 7556309065261507971}
@@ -208,7 +208,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
   Animator: {fileID: 1245139515622992434}
-  TotalWords: 1
+  TotalWords: 3
   SyncSettings: 79
   FloatAccuracy:
     _value: 0
@@ -222,7 +222,7 @@ MonoBehaviour:
     _value: 0
     _inverse: 0
     _hash: -814817977
-  StateHashes: 0000000063c115f2319b6adb2b1a167c8c146d01d3a0475a8e7d81fe
+  StateHashes: 0000000063c115f2319b6adb2b1a167c8c146d01325a70836f87b627d3a0475a8e7d81fe3cb9ebea026a411cc7365b67117884a3998b528f
   TriggerHashes: 00000000
 --- !u!114 &-3906121531451462318
 MonoBehaviour:
@@ -237,6 +237,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
+  playerAnimState: 0
+  idleTimeOut: 0
 --- !u!114 &910929752672777384
 MonoBehaviour:
   m_ObjectHideFlags: 0

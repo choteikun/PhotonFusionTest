@@ -74,8 +74,8 @@ ModelImporter:
       name: Armature|run
       takeName: Armature|run
       internalID: 0
-      firstFrame: 0
-      lastFrame: 118
+      firstFrame: 36
+      lastFrame: 86
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -103,7 +103,7 @@ ModelImporter:
       name: Armature|stay
       takeName: Armature|stay
       internalID: 0
-      firstFrame: 0
+      firstFrame: 24
       lastFrame: 79
       wrapMode: 0
       orientationOffsetY: 0
