@@ -380,14 +380,7 @@ public class PlayerController : NetworkBehaviour
 
 
 
-    public void OnFlapAnimationStart()
-    {
-        
-    }
-    public void OnFlapAnimationEnd()
-    {
-
-    }
+    
 
 
     #region - Player Mouse Setting -

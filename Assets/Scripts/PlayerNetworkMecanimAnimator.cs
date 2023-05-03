@@ -74,23 +74,25 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
 
             //在State Authority上，建議使用NetworkMecanimAnimator的SetTrigger()方法，以確保觸發器的正確同步。
             //而對於Input Authority，可以使用Animator的原生SetTrigger()方法，因為此時狀態同步不是關鍵問題。
-
-            if (data.Move == Vector3.zero && playerController.Network_CharacterControllerPrototype.IsGrounded && playerAnimState != PlayerAnimState.Attack)
+            if(playerAnimState != PlayerAnimState.Attack)
             {
-                playerAnimState = PlayerAnimState.Idle;
-                inputDetected = false;
+                if (data.Move == Vector3.zero && playerController.Network_CharacterControllerPrototype.IsGrounded)//Idle條件
+                {
+                    playerAnimState = PlayerAnimState.Idle;
+                    inputDetected = false;
+                }
+                else
+                {
+                    playerAnimState = PlayerAnimState.Move;
+                    inputDetected = true;
+                }
             }
-            else
-            {
-                playerAnimState = PlayerAnimState.Move;
-                inputDetected = true;
-            }
+            
             if (pressed.IsSet(InputButtons.Attack))
             {
+                Debug.Log("to PlayerAnimState.Attack");
                 playerAnimState = PlayerAnimState.Attack;
                 Debug.Log("Flap!!!");
-                networkAnimator.Animator.SetBool(h_Flap, true);
-                networkAnimator.Animator.SetBool(h_Idle, false);
             }
         }
         switch (playerAnimState)
@@ -101,12 +103,12 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
                 networkAnimator.Animator.SetBool(h_Run, false);
                 break;
             case PlayerAnimState.Move:   
-
                 networkAnimator.Animator.SetBool(h_Run, true);
                 networkAnimator.Animator.SetBool(h_Idle, false);
                 break;
             case PlayerAnimState.Attack:
-
+                networkAnimator.Animator.SetBool(h_Flap, true);
+                networkAnimator.Animator.SetBool(h_Idle, false);
                 break;
             case PlayerAnimState.BeAttack:
 
@@ -143,10 +145,21 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
         }
         networkAnimator.Animator.SetBool(h_InputDetected, inputDetected);
     }
+    public void OnFlapAnimationStart()
+    {
+
+    }
+    public void OnFlapAnimationEnd()
+    {
+        Debug.Log("back to PlayerAnimState.Move");
+        //.GetCurrentAnimatorStateInfo(0).IsName("Flap")
+        playerAnimState = PlayerAnimState.Move;
+    }
+
     protected void Awake()
 	{
-		playerController = GetComponent<PlayerController>();
-		networkAnimator = GetComponent<NetworkMecanimAnimator>();
+		playerController = GetComponentInParent<PlayerController>();
+        networkAnimator = GetComponentInChildren<NetworkMecanimAnimator>();
         playerAnimState = PlayerAnimState.Idle;
     }
 }
