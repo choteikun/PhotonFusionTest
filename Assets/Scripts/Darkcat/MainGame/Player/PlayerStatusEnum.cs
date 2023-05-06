@@ -14,4 +14,5 @@ public enum PlayerStatusEnum
     BeAttack,
     Dead,
     Win,
+    Teleporting,
 }

@@ -14,7 +14,7 @@ public class PlayerController : NetworkBehaviour
     private EnemyAIBehavior enemyPrefab;
 
     [SerializeField]
-    private PlayerGameData playerGameData;
+    public PlayerGameData PlayerGameData;
 
     public NetworkCharacterControllerPrototype Network_CharacterControllerPrototype = null;
 
@@ -127,8 +127,8 @@ public class PlayerController : NetworkBehaviour
             if (GameManager.Instance.PlayerList.TryGetValue(Object.InputAuthority, out var playerNetworkData))
             {
                 //playerGameData = new PlayerGameData(playerNetworkData.PlayerName, Object.InputAuthority.PlayerId);
-                playerGameData.SetNameAID(playerNetworkData.PlayerName, Object.InputAuthority.PlayerId);
-                Debug.Log("PlayerName : " + playerGameData.PlayerName + "/PlayerId : " + playerGameData.PlayerID);
+                PlayerGameData.SetNameAID(playerNetworkData.PlayerName, Object.InputAuthority.PlayerId);
+                Debug.Log("PlayerName : " + PlayerGameData.PlayerName + "/PlayerId : " + PlayerGameData.PlayerID);
             }
             Debug.Log(this.gameObject.name);
             Bind_Camera(this.gameObject);
@@ -326,12 +326,12 @@ public class PlayerController : NetworkBehaviour
                     playerController.AddCoefficientOfBreakDownPoint(curChargeAttackBK);//代入蓄力BK係數
                     playerController.Network_CharacterControllerPrototype.Jump();
                     playerController.Network_CharacterControllerPrototype.Move(Vector3.zero);
-                    playerController.Network_CharacterControllerPrototype.Velocity += pushDir * (PushForce + playerController.playerGameData.BreakPoint);//推力計算
+                    playerController.Network_CharacterControllerPrototype.Velocity += pushDir * (PushForce + playerController.PlayerGameData.BreakPoint);//推力計算
                     
                     //playerController.GetComponentInParent<CharacterController>().Move(pushDir.normalized * pushForce * Runner.DeltaTime);
                 }
                 playerController.BeenHitOrNot = true;
-                Debug.Log(pushDir * (PushForce + playerController.playerGameData.BreakPoint));
+                Debug.Log(pushDir * (PushForce + playerController.PlayerGameData.BreakPoint));
                 //playerController.GetComponentInParent<PlayerController>().TakeDamage(10);
                 //Debug.Log("Push!!!!!!!");
                 //Runner.Despawn(Object);
@@ -358,7 +358,7 @@ public class PlayerController : NetworkBehaviour
     public void AddCoefficientOfBreakDownPoint(float cob)
     {
         CoefficientOfBreakDownPoint += cob;
-        playerGameData.BreakPoint = playerGameData.BreakDownPointCurve.Evaluate(CoefficientOfBreakDownPoint);//依據BK曲線計算BK值
+        PlayerGameData.BreakPoint = PlayerGameData.BreakDownPointCurve.Evaluate(CoefficientOfBreakDownPoint);//依據BK曲線計算BK值
     }
     //private static void OnHpChanged(Changed<PlayerController> changed)//changed代表變化後的值，可以透過changed來存取資料
     //{

@@ -264,6 +264,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
+  CheckCollider: {fileID: 0}
   EnemyObject: {fileID: 140198359}
   rotateSpeed_: 0
   <rotation_>k__BackingField: {x: 0, y: 0, z: 0, w: 0}

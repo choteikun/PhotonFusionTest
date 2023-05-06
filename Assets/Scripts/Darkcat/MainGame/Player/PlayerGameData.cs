@@ -40,6 +40,8 @@ public class PlayerGameData : NetworkBehaviour
     /// </summary>
     [field: SerializeField][Networked] public PlayerStatusEnum m_PlayerStatus { get; set; }
 
+    [Networked] public Teleporter InWhichTeleporter { get; set; }
+
 
     public PlayerGameData(string name,int playerid)
     {

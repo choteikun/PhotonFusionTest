@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Fusion;
-
+using UnityEngine.Events;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
@@ -29,6 +29,8 @@ public class GameManager : MonoBehaviour
     public Dictionary<PlayerRef, PlayerNetworkData> PlayerList = new Dictionary<PlayerRef, PlayerNetworkData>();
 
     public event Action OnPlayerListUpdated = null;
+
+    public UnityEvent PlayerFinishCastingTeleporting = new UnityEvent();
 
     private void Awake()
     {

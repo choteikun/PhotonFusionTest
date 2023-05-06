@@ -9,21 +9,32 @@ public class Teleporter : NetworkBehaviour
     [SerializeField] private Vector3 tempStayPosition_;
     [SerializeField] private int thisTeleporterID_;
     [SerializeField] private bool canTeleport_ = true;
+    [SerializeField] private bool startTeleporting = false;
     [SerializeField] private float teleportCountDown_;
     [SerializeField] private NetworkObject playerInTeleporter_;
 
+    /// <summary>
+    /// 呼叫這台傳送器，告知牠開始倒數傳送
+    /// </summary>
+    public void StartTeleportingCountDown()
+    {
+        startTeleporting = true;
+    }
+
     public override void FixedUpdateNetwork()
     {
-        if (canTeleport_ == false)
+        if (startTeleporting == true)
         {
             teleportCountDown_ += Runner.DeltaTime;
             if (teleportCountDown_>=3f)
             {
                 canTeleport_ = true;
+                startTeleporting = false;
                 teleportCountDown_ = 0f;
                 //傳送玩家
                 teleportToFinalPosition();
                 //修改玩家狀態 使他能操作
+
             }
         }
 
@@ -36,8 +47,10 @@ public class Teleporter : NetworkBehaviour
         {           
             canTeleport_ = false;
             playerInTeleporter_ = player;
-            player.transform.position = tempStayPosition_;//讓玩家傳到通風管裡
-            //修改玩家狀態 使他不能操作
+            //修改玩家狀態 使他不能操作一秒
+            //開始消失
+            //把自己的資料灌給player
+            player.GetComponent<PlayerController>().PlayerGameData.InWhichTeleporter = this;
         }
     }
     private void teleportToFinalPosition()
@@ -51,7 +64,7 @@ public class Teleporter : NetworkBehaviour
         var randomNum = Random.Range(0, 4);
         while (randomNum == thisTeleporterID_)
         {
-            randomNum = Random.Range(0, 4); 
+            randomNum = Random.Range(0, 4);
         }
         return teleportFinalPositions_[randomNum];
     }
