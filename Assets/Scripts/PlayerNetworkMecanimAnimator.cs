@@ -32,6 +32,8 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
     readonly int h_Run = Animator.StringToHash("Run");
     readonly int h_Sprint = Animator.StringToHash("Sprint");
     readonly int h_Flap = Animator.StringToHash("Flap");
+    readonly int h_Charging = Animator.StringToHash("h_Charging");
+    readonly int h_ChargeFlap = Animator.StringToHash("ChargeFlap");
     readonly int h_BeAttack = Animator.StringToHash("BeAttack");
     readonly int h_Die = Animator.StringToHash("Die");
 
@@ -108,7 +110,7 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
                 playerAnimState = PlayerAnimState.Move;
                 inputDetected = true;
             }
-            if (playerController.FlapAnimPlay && (playerAnimState == PlayerAnimState.Idle || playerAnimState == PlayerAnimState.Move))//只有在Idle & Move 狀態下可以同時播放攻擊動畫
+            if (playerController.FlapAnimPlay && (playerAnimState == PlayerAnimState.Idle || playerAnimState == PlayerAnimState.Move))//只有在Idle & Move 狀態下可以同時播放拍巴掌動畫
             {
                 networkAnimator.Animator.SetBool(h_Flap, true);
                 if ((networkAnimator.Animator.GetCurrentAnimatorStateInfo(1).shortNameHash == h_Flap && networkAnimator.Animator.GetCurrentAnimatorStateInfo(1).normalizedTime >= 1.0f))//如果在拍巴掌動畫結束時
@@ -117,7 +119,21 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
                     playerController.FlapAnimPlay = false;
                 }
             }
+            if (playerController.ChargeFlapAnimPlay && (playerAnimState == PlayerAnimState.Idle || playerAnimState == PlayerAnimState.Move))//只有在Idle & Move 狀態下可以同時播放蓄力動畫
+            {
+                networkAnimator.Animator.SetBool(h_Charging, true);
+                if (!playerController.ChargeAttackOrNot)//放開滑鼠左鍵釋放蓄力攻擊
+                {
+                    networkAnimator.Animator.SetBool(h_Charging, false);
+                    networkAnimator.Animator.SetBool(h_ChargeFlap, true);
+                }
+                if ((networkAnimator.Animator.GetCurrentAnimatorStateInfo(1).shortNameHash == h_ChargeFlap && networkAnimator.Animator.GetCurrentAnimatorStateInfo(1).normalizedTime >= 1.0f))//如果在拍巴掌動畫結束時
+                {
+                    networkAnimator.Animator.SetBool(h_ChargeFlap, false);
 
+                    playerController.FlapAnimPlay = false;
+                }
+            }
         }
         switch (playerAnimState)
         {

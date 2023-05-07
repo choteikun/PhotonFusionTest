@@ -91,12 +91,14 @@ public class PlayerController : NetworkBehaviour
     public bool BeenHitOrNot { get; set; }//是否被擊中過
 
     [HideInInspector]
-    [Tooltip("播放攻擊動畫的狀態")]
+    [Tooltip("播放拍巴掌動畫的狀態")]
     public bool FlapAnimPlay;
-
-
+    [HideInInspector]
+    [Tooltip("播放蓄力攻擊動畫的狀態")]
+    public bool ChargeFlapAnimPlay;
+    [HideInInspector]
     [Tooltip("角色是否為蓄力狀態")]
-    private bool chargeAttackOrNot;
+    public bool ChargeAttackOrNot;
 
     [Tooltip("角色當前攻擊BK值")]
     private float curAttackBK;
@@ -133,7 +135,7 @@ public class PlayerController : NetworkBehaviour
         {
             
             //CurHp = maxHp;//初始化血量
-            chargeAttackOrNot = false;
+            ChargeAttackOrNot = false;
             CoefficientOfBreakDownPoint = 0.0f;//初始化角色BK值
             ChargeAttackBarTimer = 0.0f;
         }
@@ -254,18 +256,18 @@ public class PlayerController : NetworkBehaviour
             //}
             if (pressed.IsSet(InputButtons.Attack))//按下攻擊鍵後播放拍巴掌的動畫中
             {
-                chargeAttackOrNot = true;
+                ChargeAttackOrNot = true;
             }
             if (released.IsSet(InputButtons.Attack))
             {
-                chargeAttackOrNot = false;
+                ChargeAttackOrNot = false;
             }
 
-            if (chargeAttackOrNot)//蓄力計時開始
+            if (ChargeAttackOrNot)//蓄力計時開始
             {
                 ChargeAttackBarTimer += Runner.DeltaTime;
             }
-            else if (!chargeAttackOrNot && ChargeAttackBarTimer > 1.0f)//蓄力1秒以上
+            else if (!ChargeAttackOrNot && ChargeAttackBarTimer > 0.5f)//蓄力0.5秒以上
             {
                 Debug.Log("本次蓄力時間 : " + ChargeAttackBarTimer);
                 //1~5秒有效蓄力時間
@@ -273,18 +275,21 @@ public class PlayerController : NetworkBehaviour
                 Debug.Log("有效蓄力時間 : " + ChargeAttackBarTimer);
                 Debug.Log("蓄力時間百分比 : " + chargeAttackPercent);
                 //0%~100%蓄力時間百分比
-                chargeAttackPercent = (ChargeAttackBarTimer - 1.0f) / (5.0f - 1.0f);
+                chargeAttackPercent = (ChargeAttackBarTimer - 0.5f) / (5.0f - 0.5f) * 1.0f;
                 float chargeAttackCoefficient = ((float)chargeAttackMaxBK / 100 - 1) * chargeAttackPercent + 1;//基礎100%數~蓄滿力chargeAttackMaxBK%
                 curAttackBK = chargeAttackCoefficient * chargeAttackBK;
                 PushForce = chargeAttackCoefficient * PushForce;
+
+                ChargeFlapAnimPlay = true;
                 Debug.Log("蓄力傷害加成 : " + chargeAttackPercent);
                 ChargeAttackBarTimer = 0;
             }
-            else if (!chargeAttackOrNot && ChargeAttackBarTimer > 0 && ChargeAttackBarTimer <= 1.0f) //蓄力小於1秒
+            else if (!ChargeAttackOrNot && ChargeAttackBarTimer > 0 && ChargeAttackBarTimer <= 0.5f) //蓄力小於0.5秒
             {
                 curAttackBK = normalAttackBK;
                 PushForce = 50;
                 FlapAnimPlay = true;
+                ChargeAttackOrNot = false;
                 Debug.Log("本次蓄力時間 : " + ChargeAttackBarTimer);
                 ChargeAttackBarTimer = 0;
             }
@@ -429,11 +434,11 @@ public class PlayerController : NetworkBehaviour
     }
     public void ColorChangedByChargeAttackBar()
     {
-        if(ChargeAttackBarTimer > 0 && ChargeAttackBarTimer <= 1.0f)
+        if(ChargeAttackBarTimer > 0 && ChargeAttackBarTimer <= 0.5f)
         {
             CurChargeAttackBar.color = Color.green;
         }
-        else if(ChargeAttackBarTimer > 1.0f && ChargeAttackBarTimer < 5.0f)
+        else if(ChargeAttackBarTimer > 0.5f && ChargeAttackBarTimer < 5.0f)
         {
             CurChargeAttackBar.color = Color.yellow;
         }
@@ -442,9 +447,9 @@ public class PlayerController : NetworkBehaviour
             CurChargeAttackBar.color = Color.red;
         }
 
-        if (chargeAttackOrNot && ChargeAttackBarTimer > 1.0f)//蓄力條顯示
+        if (ChargeAttackOrNot && ChargeAttackBarTimer > 0.5f)//蓄力條顯示
         {
-            CurChargeAttackBar.fillAmount = (ChargeAttackBarTimer - 1.0f) / (5.0f - 1.0f) / 1;
+            CurChargeAttackBar.fillAmount = (ChargeAttackBarTimer - 0.5f) / (5.0f - 0.5f) * 1.0f / 1;
         }
         else
         {
