@@ -535,12 +535,14 @@ MonoBehaviour:
   cursorLocked: 1
   cursorInputForLook: 1
   _CoefficientOfBreakDownPoint: 0
-  _ChargeAttackPercent: 0
+  _ChargeAttackBarTimer: 0
   chargeAttackMaxBK: 0
   _DrivingKeyStatus: 0
   _JumpEffectTrigger: 0
   _BeenHitOrNot: 0
   FlapAnimPlay: 0
+  ChargeFlapAnimPlay: 0
+  ChargeAttackOrNot: 0
 --- !u!114 &5346319712138515855
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -639,6 +641,7 @@ MonoBehaviour:
   _PlayerScore: 0
   _Held_ItemEnum: 0
   _m_PlayerStatus: 0
+  _InWhichTeleporter: {fileID: 0}
 --- !u!114 &5346319712138515857
 MonoBehaviour:
   m_ObjectHideFlags: 0
