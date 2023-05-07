@@ -1252,7 +1252,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
   Animator: {fileID: 5976973605649313086}
-  TotalWords: 3
+  TotalWords: 4
   SyncSettings: 79
   FloatAccuracy:
     _value: 0
@@ -1266,7 +1266,7 @@ MonoBehaviour:
     _value: 0
     _inverse: 0
     _hash: -814817977
-  StateHashes: 000000002b1a167c8c146d01325a70836f87b627d3a0475a8e7d81fe3cb9ebea63c115f2d4ec087e5d1e8647c7365b6782551d10
+  StateHashes: 0000000028a981077af3fe2e2b1a167c8c146d01325a70836f87b627d3a0475a8e7d81fe3cb9ebea63c115f2d4ec087e5e14b5c9dc1693afc7365b6782551d10cfc590585256aeffd6a6c5da810f2071
   TriggerHashes: 00000000a791a1f3
 --- !u!4 &1882823942925080031 stripped
 Transform:
