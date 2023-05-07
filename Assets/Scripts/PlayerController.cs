@@ -13,7 +13,6 @@ public class PlayerController : NetworkBehaviour
     [SerializeField]
     private EnemyAIBehavior enemyPrefab;
 
-    [SerializeField]
     public PlayerGameData PlayerGameData;
 
     public NetworkCharacterControllerPrototype Network_CharacterControllerPrototype = null;
@@ -26,6 +25,8 @@ public class PlayerController : NetworkBehaviour
 
     [SerializeField]
     private Image CurBKBar = null;
+    [SerializeField]
+    private Image CurChargeAttackBar = null;
 
     [SerializeField]
     private MeshRenderer meshRenderer = null;
@@ -60,36 +61,50 @@ public class PlayerController : NetworkBehaviour
     [Networked][Tooltip("角色BK係數(曲線X軸)")]
     public float CoefficientOfBreakDownPoint { get; private set; }
 
-    [Tooltip("角色普攻BK值")][SerializeField]
-    private int normalAttackBK;
-    [Tooltip("角色蓄力BK的最大值")][SerializeField][Range(0,20)]
-    private int chargeAttackMaxBK;
+    [Networked][Tooltip("角色蓄力計時器")]
+    public float ChargeAttackBarTimer { get; private set; }
+
+    [Tooltip("角色普攻BK值")]
+    private int normalAttackBK = 5;
+
     [Tooltip("角色蓄力BK值")]
-    [SerializeField]
-    private int curChargeAttackBK;
-    [Tooltip("角色蓄力條")]
-    private int chargeAttackBar = 5;
-    [SerializeField]
-    private bool chargeAttackOrNot;
+    private int chargeAttackBK = 10;
+
+    [Tooltip("角色蓄力BK傷害加成係數(百分比)的最大值")][SerializeField][Range(150,250)]
+    private int chargeAttackMaxBK;
+
+    
+
+
+
 
     // cinemachine
     private float cinemachineTargetYaw;
     private float cinemachineTargetPitch;
 
-    // player
-    [Networked]
+    // player HideInInspector 變量
+    [Networked][HideInInspector]
     public bool DrivingKeyStatus { get; private set; }//衝刺鍵狀態
-    [Networked]
+    [Networked][HideInInspector]
     public bool JumpEffectTrigger { get; private set; }//防止不斷播放跳躍特效，false為不可播放
-    [Networked]
+    [Networked][HideInInspector]
     public bool BeenHitOrNot { get; set; }//是否被擊中過
 
-
     [HideInInspector]
-    public bool FlapAnimPlay { get; private set; }//播放攻擊動畫的狀態
+    [Tooltip("播放攻擊動畫的狀態")]
+    public bool FlapAnimPlay;
 
 
-    private float chargeAttackBarTimer;
+    [Tooltip("角色是否為蓄力狀態")]
+    private bool chargeAttackOrNot;
+
+    [Tooltip("角色當前攻擊BK值")]
+    private float curAttackBK;
+
+    [Tooltip("角色蓄力百分比")]
+    private float chargeAttackPercent;
+
+
     private float speed;
 
     private PlayerEffectVisual playerEffectVisual;
@@ -120,7 +135,7 @@ public class PlayerController : NetworkBehaviour
             //CurHp = maxHp;//初始化血量
             chargeAttackOrNot = false;
             CoefficientOfBreakDownPoint = 0.0f;//初始化角色BK值
-            chargeAttackBarTimer = 0.0f;
+            ChargeAttackBarTimer = 0.0f;
         }
         if (Object.HasInputAuthority)//在客戶端上運行
         {
@@ -139,26 +154,30 @@ public class PlayerController : NetworkBehaviour
     public override void FixedUpdateNetwork()//逐每個tick更新(一個tick相當1.666毫秒)
     {
         //Debug.Log("speed : " + speed + "Acceleration : " + networkCharacterControllerPrototype.MoveSpeed + "SprintSpeed : " + sprintSpeed);
-        ColorChangedByBreakDownPoint();
+        //Debug.Log(Network_CharacterControllerPrototype.Velocity);
+
+        ColorChangedByBreakDownPoint();//顯示BK狀態的顏色
+        ColorChangedByChargeAttackBar();//顯示蓄力條的顏色
         Move();
 
-        if (chargeAttackOrNot)
+        //if (chargeAttackOrNot)
+        //{
+        //    chargeAttackBarTimer++;
+        //    chargeAttackBarTimer = (chargeAttackBarTimer >= (chargeAttackBar * 60)) ? (chargeAttackBar * 60) : chargeAttackBarTimer;//蓄力攻擊時間持續增加但不會超過蓄力條的最大值
+        //    curChargeAttackBK = (int)Mathf.Round((chargeAttackBarTimer / 60) * (chargeAttackMaxBK / chargeAttackBar));
+        //    //Debug.Log("chargeAttackBarTimer : " + chargeAttackBarTimer);
+        //}
+        //else
+        //{
+        //    chargeAttackBarTimer = 0;
+        //}
+
+
+        if (FlapAnimPlay)
         {
-            chargeAttackBarTimer++;
-            chargeAttackBarTimer = (chargeAttackBarTimer >= (chargeAttackBar * 60)) ? (chargeAttackBar * 60) : chargeAttackBarTimer;
-            curChargeAttackBK = (int)Mathf.Round((chargeAttackBarTimer / 60) * (chargeAttackMaxBK / chargeAttackBar));
-            //Debug.Log("chargeAttackBarTimer : " + chargeAttackBarTimer);
+            PushCollision();//碰撞啟動
         }
-        else
-        {
-            chargeAttackBarTimer = 0;
-        }
-        if (FlapAnimPlay)//按下攻擊鍵後播放拍巴掌的動畫中
-        {
-            chargeAttackOrNot = true;
-            //Debug.Log("Attack");
-            PushCollision();
-        }
+
         if (Network_CharacterControllerPrototype.IsGrounded)
         {
             BeenHitOrNot = false;//被擊中後落地時變成可以再被擊中的狀態
@@ -228,17 +247,48 @@ public class PlayerController : NetworkBehaviour
                     JumpEffectTrigger = false;
                 }
             }
-            if (pressed.IsSet(InputButtons.Attack))
+            //if (pressed.IsSet(InputButtons.Attack))
+            //{
+            //    //Runner.Spawn(enemyPrefab, transform.position + new Vector3(1, -1, 1), Quaternion.identity, Object.StateAuthority);
+            //    //Debug.Log("生產蜥蜴");
+            //}
+            if (pressed.IsSet(InputButtons.Attack))//按下攻擊鍵後播放拍巴掌的動畫中
             {
-                Debug.Log(data.Move);
-                FlapAnimPlay = true;
-                //Runner.Spawn(enemyPrefab, transform.position + new Vector3(1, -1, 1), Quaternion.identity, Object.StateAuthority);
-                //Debug.Log("生產蜥蜴");
+                chargeAttackOrNot = true;
             }
             if (released.IsSet(InputButtons.Attack))
             {
                 chargeAttackOrNot = false;
             }
+
+            if (chargeAttackOrNot)//蓄力計時開始
+            {
+                ChargeAttackBarTimer += Runner.DeltaTime;
+            }
+            else if (!chargeAttackOrNot && ChargeAttackBarTimer > 1.0f)//蓄力1秒以上
+            {
+                Debug.Log("本次蓄力時間 : " + ChargeAttackBarTimer);
+                //1~5秒有效蓄力時間
+                ChargeAttackBarTimer = ChargeAttackBarTimer > 5.0f ? ChargeAttackBarTimer = 5 : ChargeAttackBarTimer;
+                Debug.Log("有效蓄力時間 : " + ChargeAttackBarTimer);
+                Debug.Log("蓄力時間百分比 : " + chargeAttackPercent);
+                //0%~100%蓄力時間百分比
+                chargeAttackPercent = (ChargeAttackBarTimer - 1.0f) / (5.0f - 1.0f);
+                float chargeAttackCoefficient = ((float)chargeAttackMaxBK / 100 - 1) * chargeAttackPercent + 1;//基礎100%數~蓄滿力chargeAttackMaxBK%
+                curAttackBK = chargeAttackCoefficient * chargeAttackBK;
+                PushForce = chargeAttackCoefficient * PushForce;
+                Debug.Log("蓄力傷害加成 : " + chargeAttackPercent);
+                ChargeAttackBarTimer = 0;
+            }
+            else if (!chargeAttackOrNot && ChargeAttackBarTimer > 0 && ChargeAttackBarTimer <= 1.0f) //蓄力小於1秒
+            {
+                curAttackBK = normalAttackBK;
+                PushForce = 50;
+                FlapAnimPlay = true;
+                Debug.Log("本次蓄力時間 : " + ChargeAttackBarTimer);
+                ChargeAttackBarTimer = 0;
+            }
+            
         }
     }
 
@@ -322,8 +372,8 @@ public class PlayerController : NetworkBehaviour
                 // 推動其他角色
                 if (Object.HasStateAuthority)//只會在伺服器端上運行
                 {
-                    playerController.AddCoefficientOfBreakDownPoint(normalAttackBK);//代入普攻BK係數
-                    playerController.AddCoefficientOfBreakDownPoint(curChargeAttackBK);//代入蓄力BK係數
+                    playerController.AddCoefficientOfBreakDownPoint(curAttackBK);//代入普攻BK係數
+                    //playerController.AddCoefficientOfBreakDownPoint(curChargeAttackBK);//代入蓄力BK係數
                     playerController.Network_CharacterControllerPrototype.Jump();
                     playerController.Network_CharacterControllerPrototype.Move(Vector3.zero);
                     playerController.Network_CharacterControllerPrototype.Velocity += pushDir * (PushForce + playerController.PlayerGameData.BreakPoint);//推力計算
@@ -377,10 +427,33 @@ public class PlayerController : NetworkBehaviour
         }
         CurBKBar.fillAmount = CoefficientOfBreakDownPoint / 200.0f;//200是曲線x的最末端
     }
+    public void ColorChangedByChargeAttackBar()
+    {
+        if(ChargeAttackBarTimer > 0 && ChargeAttackBarTimer <= 1.0f)
+        {
+            CurChargeAttackBar.color = Color.green;
+        }
+        else if(ChargeAttackBarTimer > 1.0f && ChargeAttackBarTimer < 5.0f)
+        {
+            CurChargeAttackBar.color = Color.yellow;
+        }
+        else if(ChargeAttackBarTimer >= 5.0f)
+        {
+            CurChargeAttackBar.color = Color.red;
+        }
+
+        if (chargeAttackOrNot && ChargeAttackBarTimer > 1.0f)//蓄力條顯示
+        {
+            CurChargeAttackBar.fillAmount = (ChargeAttackBarTimer - 1.0f) / (5.0f - 1.0f) / 1;
+        }
+        else
+        {
+            CurChargeAttackBar.fillAmount = 0;
+        }
+        
+    }
 
 
-
-    
 
 
     #region - Player Mouse Setting -

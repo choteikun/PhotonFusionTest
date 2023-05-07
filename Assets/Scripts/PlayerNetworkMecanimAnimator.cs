@@ -7,7 +7,6 @@ public enum PlayerAnimState
 {
     Idle,
     Move,
-    Attack,
     BeAttack,
     Dead,
     Win,
@@ -27,6 +26,7 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
 
     //提前Hash進行優化
     readonly int h_AnimMoveSpeed = Animator.StringToHash("AnimMoveSpeed");
+    readonly int h_AirborneSpeed = Animator.StringToHash("AirborneSpeed");
 
     readonly int h_Idle = Animator.StringToHash("Idle");
     readonly int h_Run = Animator.StringToHash("Run");
@@ -43,11 +43,17 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
 
     [SerializeField, Tooltip("過渡到隨機Idle動畫所需要花的時間")]
     private float idleTimeOut;
-    //Idle動畫計時器
+    //Idle動畫計時器(跳轉至隨機動畫)
     private float _idleTimer;
+    //Move狀態中回到idle的計時器(避免方向鍵切換時角色回到idle狀態)
+    private float _moveToIdleTimer;
 
     //檢測按鈕
     private bool inputDetected;
+    //角色水平速度
+    private float player_horizontalVel;
+    //角色垂直速度
+    private float player_verticalVel;
 
     public override void FixedUpdateNetwork()
 	{
@@ -61,8 +67,20 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
         //回放模式（Replay）是指服務器將之前的遊戲狀態記錄下來，並將記錄發送給客戶端，客戶端根據記錄進行本地模擬，並且每隔一定時間向服務器發送用戶輸入。
         //這種方式可以保證客戶端和服務器之間的遊戲狀態一致性，但是會增加網絡延遲和帶寬使用，並且需要記錄和回放遊戲狀態，增加了服務器的負擔。
 
-        
-        networkAnimator.Animator.SetFloat(h_AnimMoveSpeed, playerController.Network_CharacterControllerPrototype.Velocity.magnitude);
+        player_horizontalVel = new Vector3(playerController.Network_CharacterControllerPrototype.Velocity.x, 0, playerController.Network_CharacterControllerPrototype.Velocity.z).magnitude;
+        networkAnimator.Animator.SetFloat(h_AnimMoveSpeed, player_horizontalVel);
+
+        if (playerController.Network_CharacterControllerPrototype.IsGrounded)
+        {
+            player_verticalVel = -8;
+        }
+        else
+        {
+            player_verticalVel = playerController.Network_CharacterControllerPrototype.Velocity.y;
+        }
+        networkAnimator.Animator.SetFloat(h_AirborneSpeed, player_verticalVel);
+        Debug.Log(player_verticalVel);
+
         networkAnimator.Animator.SetBool(h_Grounded, playerController.Network_CharacterControllerPrototype.IsGrounded);
 
         if (playerController.GetInput(out NetworkInputData data))
@@ -74,40 +92,42 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
 
             //在State Authority上，建議使用NetworkMecanimAnimator的SetTrigger()方法，以確保觸發器的正確同步。
             //而對於Input Authority，可以使用Animator的原生SetTrigger()方法，因為此時狀態同步不是關鍵問題。
-            if(playerAnimState != PlayerAnimState.Attack)
+
+
+            if (data.Move == Vector3.zero && playerController.Network_CharacterControllerPrototype.IsGrounded && !playerController.FlapAnimPlay)//待機狀態
             {
-                if (data.Move == Vector3.zero && playerController.Network_CharacterControllerPrototype.IsGrounded)//Idle條件
+                inputDetected = false;
+                _moveToIdleTimer++;
+                if (_moveToIdleTimer >= 60.0f)
                 {
                     playerAnimState = PlayerAnimState.Idle;
-                    inputDetected = false;
-                }
-                else
-                {
-                    playerAnimState = PlayerAnimState.Move;
-                    inputDetected = true;
                 }
             }
-            
-            if (pressed.IsSet(InputButtons.Attack))
+            else
             {
-                Debug.Log("to PlayerAnimState.Attack");
-                playerAnimState = PlayerAnimState.Attack;
-                Debug.Log("Flap!!!");
+                playerAnimState = PlayerAnimState.Move;
+                inputDetected = true;
             }
+            if (playerController.FlapAnimPlay && (playerAnimState == PlayerAnimState.Idle || playerAnimState == PlayerAnimState.Move))//只有在Idle & Move 狀態下可以同時播放攻擊動畫
+            {
+                networkAnimator.Animator.SetBool(h_Flap, true);
+                if ((networkAnimator.Animator.GetCurrentAnimatorStateInfo(1).shortNameHash == h_Flap && networkAnimator.Animator.GetCurrentAnimatorStateInfo(1).normalizedTime >= 1.0f))//如果在拍巴掌動畫結束時
+                {
+                    networkAnimator.Animator.SetBool(h_Flap, false);
+                    playerController.FlapAnimPlay = false;
+                }
+            }
+
         }
         switch (playerAnimState)
         {
             case PlayerAnimState.Idle:
                 networkAnimator.Animator.SetBool(h_Idle, true);
-                networkAnimator.Animator.SetBool(h_Flap, false);
                 networkAnimator.Animator.SetBool(h_Run, false);
+                _moveToIdleTimer = 0;
                 break;
             case PlayerAnimState.Move:   
                 networkAnimator.Animator.SetBool(h_Run, true);
-                networkAnimator.Animator.SetBool(h_Idle, false);
-                break;
-            case PlayerAnimState.Attack:
-                networkAnimator.Animator.SetBool(h_Flap, true);
                 networkAnimator.Animator.SetBool(h_Idle, false);
                 break;
             case PlayerAnimState.BeAttack:
@@ -151,9 +171,9 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
     }
     public void OnFlapAnimationEnd()
     {
-        Debug.Log("back to PlayerAnimState.Move");
-        //.GetCurrentAnimatorStateInfo(0).IsName("Flap")
-        playerAnimState = PlayerAnimState.Move;
+        //Debug.Log("back to PlayerAnimState.Move");
+        //playerController.FlapAnimPlay = false;
+        //playerAnimState = PlayerAnimState.Move;
     }
 
     protected void Awake()

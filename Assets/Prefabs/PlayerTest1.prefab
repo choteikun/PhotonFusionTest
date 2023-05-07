@@ -50,7 +50,7 @@ GameObject:
   - component: {fileID: 910929752672777384}
   - component: {fileID: 910929752672777398}
   m_Layer: 0
-  m_Name: PlayerTest
+  m_Name: PlayerTest1
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -192,6 +192,7 @@ MonoBehaviour:
   _DrivingKeyStatus: 0
   _JumpEffectTrigger: 0
   _BeenHitOrNot: 0
+  FlapAnimPlay: 0
 --- !u!114 &910929752672777384
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -447,7 +448,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
   playerAnimState: 0
-  idleTimeOut: 0
+  idleTimeOut: 5
 --- !u!114 &227170006395871781
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -476,7 +477,7 @@ MonoBehaviour:
     _value: 0
     _inverse: 0
     _hash: -814817977
-  StateHashes: 0000000063c115f2319b6adb2b1a167c8c146d01325a70836f87b627d3a0475a8e7d81fe3cb9ebeafc0b7c6dc7365b674fcf8f9481ec9fff6016a82693e6c07a
+  StateHashes: 000000002b1a167c8c146d01325a70836f87b627d3a0475a8e7d81fe3cb9ebea63c115f2d4ec087e5d1e8647c7365b6782551d10
   TriggerHashes: 00000000a791a1f3
 --- !u!1 &1499923037587021060
 GameObject:
