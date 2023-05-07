@@ -42,7 +42,7 @@ public class EnemyAIBehavior : NetworkBehaviour
         var colliders = Physics.OverlapSphere(CheckCollider.transform.position, radius: 0.002f);//畫一顆球，並檢測球裡的所有collider並回傳
         foreach (var collider in colliders)
         {
-            if(collider.CompareTag("BreakbleWall"))
+            if(collider.CompareTag("BreakbleWall")|| collider.CompareTag("Wall"))
             {
                 return true;
             }
@@ -51,11 +51,7 @@ public class EnemyAIBehavior : NetworkBehaviour
                 return false;
             }
         }
-        return false;
-        //if (Runner.LagCompensation.Raycast(transform.position, Vector3.forward, length: 10, Object.InputAuthority, out var hit))
-        //{
-        //    Debug.Log(hit.GameObject.name);
-        //}
+        return false;        
     }    
 
     private void generateMovement()
