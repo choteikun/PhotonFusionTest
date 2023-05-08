@@ -256,6 +256,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   runner: {fileID: 605620938}
   PlayerName: 
+  PlayerFinishCastingTeleporting:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!4 &605620940
 Transform:
   m_ObjectHideFlags: 0

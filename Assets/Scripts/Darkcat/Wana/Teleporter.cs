@@ -14,7 +14,7 @@ public class Teleporter : NetworkBehaviour
     [SerializeField] private NetworkObject playerInTeleporter_;
 
     /// <summary>
-    /// ©I¥s³o¥x¶Ç°e¾¹¡A§iª¾¨e¶}©l­Ë¼Æ¶Ç°e
+    /// å‘¼å«é€™å°å‚³é€å™¨ï¼Œå‘ŠçŸ¥ç‰ é–‹å§‹å€’æ•¸å‚³é€
     /// </summary>
     public void StartTeleportingCountDown()
     {
@@ -31,10 +31,11 @@ public class Teleporter : NetworkBehaviour
                 canTeleport_ = true;
                 startTeleporting = false;
                 teleportCountDown_ = 0f;
-                //¶Ç°eª±®a
+                //å‚³é€ç©å®¶
                 teleportToFinalPosition();
-                //­×§ïª±®aª¬ºA ¨Ï¥L¯à¾Ş§@
-
+                //ä¿®æ”¹ç©å®¶ç‹€æ…‹ ä½¿ä»–èƒ½æ“ä½œ
+                playerInTeleporter_.GetComponent<PlayerController>().PlayerMoveLimitOrNot = false;
+                playerInTeleporter_.GetComponent<PlayerController>().PlayerImmuneDamage = false;
             }
         }
 
@@ -47,9 +48,11 @@ public class Teleporter : NetworkBehaviour
         {           
             canTeleport_ = false;
             playerInTeleporter_ = player;
-            //­×§ïª±®aª¬ºA ¨Ï¥L¤£¯à¾Ş§@¤@¬í
-            //¶}©l®ø¥¢
-            //§â¦Û¤vªº¸ê®ÆÄéµ¹player
+            //ä¿®æ”¹ç©å®¶ç‹€æ…‹ ä½¿ä»–ä¸èƒ½æ“ä½œä¸€ç§’
+            player.GetComponent<PlayerController>().PlayerMoveLimitOrNot = true;//ç©å®¶åœæ­¢ç§»å‹•
+            //é–‹å§‹æ¶ˆå¤±
+            playerInTeleporter_.GetComponent<PlayerController>().PlayerImmuneDamage = true;//ç©å®¶ç„¡æ•µ
+            //æŠŠè‡ªå·±çš„è³‡æ–™çŒçµ¦player
             player.GetComponent<PlayerController>().PlayerGameData.InWhichTeleporter = this;
         }
     }

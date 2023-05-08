@@ -17,11 +17,13 @@ public class PlayerController : NetworkBehaviour
 
     public NetworkCharacterControllerPrototype Network_CharacterControllerPrototype = null;
 
+    
+
     //[SerializeField]
     //private Ball ballPrefab;
 
     [SerializeField]
-    private GameObject handCollider;//手掌Collider(用於偵測其他人的PlayerController腳本)
+    private GameObject bonkCollider;//手掌Collider(用於偵測其他人的PlayerController腳本)
 
     [SerializeField]
     private Image CurBKBar = null;
@@ -29,14 +31,13 @@ public class PlayerController : NetworkBehaviour
     private Image CurChargeAttackBar = null;
 
     [SerializeField]
-    private MeshRenderer meshRenderer = null;
+    private SkinnedMeshRenderer skinnedMeshRenderer = null;
 
     [SerializeField, Tooltip("衝刺速度")]
     private float drivingSpeed;
 
-    [Tooltip("角色巴掌力度")]
-    [Networked]
-    public float PushForce { get; private set; }
+    
+    
 
     public AudioClip LandingAudioClip;
     public AudioClip[] FootstepAudioClips;
@@ -55,14 +56,21 @@ public class PlayerController : NetworkBehaviour
 
     [Networked]
     public NetworkButtons ButtonsPrevious { get; set; }//上一個按鈕的資料
-
-
+    [Networked][Tooltip("玩家無敵的開關")]
+    public bool PlayerImmuneDamage { get; set; }
+    [Networked][Tooltip("限制玩家移動的開關")]
+    public bool PlayerMoveLimitOrNot { get; set; }
+    [Networked][Tooltip("角色巴掌力度")]
+    public float PushForce { get; private set; }
 
     [Networked][Tooltip("角色BK係數(曲線X軸)")]
     public float CoefficientOfBreakDownPoint { get; private set; }
 
     [Networked][Tooltip("角色蓄力計時器")]
     public float ChargeAttackBarTimer { get; private set; }
+
+
+
 
     [Tooltip("角色普攻BK值")]
     private int normalAttackBK = 5;
@@ -109,14 +117,18 @@ public class PlayerController : NetworkBehaviour
 
     private float speed;
 
+    private const int moveLimit_Y = 0;
+    private const int moveLimit_N = 1;
+    private int moveLimitParameter;//限制移動的參數
+
     private PlayerEffectVisual playerEffectVisual;
     private GameObject mainCamera;
 
-    
 
 
     public override void Spawned()
     {
+        moveLimitParameter = moveLimit_N;
         FlapAnimPlay = false;
         BeenHitOrNot = false;
         DrivingKeyStatus = false;
@@ -133,7 +145,7 @@ public class PlayerController : NetworkBehaviour
         speed = Network_CharacterControllerPrototype.MoveSpeed;
         if (Object.HasStateAuthority)//只會在伺服器端上運行
         {
-            
+            PlayerImmuneDamage = false;
             //CurHp = maxHp;//初始化血量
             ChargeAttackOrNot = false;
             CoefficientOfBreakDownPoint = 0.0f;//初始化角色BK值
@@ -175,7 +187,7 @@ public class PlayerController : NetworkBehaviour
         //}
 
 
-        if (FlapAnimPlay)
+        if (FlapAnimPlay || ChargeFlapAnimPlay)
         {
             PushCollision();//碰撞啟動
         }
@@ -184,6 +196,7 @@ public class PlayerController : NetworkBehaviour
         {
             BeenHitOrNot = false;//被擊中後落地時變成可以再被擊中的狀態
         }
+        
         //if (CurHp <= 0)
         //{
         //    Respawn();
@@ -237,7 +250,8 @@ public class PlayerController : NetworkBehaviour
 
             // move the player
             Vector3 moveVector = data.Move.normalized;
-            Network_CharacterControllerPrototype.Move(moveVector * Runner.DeltaTime);
+            moveLimitParameter = PlayerMoveLimitOrNot ? moveLimit_Y : moveLimit_N;
+            Network_CharacterControllerPrototype.Move(moveVector * moveLimitParameter * Runner.DeltaTime);
 
             if (pressed.IsSet(InputButtons.JUMP))
             {
@@ -266,21 +280,24 @@ public class PlayerController : NetworkBehaviour
             if (ChargeAttackOrNot)//蓄力計時開始
             {
                 ChargeAttackBarTimer += Runner.DeltaTime;
+                if(ChargeAttackBarTimer > 0.5f)
+                {
+                    ChargeFlapAnimPlay = true;
+                }
             }
             else if (!ChargeAttackOrNot && ChargeAttackBarTimer > 0.5f)//蓄力0.5秒以上
             {
                 Debug.Log("本次蓄力時間 : " + ChargeAttackBarTimer);
                 //1~5秒有效蓄力時間
-                ChargeAttackBarTimer = ChargeAttackBarTimer > 5.0f ? ChargeAttackBarTimer = 5 : ChargeAttackBarTimer;
+                ChargeAttackBarTimer = ChargeAttackBarTimer > 2.0f ? ChargeAttackBarTimer = 2 : ChargeAttackBarTimer;
                 Debug.Log("有效蓄力時間 : " + ChargeAttackBarTimer);
                 Debug.Log("蓄力時間百分比 : " + chargeAttackPercent);
                 //0%~100%蓄力時間百分比
-                chargeAttackPercent = (ChargeAttackBarTimer - 0.5f) / (5.0f - 0.5f) * 1.0f;
+                chargeAttackPercent = (ChargeAttackBarTimer - 0.5f) / (2.0f - 0.5f) * 1.0f;
                 float chargeAttackCoefficient = ((float)chargeAttackMaxBK / 100 - 1) * chargeAttackPercent + 1;//基礎100%數~蓄滿力chargeAttackMaxBK%
                 curAttackBK = chargeAttackCoefficient * chargeAttackBK;
                 PushForce = chargeAttackCoefficient * PushForce;
-
-                ChargeFlapAnimPlay = true;
+                Debug.Log(chargeAttackCoefficient);
                 Debug.Log("蓄力傷害加成 : " + chargeAttackPercent);
                 ChargeAttackBarTimer = 0;
             }
@@ -288,10 +305,9 @@ public class PlayerController : NetworkBehaviour
             {
                 curAttackBK = normalAttackBK;
                 PushForce = 50;
-                FlapAnimPlay = true;
-                ChargeAttackOrNot = false;
                 Debug.Log("本次蓄力時間 : " + ChargeAttackBarTimer);
                 ChargeAttackBarTimer = 0;
+                FlapAnimPlay = true;
             }
             
         }
@@ -349,7 +365,7 @@ public class PlayerController : NetworkBehaviour
     [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
     private void ChangeColor_RPC(Color newColor)
     {
-        meshRenderer.material.color = newColor;
+        skinnedMeshRenderer.material.color = newColor;
     }
 
     private void Respawn()//重生
@@ -360,11 +376,11 @@ public class PlayerController : NetworkBehaviour
 
     private void PushCollision()//fusion官方不推薦使用unity的 OnTriggerEnter & OnTriggerCollision做網路上的物理碰撞，是因為Fusion網路狀態的更新率和Unity物理引擎的更新率不相同，而且無法做客戶端預測
     {
-        var colliders = Physics.OverlapSphere(handCollider.transform.position + new Vector3(-0.0015f, 0, 0), radius: 0.002f);//畫一顆球，並檢測球裡的所有collider並回傳
+        var colliders = Physics.OverlapSphere(bonkCollider.transform.position + new Vector3(-0.001f, 0, 0), radius: 0.002f);//畫一顆球，並檢測球裡的所有collider並回傳
 
         foreach (var collider in colliders)
         {
-            if (collider.TryGetComponent<PlayerController>(out PlayerController playerController) && !playerController.BeenHitOrNot)//判斷collider身上是否有PlayerController的腳本，並確認是否該對象被打擊過，如果沒有則
+            if (collider.TryGetComponent<PlayerController>(out PlayerController playerController) && !playerController.BeenHitOrNot && !PlayerImmuneDamage)//判斷collider身上是否有PlayerController的腳本，並確認是否該對象被打擊過，如果Player不是無敵狀態則
             {               
                 // 計算推力方向
 
@@ -400,6 +416,11 @@ public class PlayerController : NetworkBehaviour
             //{
             //    breakableWall.HurtThisWall();
             //}
+            if (collider.TryGetComponent<Teleporter>(out Teleporter teleporter))
+            {
+                teleporter.TriggerTeleporter(playerController.Object);
+
+            }
         }
     }
 
@@ -438,18 +459,18 @@ public class PlayerController : NetworkBehaviour
         {
             CurChargeAttackBar.color = Color.green;
         }
-        else if(ChargeAttackBarTimer > 0.5f && ChargeAttackBarTimer < 5.0f)
+        else if(ChargeAttackBarTimer > 0.5f && ChargeAttackBarTimer < 2.0f)
         {
             CurChargeAttackBar.color = Color.yellow;
         }
-        else if(ChargeAttackBarTimer >= 5.0f)
+        else if(ChargeAttackBarTimer >= 2.0f)
         {
             CurChargeAttackBar.color = Color.red;
         }
 
         if (ChargeAttackOrNot && ChargeAttackBarTimer > 0.5f)//蓄力條顯示
         {
-            CurChargeAttackBar.fillAmount = (ChargeAttackBarTimer - 0.5f) / (5.0f - 0.5f) * 1.0f / 1;
+            CurChargeAttackBar.fillAmount = (ChargeAttackBarTimer - 0.5f) / (2.0f - 0.5f) * 1.0f / 1;
         }
         else
         {

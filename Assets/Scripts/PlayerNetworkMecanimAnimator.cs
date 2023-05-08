@@ -32,7 +32,7 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
     readonly int h_Run = Animator.StringToHash("Run");
     readonly int h_Sprint = Animator.StringToHash("Sprint");
     readonly int h_Flap = Animator.StringToHash("Flap");
-    readonly int h_Charging = Animator.StringToHash("h_Charging");
+    readonly int h_Charging = Animator.StringToHash("Charging");
     readonly int h_ChargeFlap = Animator.StringToHash("ChargeFlap");
     readonly int h_BeAttack = Animator.StringToHash("BeAttack");
     readonly int h_Die = Animator.StringToHash("Die");
@@ -81,7 +81,6 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
             player_verticalVel = playerController.Network_CharacterControllerPrototype.Velocity.y;
         }
         networkAnimator.Animator.SetFloat(h_AirborneSpeed, player_verticalVel);
-        Debug.Log(player_verticalVel);
 
         networkAnimator.Animator.SetBool(h_Grounded, playerController.Network_CharacterControllerPrototype.IsGrounded);
 
@@ -121,19 +120,24 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
             }
             if (playerController.ChargeFlapAnimPlay && (playerAnimState == PlayerAnimState.Idle || playerAnimState == PlayerAnimState.Move))//只有在Idle & Move 狀態下可以同時播放蓄力動畫
             {
-                networkAnimator.Animator.SetBool(h_Charging, true);
-                if (!playerController.ChargeAttackOrNot)//放開滑鼠左鍵釋放蓄力攻擊
+                if ((networkAnimator.Animator.GetCurrentAnimatorStateInfo(1).shortNameHash != h_Charging) && (networkAnimator.Animator.GetCurrentAnimatorStateInfo(1).shortNameHash != h_ChargeFlap)) //如果不在蓄力攻擊狀態機以及任何的過渡條下則開始進入蓄力動畫
+                {
+                    networkAnimator.Animator.SetBool(h_Charging, true);
+                }
+                else if ((networkAnimator.Animator.GetCurrentAnimatorStateInfo(1).shortNameHash == h_Charging) && (!playerController.ChargeAttackOrNot))//在蓄力狀態機下同時放開滑鼠左鍵釋放蓄力攻擊並
                 {
                     networkAnimator.Animator.SetBool(h_Charging, false);
                     networkAnimator.Animator.SetBool(h_ChargeFlap, true);
+
                 }
-                if ((networkAnimator.Animator.GetCurrentAnimatorStateInfo(1).shortNameHash == h_ChargeFlap && networkAnimator.Animator.GetCurrentAnimatorStateInfo(1).normalizedTime >= 1.0f))//如果在拍巴掌動畫結束時
+                else if ((networkAnimator.Animator.GetCurrentAnimatorStateInfo(1).shortNameHash == h_ChargeFlap) && (networkAnimator.Animator.GetCurrentAnimatorStateInfo(1).normalizedTime >= 1.0f))
                 {
                     networkAnimator.Animator.SetBool(h_ChargeFlap, false);
-
-                    playerController.FlapAnimPlay = false;
+                    playerController.ChargeFlapAnimPlay = false;
                 }
             }
+
+            
         }
         switch (playerAnimState)
         {
