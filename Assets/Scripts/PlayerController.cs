@@ -297,7 +297,6 @@ public class PlayerController : NetworkBehaviour
                 float chargeAttackCoefficient = ((float)chargeAttackMaxBK / 100 - 1) * chargeAttackPercent + 1;//基礎100%數~蓄滿力chargeAttackMaxBK%
                 curAttackBK = chargeAttackCoefficient * chargeAttackBK;
                 PushForce = chargeAttackCoefficient * PushForce;
-                Debug.Log(chargeAttackCoefficient);
                 Debug.Log("蓄力傷害加成 : " + chargeAttackPercent);
                 ChargeAttackBarTimer = 0;
             }
