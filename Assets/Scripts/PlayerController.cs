@@ -97,6 +97,9 @@ public class PlayerController : NetworkBehaviour
     public bool JumpEffectTrigger { get; private set; }//防止不斷播放跳躍特效，false為不可播放
     [Networked][HideInInspector]
     public bool BeenHitOrNot { get; set; }//是否被擊中過
+    [Networked][HideInInspector]
+    [Tooltip("角色是否為蓄力狀態")]
+    public bool ChargeAttackOrNot { get; set; }
 
     [HideInInspector]
     [Tooltip("播放拍巴掌動畫的狀態")]
@@ -104,9 +107,7 @@ public class PlayerController : NetworkBehaviour
     [HideInInspector]
     [Tooltip("播放蓄力攻擊動畫的狀態")]
     public bool ChargeFlapAnimPlay;
-    [HideInInspector]
-    [Tooltip("角色是否為蓄力狀態")]
-    public bool ChargeAttackOrNot;
+    
 
     [Tooltip("角色當前攻擊BK值")]
     private float curAttackBK;
