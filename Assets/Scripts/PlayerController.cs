@@ -286,13 +286,15 @@ public class PlayerController : NetworkBehaviour
             {
                 ChargeAttackBarTimer += Runner.DeltaTime;
 
-                Network_CharacterControllerPrototype.MoveSpeed = speed;//回到走路速度
-                DrivingKeyStatus = false;//關閉加速特效
+                
 
                 PushForce = 50;
 
                 if (ChargeAttackBarTimer > 0.5f)
                 {
+                    Network_CharacterControllerPrototype.MoveSpeed = speed;//回到走路速度
+                    DrivingKeyStatus = false;//關閉加速特效
+
                     ChargeFlapAnimPlay = true;
                 }
             }
