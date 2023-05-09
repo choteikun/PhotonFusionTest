@@ -132,7 +132,7 @@ AnimatorStateMachine:
   m_AnyStatePosition: {x: 60, y: 30, z: 0}
   m_EntryPosition: {x: 50, y: 120, z: 0}
   m_ExitPosition: {x: 1060, y: 120, z: 0}
-  m_ParentStateMachinePosition: {x: 400, y: 0, z: 0}
+  m_ParentStateMachinePosition: {x: 540, y: 0, z: 0}
   m_DefaultState: {fileID: -3868419734678726876}
 --- !u!1101 &-6703392262134234017
 AnimatorStateTransition:
@@ -395,7 +395,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: ChargeFlap
-  m_Speed: 1
+  m_Speed: 1.5
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 1094538076486352161}
@@ -486,7 +486,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Flap
-  m_Speed: 1
+  m_Speed: 1.5
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 1279007681546762165}
