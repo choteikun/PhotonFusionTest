@@ -207,23 +207,16 @@ public class PlayerController : NetworkBehaviour
 
     private void Move()
     {
-        if(GetInput(out NetworkInputData data))
+        if (GetInput(out NetworkInputData data))
         {
             NetworkButtons buttons = data.Buttons;
             var pressed = buttons.GetPressed(ButtonsPrevious);//跟上一個按鈕去做比較
             var released = buttons.GetReleased(ButtonsPrevious);
             ButtonsPrevious = buttons;
 
-            Network_CharacterControllerPrototype.MoveSpeed = pressed.IsSet(InputButtons.Sprint) ? drivingSpeed : released.IsSet(InputButtons.Sprint) ? speed : Network_CharacterControllerPrototype.MoveSpeed;
 
-            if (pressed.IsSet(InputButtons.Sprint))
-            {
-                DrivingKeyStatus = true;
-            }
-            else if (released.IsSet(InputButtons.Sprint))
-            {
-                DrivingKeyStatus = false;
-            }
+
+            
 
 
 
@@ -258,7 +251,7 @@ public class PlayerController : NetworkBehaviour
             {
                 JumpEffectTrigger = true;
                 Network_CharacterControllerPrototype.Jump();
-                
+
                 if (!Network_CharacterControllerPrototype.IsGrounded)
                 {
                     JumpEffectTrigger = false;
@@ -277,11 +270,28 @@ public class PlayerController : NetworkBehaviour
             {
                 ChargeAttackOrNot = false;
             }
-
+            if (!ChargeAttackOrNot)
+            {
+                Network_CharacterControllerPrototype.MoveSpeed = pressed.IsSet(InputButtons.Sprint) ? drivingSpeed : released.IsSet(InputButtons.Sprint) ? speed : Network_CharacterControllerPrototype.MoveSpeed;
+                if (pressed.IsSet(InputButtons.Sprint))
+                {
+                    DrivingKeyStatus = true;
+                }
+                else if (released.IsSet(InputButtons.Sprint))
+                {
+                    DrivingKeyStatus = false;
+                }
+            }
             if (ChargeAttackOrNot)//蓄力計時開始
             {
                 ChargeAttackBarTimer += Runner.DeltaTime;
-                if(ChargeAttackBarTimer > 0.5f)
+
+                Network_CharacterControllerPrototype.MoveSpeed = speed;//回到走路速度
+                DrivingKeyStatus = false;//關閉加速特效
+
+                PushForce = 50;
+
+                if (ChargeAttackBarTimer > 0.5f)
                 {
                     ChargeFlapAnimPlay = true;
                 }
@@ -309,7 +319,6 @@ public class PlayerController : NetworkBehaviour
                 ChargeAttackBarTimer = 0;
                 FlapAnimPlay = true;
             }
-            
         }
     }
 
@@ -376,7 +385,7 @@ public class PlayerController : NetworkBehaviour
 
     private void PushCollision()//fusion官方不推薦使用unity的 OnTriggerEnter & OnTriggerCollision做網路上的物理碰撞，是因為Fusion網路狀態的更新率和Unity物理引擎的更新率不相同，而且無法做客戶端預測
     {
-        var colliders = Physics.OverlapSphere(bonkCollider.transform.position + new Vector3(-0.001f, 0, 0), radius: 0.002f);//畫一顆球，並檢測球裡的所有collider並回傳
+        var colliders = Physics.OverlapSphere(bonkCollider.transform.position + new Vector3(-0.001f, 0, 0), radius: 0.0035f);//畫一顆球，並檢測球裡的所有collider並回傳
 
         foreach (var collider in colliders)
         {
