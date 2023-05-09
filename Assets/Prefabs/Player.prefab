@@ -386,13 +386,13 @@ CharacterController:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Height: 2
-  m_Radius: 0.35
+  m_Height: 1.8
+  m_Radius: 0.4
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 1, z: 0}
+  m_Center: {x: 0, y: 0.9, z: 0.1}
 --- !u!114 &16108846752584025
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -468,6 +468,7 @@ MonoBehaviour:
   _ChargeAttackOrNot: 0
   FlapAnimPlay: 0
   ChargeFlapAnimPlay: 0
+  collisionAvailable: 0
 --- !u!114 &16108846752584026
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2146,7 +2147,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7820528744076856170}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.075, y: -0.06, z: 0}
+  m_LocalPosition: {x: -0.121, y: -0.016, z: -0.143}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2165,7 +2166,7 @@ SphereCollider:
   m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.0035
-  m_Center: {x: 0, y: 0.001, z: 0}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &7923457956441669246
 GameObject:
   m_ObjectHideFlags: 0

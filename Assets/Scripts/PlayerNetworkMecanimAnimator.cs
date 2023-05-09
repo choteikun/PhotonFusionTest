@@ -122,6 +122,8 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
             {
                 if ((networkAnimator.Animator.GetCurrentAnimatorStateInfo(1).shortNameHash != h_Charging) && (networkAnimator.Animator.GetCurrentAnimatorStateInfo(1).shortNameHash != h_ChargeFlap)) //如果不在蓄力攻擊狀態機以及任何的過渡條下則開始進入蓄力動畫
                 {
+                    playerController.collisionAvailable = false;//蓄力時關閉碰撞
+                    networkAnimator.Animator.SetBool(h_Flap, false);
                     networkAnimator.Animator.SetBool(h_Charging, true);
                 }
                 else if ((networkAnimator.Animator.GetCurrentAnimatorStateInfo(1).shortNameHash == h_Charging) && (!playerController.ChargeAttackOrNot))//在蓄力狀態機下同時放開滑鼠左鍵釋放蓄力攻擊並
@@ -185,15 +187,13 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
         }
         networkAnimator.Animator.SetBool(h_InputDetected, inputDetected);
     }
-    public void OnFlapAnimationStart()
+    public void OnFlapEnter()
     {
-
+        playerController.collisionAvailable = true;
     }
-    public void OnFlapAnimationEnd()
+    public void OnFlapExit()
     {
-        //Debug.Log("back to PlayerAnimState.Move");
-        //playerController.FlapAnimPlay = false;
-        //playerAnimState = PlayerAnimState.Move;
+        playerController.collisionAvailable = false;
     }
 
     protected void Awake()

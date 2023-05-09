@@ -107,7 +107,10 @@ public class PlayerController : NetworkBehaviour
     [HideInInspector]
     [Tooltip("播放蓄力攻擊動畫的狀態")]
     public bool ChargeFlapAnimPlay;
-    
+    [HideInInspector]
+    [Tooltip("碰撞啟用")]
+    public bool collisionAvailable;
+
 
     [Tooltip("角色當前攻擊BK值")]
     private float curAttackBK;
@@ -188,7 +191,7 @@ public class PlayerController : NetworkBehaviour
         //}
 
 
-        if (FlapAnimPlay || ChargeFlapAnimPlay)
+        if ((collisionAvailable && FlapAnimPlay) || (collisionAvailable && ChargeFlapAnimPlay))
         {
             PushCollision();//碰撞啟動
         }
@@ -213,12 +216,6 @@ public class PlayerController : NetworkBehaviour
             var pressed = buttons.GetPressed(ButtonsPrevious);//跟上一個按鈕去做比較
             var released = buttons.GetReleased(ButtonsPrevious);
             ButtonsPrevious = buttons;
-
-
-
-            
-
-
 
             //if (data.Move == Vector3.zero) networkCharacterController.acceleration = 0.0f;
 
@@ -387,7 +384,8 @@ public class PlayerController : NetworkBehaviour
 
     private void PushCollision()//fusion官方不推薦使用unity的 OnTriggerEnter & OnTriggerCollision做網路上的物理碰撞，是因為Fusion網路狀態的更新率和Unity物理引擎的更新率不相同，而且無法做客戶端預測
     {
-        var colliders = Physics.OverlapSphere(bonkCollider.transform.position + new Vector3(-0.001f, 0, 0), radius: 0.0035f);//畫一顆球，並檢測球裡的所有collider並回傳
+        //var colliders = Physics.OverlapSphere(bonkCollider.transform.position + new Vector3(-0.001f, 0, 0), radius: 0.0035f);//畫一顆球，並檢測球裡的所有collider並回傳
+        var colliders = Physics.OverlapBox(bonkCollider.transform.position + new Vector3(0f, 0f, 0f), new Vector3(transform.localScale.x / 4, transform.localScale.y / 4, transform.localScale.z / 4));//畫一個cube，並檢測cube裡的所有collider並回傳
 
         foreach (var collider in colliders)
         {
@@ -490,7 +488,13 @@ public class PlayerController : NetworkBehaviour
         
     }
 
-
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        //Use the same vars you use to draw your Overlap SPhere to draw your Wire Sphere.
+        //Gizmos.DrawWireSphere(bonkCollider.transform.position + new Vector3(-0.001f, 0, 0), radius: 0.0035f);
+        Gizmos.DrawWireCube(bonkCollider.transform.position + new Vector3(0f, 0f, 0f), new Vector3(transform.localScale.x / 2, transform.localScale.y / 2, transform.localScale.z / 2));
+    }
 
 
     #region - Player Mouse Setting -
