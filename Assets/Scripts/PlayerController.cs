@@ -421,14 +421,13 @@ public class PlayerController : NetworkBehaviour
                 // 沒有找到組件
                 // 做一些錯誤處理
             }
-            //if (collider.TryGetComponent<BreakableWallBehaviour>(out BreakableWallBehaviour breakableWall))
-            //{
-            //    breakableWall.HurtThisWall();
-            //}
+            if (collider.TryGetComponent<BreakableWallBehaviour>(out BreakableWallBehaviour breakableWall))
+            {
+                breakableWall.HurtThisWall();
+            }
             if (collider.TryGetComponent<Teleporter>(out Teleporter teleporter))
             {
                 teleporter.TriggerTeleporter(playerController.Object);
-
             }
         }
     }
