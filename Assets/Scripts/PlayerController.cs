@@ -427,7 +427,8 @@ public class PlayerController : NetworkBehaviour
             }
             if (collider.TryGetComponent<Teleporter>(out Teleporter teleporter))
             {
-                teleporter.TriggerTeleporter(playerController.Object);
+                teleporter.TriggerTeleporter(Object);//觸發傳送
+                teleporter.StartTeleportingCountDown();//傳送開始
             }
         }
     }

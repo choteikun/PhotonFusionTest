@@ -252,7 +252,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 174679112}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &21495553
 BoxCollider:
@@ -731,8 +731,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1653161676}
   - {fileID: 21495552}
+  - {fileID: 1653161676}
   - {fileID: 46833492}
   m_Father: {fileID: 0}
   m_RootOrder: 16
@@ -2904,6 +2904,16 @@ PrefabInstance:
       propertyPath: NetworkGuid.RawGuidValue.Array.data[1]
       value: 7882429111021329289
       objectReference: {fileID: 0}
+    - target: {fileID: 8336416336391701354, guid: 1e4a30ddd6abe2744aaf54ca603d05db,
+        type: 3}
+      propertyPath: thisTeleporterID_
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8336416336391701354, guid: 1e4a30ddd6abe2744aaf54ca603d05db,
+        type: 3}
+      propertyPath: playerInTeleporter_
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 8336416336391701358, guid: 1e4a30ddd6abe2744aaf54ca603d05db,
         type: 3}
       propertyPath: m_RootOrder
@@ -3579,6 +3589,16 @@ PrefabInstance:
       propertyPath: NetworkGuid.RawGuidValue.Array.data[1]
       value: -3639161971189718908
       objectReference: {fileID: 0}
+    - target: {fileID: 8336416336391701354, guid: 1e4a30ddd6abe2744aaf54ca603d05db,
+        type: 3}
+      propertyPath: thisTeleporterID_
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8336416336391701354, guid: 1e4a30ddd6abe2744aaf54ca603d05db,
+        type: 3}
+      propertyPath: playerInTeleporter_
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 8336416336391701358, guid: 1e4a30ddd6abe2744aaf54ca603d05db,
         type: 3}
       propertyPath: m_RootOrder
@@ -4176,6 +4196,66 @@ PrefabInstance:
         type: 3}
       propertyPath: NetworkGuid.RawGuidValue.Array.data[1]
       value: -1058044258509165401
+      objectReference: {fileID: 0}
+    - target: {fileID: 8336416336391701354, guid: 1e4a30ddd6abe2744aaf54ca603d05db,
+        type: 3}
+      propertyPath: thisTeleporterID_
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8336416336391701354, guid: 1e4a30ddd6abe2744aaf54ca603d05db,
+        type: 3}
+      propertyPath: playerInTeleporter_
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8336416336391701354, guid: 1e4a30ddd6abe2744aaf54ca603d05db,
+        type: 3}
+      propertyPath: teleportFinalPositions_.Array.data[0].x
+      value: -50
+      objectReference: {fileID: 0}
+    - target: {fileID: 8336416336391701354, guid: 1e4a30ddd6abe2744aaf54ca603d05db,
+        type: 3}
+      propertyPath: teleportFinalPositions_.Array.data[0].y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8336416336391701354, guid: 1e4a30ddd6abe2744aaf54ca603d05db,
+        type: 3}
+      propertyPath: teleportFinalPositions_.Array.data[0].z
+      value: -19
+      objectReference: {fileID: 0}
+    - target: {fileID: 8336416336391701354, guid: 1e4a30ddd6abe2744aaf54ca603d05db,
+        type: 3}
+      propertyPath: teleportFinalPositions_.Array.data[1].x
+      value: 33
+      objectReference: {fileID: 0}
+    - target: {fileID: 8336416336391701354, guid: 1e4a30ddd6abe2744aaf54ca603d05db,
+        type: 3}
+      propertyPath: teleportFinalPositions_.Array.data[1].y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8336416336391701354, guid: 1e4a30ddd6abe2744aaf54ca603d05db,
+        type: 3}
+      propertyPath: teleportFinalPositions_.Array.data[1].z
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 8336416336391701354, guid: 1e4a30ddd6abe2744aaf54ca603d05db,
+        type: 3}
+      propertyPath: teleportFinalPositions_.Array.data[2].x
+      value: 33
+      objectReference: {fileID: 0}
+    - target: {fileID: 8336416336391701354, guid: 1e4a30ddd6abe2744aaf54ca603d05db,
+        type: 3}
+      propertyPath: teleportFinalPositions_.Array.data[2].y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8336416336391701354, guid: 1e4a30ddd6abe2744aaf54ca603d05db,
+        type: 3}
+      propertyPath: teleportFinalPositions_.Array.data[2].z
+      value: -25
+      objectReference: {fileID: 0}
+    - target: {fileID: 8336416336391701354, guid: 1e4a30ddd6abe2744aaf54ca603d05db,
+        type: 3}
+      propertyPath: teleportFinalPositions_.Array.data[3].y
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8336416336391701358, guid: 1e4a30ddd6abe2744aaf54ca603d05db,
         type: 3}
@@ -5341,6 +5421,16 @@ PrefabInstance:
         type: 3}
       propertyPath: NetworkGuid.RawGuidValue.Array.data[1]
       value: 3824483816586982019
+      objectReference: {fileID: 0}
+    - target: {fileID: 8336416336391701354, guid: 1e4a30ddd6abe2744aaf54ca603d05db,
+        type: 3}
+      propertyPath: thisTeleporterID_
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8336416336391701354, guid: 1e4a30ddd6abe2744aaf54ca603d05db,
+        type: 3}
+      propertyPath: playerInTeleporter_
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 8336416336391701358, guid: 1e4a30ddd6abe2744aaf54ca603d05db,
         type: 3}
