@@ -199,7 +199,7 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
     protected void Awake()
 	{
 		playerController = GetComponentInParent<PlayerController>();
-        networkAnimator = GetComponentInChildren<NetworkMecanimAnimator>();
+        networkAnimator = GetComponent<NetworkMecanimAnimator>();
         playerAnimState = PlayerAnimState.Idle;
     }
 }

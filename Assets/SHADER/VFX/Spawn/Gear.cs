@@ -19,10 +19,10 @@ public class Gear : MonoBehaviour
         // visualEffect.visualEffectAsset graph.
         eventAttribute = visualEffect.CreateVFXEventAttribute();
     }
-    private void Update()
-    {
-        Debug.Log(visualEffect.GetBool(vfx_curveTrigger));
-    }
+    //private void Update()
+    //{
+    //    //Debug.Log(visualEffect.GetBool(vfx_curveTrigger));
+    //}
 
     void OnTriggerEnter(Collider col)
     {
