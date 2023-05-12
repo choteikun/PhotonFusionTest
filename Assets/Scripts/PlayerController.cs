@@ -433,7 +433,7 @@ public class PlayerController : NetworkBehaviour
     private void PushCollision()//fusion官方不推薦使用unity的 OnTriggerEnter & OnTriggerCollision做網路上的物理碰撞，是因為Fusion網路狀態的更新率和Unity物理引擎的更新率不相同，而且無法做客戶端預測
     {
         //var colliders = Physics.OverlapSphere(bonkCollider.transform.position + new Vector3(-0.001f, 0, 0), radius: 0.0035f);//畫一顆球，並檢測球裡的所有collider並回傳
-        var colliders = Physics.OverlapBox(bonkCollider.transform.position + new Vector3(0f, 0.5f, 0f), new Vector3(transform.localScale.x / 3, transform.localScale.y / 1, transform.localScale.z / 2));//畫一個cube，並檢測cube裡的所有collider並回傳
+        var colliders = Physics.OverlapBox(bonkCollider.transform.position + new Vector3(0f, -0.5f, 0f), new Vector3(transform.localScale.x / 3, transform.localScale.y / 1.5f, transform.localScale.z / 3f));//畫一個cube，並檢測cube裡的所有collider並回傳
 
         foreach (var collider in colliders)
         {
@@ -545,6 +545,6 @@ public class PlayerController : NetworkBehaviour
         Gizmos.color = Color.red;
         //Use the same vars you use to draw your Overlap SPhere to draw your Wire Sphere.
         //Gizmos.DrawWireSphere(bonkCollider.transform.position + new Vector3(-0.001f, 0, 0), radius: 0.0035f);
-        Gizmos.DrawWireCube(bonkCollider.transform.position + new Vector3(0f, -0.5f, 0f), new Vector3(transform.localScale.x / 1.5f, transform.localScale.y / 0.5f, transform.localScale.z / 1f));
+        Gizmos.DrawWireCube(bonkCollider.transform.position + new Vector3(0f, -0.5f, 0f), new Vector3(transform.localScale.x / 1.5f, transform.localScale.y / 0.75f, transform.localScale.z / 1.5f));
     }
 }
