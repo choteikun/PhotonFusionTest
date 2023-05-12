@@ -121,6 +121,7 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
         data.Buttons.Set(InputButtons.JUMP, Input.GetKey(KeyCode.Space));
         data.Buttons.Set(InputButtons.Sprint, Input.GetKey(KeyCode.LeftShift));
         data.Buttons.Set(InputButtons.Attack, Input.GetKey(KeyCode.Mouse0));
+        data.Buttons.Set(InputButtons.CursorUse, Input.GetKey(KeyCode.LeftAlt));
         input.Set(data);//提供輸入
     }
    

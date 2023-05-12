@@ -10,9 +10,10 @@ public enum PlayerAnimState
     BeAttack,
     Dead,
     Win,
+    Teleporting,
 }
 
-[OrderAfter(typeof(PlayerController))]
+[OrderAfter(typeof(PlayerController))]//動畫在邏輯條件後進行
 public class PlayerNetworkMecanimAnimator : NetworkBehaviour
 {
     [Networked]
@@ -30,11 +31,11 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
 
     readonly int h_Idle = Animator.StringToHash("Idle");
     readonly int h_Run = Animator.StringToHash("Run");
-    readonly int h_Sprint = Animator.StringToHash("Sprint");
     readonly int h_Flap = Animator.StringToHash("Flap");
     readonly int h_Charging = Animator.StringToHash("Charging");
     readonly int h_ChargeFlap = Animator.StringToHash("ChargeFlap");
     readonly int h_BeAttack = Animator.StringToHash("BeAttack");
+    readonly int h_Win = Animator.StringToHash("Win");
     readonly int h_Die = Animator.StringToHash("Die");
 
     readonly int h_TimeOutToIdle = Animator.StringToHash("TimeOutToIdle");
@@ -69,6 +70,7 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
         //回放模式（Replay）是指服務器將之前的遊戲狀態記錄下來，並將記錄發送給客戶端，客戶端根據記錄進行本地模擬，並且每隔一定時間向服務器發送用戶輸入。
         //這種方式可以保證客戶端和服務器之間的遊戲狀態一致性，但是會增加網絡延遲和帶寬使用，並且需要記錄和回放遊戲狀態，增加了服務器的負擔。
 
+
         player_horizontalVel = new Vector3(playerController.Network_CharacterControllerPrototype.Velocity.x, 0, playerController.Network_CharacterControllerPrototype.Velocity.z).magnitude;
         networkAnimator.Animator.SetFloat(h_AnimMoveSpeed, player_horizontalVel);
 
@@ -94,8 +96,22 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
             //在State Authority上，建議使用NetworkMecanimAnimator的SetTrigger()方法，以確保觸發器的正確同步。
             //而對於Input Authority，可以使用Animator的原生SetTrigger()方法，因為此時狀態同步不是關鍵問題。
 
-
-            if (data.Move == Vector3.zero && playerController.Network_CharacterControllerPrototype.IsGrounded && !playerController.FlapAnimPlay)//待機狀態
+            #region - 簡易FSM動畫邏輯處理 -
+            if (playerController.Winner)
+            {
+                playerAnimState = PlayerAnimState.Win;
+            }
+            else if (playerController.Loser)
+            {
+                playerAnimState = PlayerAnimState.Dead;
+            }
+            else if (playerController.PlayerIsTeleporting)//使用傳送功能時不再進入攻擊動畫
+            {
+                playerAnimState = PlayerAnimState.Teleporting;
+                playerController.FlapAnimPlay = false;
+                playerController.ChargeFlapAnimPlay = false;
+            }
+            else if (data.Move == Vector3.zero && playerController.Network_CharacterControllerPrototype.IsGrounded && !playerController.FlapAnimPlay && !playerController.ChargeFlapAnimPlay)//待機狀態
             {
                 inputDetected = false;
                 _moveToIdleTimer++;
@@ -109,6 +125,9 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
                 playerAnimState = PlayerAnimState.Move;
                 inputDetected = true;
             }
+            #endregion
+
+            #region - 普通攻擊動畫處理 -
             if (playerController.FlapAnimPlay && (playerAnimState == PlayerAnimState.Idle || playerAnimState == PlayerAnimState.Move))//只有在Idle & Move 狀態下可以同時播放拍巴掌動畫
             {
                 networkAnimator.Animator.SetBool(h_Flap, true);
@@ -118,6 +137,9 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
                     playerController.FlapAnimPlay = false;
                 }
             }
+            #endregion
+
+            #region - 蓄力攻擊動畫處理 -
             if (playerController.ChargeFlapAnimPlay && (playerAnimState == PlayerAnimState.Idle || playerAnimState == PlayerAnimState.Move))//只有在Idle & Move 狀態下可以同時播放蓄力動畫
             {
                 if ((networkAnimator.Animator.GetCurrentAnimatorStateInfo(1).shortNameHash != h_Charging) && (networkAnimator.Animator.GetCurrentAnimatorStateInfo(1).shortNameHash != h_ChargeFlap)) //如果不在蓄力攻擊狀態機以及任何的過渡條下則開始進入蓄力動畫
@@ -138,9 +160,12 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
                     playerController.ChargeFlapAnimPlay = false;
                 }
             }
+            #endregion
 
-            
         }
+
+
+        #region - 動畫狀態分類 -
         switch (playerAnimState)
         {
             case PlayerAnimState.Idle:
@@ -156,18 +181,40 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
 
                 break;
             case PlayerAnimState.Dead:
+                networkAnimator.Animator.SetBool(h_Die, true);
 
+                resetAllMoveAnimations();
                 break;
             case PlayerAnimState.Win:
+                networkAnimator.Animator.SetBool(h_Win, true);
 
+                resetAllMoveAnimations();
+                break;
+            case PlayerAnimState.Teleporting:
+                //networkAnimator.Animator.SetBool(h_Teleporting, true);
+                networkAnimator.Animator.SetBool(h_Idle, true);
+                resetAllMoveAnimations();
                 break;
             default:
                 break;
         }
+        void resetAllMoveAnimations()
+        {
+            networkAnimator.Animator.SetBool(h_Idle, false);
+            networkAnimator.Animator.SetBool(h_Run, false);
+            networkAnimator.Animator.SetBool(h_Flap, false);
+            networkAnimator.Animator.SetBool(h_Charging, false);
+            networkAnimator.Animator.SetBool(h_ChargeFlap, false);
+        }
+        #endregion
+
+
 
         TimeoutToIdle();
     }
 
+
+    #region - 待機動畫處理 -
     void TimeoutToIdle()
     {
         if (playerAnimState == PlayerAnimState.Idle)
@@ -187,6 +234,10 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
         }
         networkAnimator.Animator.SetBool(h_InputDetected, inputDetected);
     }
+    #endregion
+
+
+    #region - Animation Events -
     public void OnFlapEnter()
     {
         playerController.collisionAvailable = true;
@@ -195,6 +246,8 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
     {
         playerController.collisionAvailable = false;
     }
+    #endregion
+
 
     protected void Awake()
 	{

@@ -9,6 +9,7 @@ public enum InputButtons
     JUMP,
     Sprint,
     Attack,
+    CursorUse,
 }
 
 public struct NetworkInputData : INetworkInput

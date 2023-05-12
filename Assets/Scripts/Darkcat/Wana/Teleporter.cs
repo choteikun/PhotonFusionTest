@@ -18,6 +18,7 @@ public class Teleporter : NetworkBehaviour
     /// </summary>
     public void StartTeleportingCountDown()
     {
+        Debug.Log("傳送囉!!");
         startTeleporting = true;
     }
 
@@ -26,7 +27,7 @@ public class Teleporter : NetworkBehaviour
         if (startTeleporting == true)
         {
             teleportCountDown_ += Runner.DeltaTime;
-            if (teleportCountDown_>=3f)
+            if (teleportCountDown_ >= 3f) 
             {
                 canTeleport_ = true;
                 startTeleporting = false;
@@ -34,8 +35,7 @@ public class Teleporter : NetworkBehaviour
                 //傳送玩家
                 teleportToFinalPosition();
                 //修改玩家狀態 使他能操作
-                playerInTeleporter_.GetComponent<PlayerController>().PlayerMoveLimitOrNot = false;
-                playerInTeleporter_.GetComponent<PlayerController>().PlayerImmuneDamage = false;
+                playerInTeleporter_.GetComponent<PlayerController>().PlayerIsTeleporting = false;
             }
         }
 
@@ -49,9 +49,8 @@ public class Teleporter : NetworkBehaviour
             canTeleport_ = false;
             playerInTeleporter_ = player;
             //修改玩家狀態 使他不能操作一秒
-            player.GetComponent<PlayerController>().PlayerMoveLimitOrNot = true;//玩家停止移動
             //開始消失
-            playerInTeleporter_.GetComponent<PlayerController>().PlayerImmuneDamage = true;//玩家無敵
+            player.GetComponent<PlayerController>().PlayerIsTeleporting = true;
             //把自己的資料灌給player
             player.GetComponent<PlayerController>().PlayerGameData.InWhichTeleporter = this;
         }

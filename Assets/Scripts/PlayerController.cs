@@ -56,10 +56,22 @@ public class PlayerController : NetworkBehaviour
 
     [Networked]
     public NetworkButtons ButtonsPrevious { get; set; }//上一個按鈕的資料
+
+    [Networked]
+    [Tooltip("贏家")]
+    public bool Winner{ get; set; }
+    [Networked]
+    [Tooltip("輸家")]
+    public bool Loser { get; set; }
+
+    [Networked][Tooltip("玩家正在使用傳送功能中")]
+    public bool PlayerIsTeleporting { get; set; }
     [Networked][Tooltip("玩家無敵的開關")]
     public bool PlayerImmuneDamage { get; set; }
+
     [Networked][Tooltip("限制玩家移動的開關")]
     public bool PlayerMoveLimitOrNot { get; set; }
+
     [Networked][Tooltip("角色巴掌力度")]
     public float PushForce { get; private set; }
 
@@ -95,9 +107,9 @@ public class PlayerController : NetworkBehaviour
     public bool DrivingKeyStatus { get; private set; }//衝刺鍵狀態
     [Networked][HideInInspector]
     public bool JumpEffectTrigger { get; private set; }//防止不斷播放跳躍特效，false為不可播放
-    [Networked][HideInInspector]
+    [Networked]
     public bool BeenHitOrNot { get; set; }//是否被擊中過
-    [Networked][HideInInspector]
+    [Networked]
     [Tooltip("角色是否為蓄力狀態")]
     public bool ChargeAttackOrNot { get; set; }
 
@@ -149,8 +161,10 @@ public class PlayerController : NetworkBehaviour
         speed = Network_CharacterControllerPrototype.MoveSpeed;
         if (Object.HasStateAuthority)//只會在伺服器端上運行
         {
-            PlayerImmuneDamage = false;
             //CurHp = maxHp;//初始化血量
+            Winner = false;
+            Loser = false;
+            PlayerIsTeleporting = false;
             ChargeAttackOrNot = false;
             CoefficientOfBreakDownPoint = 0.0f;//初始化角色BK值
             ChargeAttackBarTimer = 0.0f;
@@ -168,28 +182,21 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    
+
     public override void FixedUpdateNetwork()//逐每個tick更新(一個tick相當1.666毫秒)
     {
         //Debug.Log("speed : " + speed + "Acceleration : " + networkCharacterControllerPrototype.MoveSpeed + "SprintSpeed : " + sprintSpeed);
         //Debug.Log(Network_CharacterControllerPrototype.Velocity);
 
-        ColorChangedByBreakDownPoint();//顯示BK狀態的顏色
-        ColorChangedByChargeAttackBar();//顯示蓄力條的顏色
+        ColorChangedByBreakDownPoint();//動態顯示BK狀態的顏色
+        ColorChangedByChargeAttackBar();//動態顯示蓄力條的顏色
+
+        PlayerImmuneDamage = Winner || Loser || PlayerIsTeleporting;
+
+        if (Winner || Loser || PlayerIsTeleporting)
+            return;
+
         Move();
-
-        //if (chargeAttackOrNot)
-        //{
-        //    chargeAttackBarTimer++;
-        //    chargeAttackBarTimer = (chargeAttackBarTimer >= (chargeAttackBar * 60)) ? (chargeAttackBar * 60) : chargeAttackBarTimer;//蓄力攻擊時間持續增加但不會超過蓄力條的最大值
-        //    curChargeAttackBK = (int)Mathf.Round((chargeAttackBarTimer / 60) * (chargeAttackMaxBK / chargeAttackBar));
-        //    //Debug.Log("chargeAttackBarTimer : " + chargeAttackBarTimer);
-        //}
-        //else
-        //{
-        //    chargeAttackBarTimer = 0;
-        //}
-
 
         if ((collisionAvailable && FlapAnimPlay) || (collisionAvailable && ChargeFlapAnimPlay))
         {
@@ -244,6 +251,13 @@ public class PlayerController : NetworkBehaviour
             moveLimitParameter = PlayerMoveLimitOrNot ? moveLimit_Y : moveLimit_N;
             Network_CharacterControllerPrototype.Move(moveVector * moveLimitParameter * Runner.DeltaTime);
 
+
+            //if (pressed.IsSet(InputButtons.Attack))
+            //{
+            //    //Runner.Spawn(enemyPrefab, transform.position + new Vector3(1, -1, 1), Quaternion.identity, Object.StateAuthority);
+            //    //Debug.Log("生產蜥蜴");
+            //}
+            #region - 跳躍按鍵處理 -
             if (pressed.IsSet(InputButtons.JUMP))
             {
                 JumpEffectTrigger = true;
@@ -254,11 +268,9 @@ public class PlayerController : NetworkBehaviour
                     JumpEffectTrigger = false;
                 }
             }
-            //if (pressed.IsSet(InputButtons.Attack))
-            //{
-            //    //Runner.Spawn(enemyPrefab, transform.position + new Vector3(1, -1, 1), Quaternion.identity, Object.StateAuthority);
-            //    //Debug.Log("生產蜥蜴");
-            //}
+            #endregion
+
+            #region - 攻擊按鍵處理 -
             if (pressed.IsSet(InputButtons.Attack))//按下攻擊鍵後播放拍巴掌的動畫中
             {
                 ChargeAttackOrNot = true;
@@ -267,6 +279,9 @@ public class PlayerController : NetworkBehaviour
             {
                 ChargeAttackOrNot = false;
             }
+            #endregion
+
+            #region - 蓄力攻擊邏輯處理 -
             if (!ChargeAttackOrNot)
             {
                 Network_CharacterControllerPrototype.MoveSpeed = pressed.IsSet(InputButtons.Sprint) ? drivingSpeed : released.IsSet(InputButtons.Sprint) ? speed : Network_CharacterControllerPrototype.MoveSpeed;
@@ -282,8 +297,6 @@ public class PlayerController : NetworkBehaviour
             if (ChargeAttackOrNot)//蓄力計時開始
             {
                 ChargeAttackBarTimer += Runner.DeltaTime;
-
-                
 
                 PushForce = 50;
 
@@ -318,6 +331,20 @@ public class PlayerController : NetworkBehaviour
                 ChargeAttackBarTimer = 0;
                 FlapAnimPlay = true;
             }
+            #endregion
+
+
+
+            #region - 呼叫滑鼠按鍵處理 -
+            if (pressed.IsSet(InputButtons.CursorUse))
+            {
+                cursorLocked = false;
+            }
+            if (released.IsSet(InputButtons.CursorUse))
+            {
+                cursorLocked = true;
+            }
+            #endregion
         }
     }
 
@@ -329,6 +356,9 @@ public class PlayerController : NetworkBehaviour
     //}
     public override void Render()
     {
+        if (Winner || Loser || PlayerIsTeleporting)
+            return;
+
         if (DrivingKeyStatus && Network_CharacterControllerPrototype.IsGrounded && (Network_CharacterControllerPrototype.Velocity != Vector3.zero))//衝刺狀態下&&在地面時
         {
             playerEffectVisual.DrivingDustEffectPlay();//播放衝刺特效
@@ -382,57 +412,6 @@ public class PlayerController : NetworkBehaviour
         //CurHp = maxHp;
     }
 
-    private void PushCollision()//fusion官方不推薦使用unity的 OnTriggerEnter & OnTriggerCollision做網路上的物理碰撞，是因為Fusion網路狀態的更新率和Unity物理引擎的更新率不相同，而且無法做客戶端預測
-    {
-        //var colliders = Physics.OverlapSphere(bonkCollider.transform.position + new Vector3(-0.001f, 0, 0), radius: 0.0035f);//畫一顆球，並檢測球裡的所有collider並回傳
-        var colliders = Physics.OverlapBox(bonkCollider.transform.position + new Vector3(0f, 0f, 0f), new Vector3(transform.localScale.x / 4, transform.localScale.y / 4, transform.localScale.z / 4));//畫一個cube，並檢測cube裡的所有collider並回傳
-
-        foreach (var collider in colliders)
-        {
-            if (collider.TryGetComponent<PlayerController>(out PlayerController playerController) && !playerController.BeenHitOrNot && !PlayerImmuneDamage)//判斷collider身上是否有PlayerController的腳本，並確認是否該對象被打擊過，如果Player不是無敵狀態則
-            {               
-                // 計算推力方向
-
-                var targetOriginPos = playerController.transform.position;
-                targetOriginPos = new Vector3(targetOriginPos.x, 0, targetOriginPos.z);
-                Vector3 pushDir = targetOriginPos - new Vector3(transform.position.x, 0, transform.position.z);
-
-                Debug.Log(pushDir.magnitude);
-
-                // 推動其他角色
-                if (Object.HasStateAuthority)//只會在伺服器端上運行
-                {
-                    playerController.AddCoefficientOfBreakDownPoint(curAttackBK);//代入普攻BK係數
-                    //playerController.AddCoefficientOfBreakDownPoint(curChargeAttackBK);//代入蓄力BK係數
-                    playerController.Network_CharacterControllerPrototype.Jump();
-                    playerController.Network_CharacterControllerPrototype.Move(Vector3.zero);
-                    playerController.Network_CharacterControllerPrototype.Velocity += pushDir * (PushForce + playerController.PlayerGameData.BreakPoint);//推力計算
-                    
-                    //playerController.GetComponentInParent<CharacterController>().Move(pushDir.normalized * pushForce * Runner.DeltaTime);
-                }
-                playerController.BeenHitOrNot = true;
-                Debug.Log(pushDir * (PushForce + playerController.PlayerGameData.BreakPoint));
-                //playerController.GetComponentInParent<PlayerController>().TakeDamage(10);
-                //Debug.Log("Push!!!!!!!");
-                //Runner.Despawn(Object);
-            }
-            else
-            {
-                // 沒有找到組件
-                // 做一些錯誤處理
-            }
-            if (collider.TryGetComponent<BreakableWallBehaviour>(out BreakableWallBehaviour breakableWall))
-            {
-                breakableWall.HurtThisWall();
-            }
-            if (collider.TryGetComponent<Teleporter>(out Teleporter teleporter))
-            {
-                teleporter.TriggerTeleporter(Object);//觸發傳送
-                teleporter.StartTeleportingCountDown();//傳送開始
-            }
-        }
-    }
-
     public void TakeDamage(int damage)
     {
         if (Object.HasStateAuthority)//只會在伺服器端上運行
@@ -450,6 +429,62 @@ public class PlayerController : NetworkBehaviour
     //    changed.Behaviour.CurHpBar.fillAmount = (float)changed.Behaviour.CurHp / changed.Behaviour.maxHp;
     //}
 
+    #region - 碰撞邏輯處理 -
+    private void PushCollision()//fusion官方不推薦使用unity的 OnTriggerEnter & OnTriggerCollision做網路上的物理碰撞，是因為Fusion網路狀態的更新率和Unity物理引擎的更新率不相同，而且無法做客戶端預測
+    {
+        //var colliders = Physics.OverlapSphere(bonkCollider.transform.position + new Vector3(-0.001f, 0, 0), radius: 0.0035f);//畫一顆球，並檢測球裡的所有collider並回傳
+        var colliders = Physics.OverlapBox(bonkCollider.transform.position + new Vector3(0f, 0f, 0f), new Vector3(transform.localScale.x / 4, transform.localScale.y / 4, transform.localScale.z / 4));//畫一個cube，並檢測cube裡的所有collider並回傳
+
+        foreach (var collider in colliders)
+        {
+            if (collider.TryGetComponent<PlayerController>(out PlayerController playerController) && !playerController.BeenHitOrNot && !PlayerImmuneDamage)//判斷collider身上是否有PlayerController的腳本，並確認是否該對象被打擊過，如果Player不是無敵狀態則
+            {
+                // 計算推力方向
+
+                var targetOriginPos = playerController.transform.position;
+                targetOriginPos = new Vector3(targetOriginPos.x, 0, targetOriginPos.z);
+                Vector3 pushDir = targetOriginPos - new Vector3(transform.position.x, 0, transform.position.z);
+
+                Debug.Log(pushDir.magnitude);
+
+                // 推動其他角色
+                if (Object.HasStateAuthority)//只會在伺服器端上運行
+                {
+                    playerController.AddCoefficientOfBreakDownPoint(curAttackBK);//代入普攻BK係數
+                    //playerController.AddCoefficientOfBreakDownPoint(curChargeAttackBK);//代入蓄力BK係數
+                    playerController.Network_CharacterControllerPrototype.Jump();
+                    playerController.Network_CharacterControllerPrototype.Move(Vector3.zero);
+                    playerController.Network_CharacterControllerPrototype.Velocity += pushDir * (PushForce + playerController.PlayerGameData.BreakPoint);//推力計算
+
+                    //playerController.GetComponentInParent<CharacterController>().Move(pushDir.normalized * pushForce * Runner.DeltaTime);
+                }
+                playerController.BeenHitOrNot = true;
+                Debug.Log(pushDir * (PushForce + playerController.PlayerGameData.BreakPoint));
+                //playerController.GetComponentInParent<PlayerController>().TakeDamage(10);
+                //Debug.Log("Push!!!!!!!");
+                //Runner.Despawn(Object);
+            }
+            else
+            {
+                // 沒有找到組件
+                // 做一些錯誤處理
+            }
+            if (collider.TryGetComponent<BreakableWallBehaviour>(out BreakableWallBehaviour breakableWall))//破壞牆
+            {
+                breakableWall.HurtThisWall();
+            }
+            if (collider.TryGetComponent<Teleporter>(out Teleporter teleporter))//傳送
+            {
+                teleporter.TriggerTeleporter(Object);//觸發傳送
+                Network_CharacterControllerPrototype.Velocity = Vector3.zero;
+                teleporter.Invoke("StartTeleportingCountDown", 2f);
+                //teleporter.StartTeleportingCountDown();//傳送開始
+            }
+        }
+    }
+    #endregion
+
+    #region - 動態UI邏輯處理 -
     public void ColorChangedByBreakDownPoint()
     {
         if (CoefficientOfBreakDownPoint >= 120.0f)//120是曲線x最陡的位置
@@ -485,17 +520,8 @@ public class PlayerController : NetworkBehaviour
         {
             CurChargeAttackBar.fillAmount = 0;
         }
-        
     }
-
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.red;
-        //Use the same vars you use to draw your Overlap SPhere to draw your Wire Sphere.
-        //Gizmos.DrawWireSphere(bonkCollider.transform.position + new Vector3(-0.001f, 0, 0), radius: 0.0035f);
-        Gizmos.DrawWireCube(bonkCollider.transform.position + new Vector3(0f, 0f, 0f), new Vector3(transform.localScale.x / 2, transform.localScale.y / 2, transform.localScale.z / 2));
-    }
-
+    #endregion
 
     #region - Player Mouse Setting -
     private void OnApplicationFocus(bool hasFocus)//當應用程式窗口的焦點狀態發生改變時，hasFocus為false；當應用程式窗口獲得焦點時，該函式的參數hasFocus為true
@@ -507,10 +533,18 @@ public class PlayerController : NetworkBehaviour
         Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;//將滑鼠鎖定狀態設置為true，以將滑鼠固定在遊戲中心點
     }
     #endregion
+
     public void Bind_Camera(GameObject Player)
     {
         var CinemachineVirtualCamera = Camera.main.gameObject.transform.Find("CM vcam1").GetComponent<CinemachineVirtualCamera>();
         CinemachineVirtualCamera.LookAt = Player.transform;
         CinemachineVirtualCamera.Follow = Player.transform;
+    }
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        //Use the same vars you use to draw your Overlap SPhere to draw your Wire Sphere.
+        //Gizmos.DrawWireSphere(bonkCollider.transform.position + new Vector3(-0.001f, 0, 0), radius: 0.0035f);
+        Gizmos.DrawWireCube(bonkCollider.transform.position + new Vector3(0f, 0f, 0f), new Vector3(transform.localScale.x / 2, transform.localScale.y / 2, transform.localScale.z / 2));
     }
 }
