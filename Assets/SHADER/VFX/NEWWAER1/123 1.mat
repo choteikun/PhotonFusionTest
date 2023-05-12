@@ -81,16 +81,16 @@ Material:
     - _CastShadows: 1
     - _Cull: 2
     - _DstBlend: 10
-    - _Metalitic: 0.38
+    - _Metalitic: 0
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Refraction: 0.03
     - _RippleStrength: 1
     - _RippleStrenth: 1
-    - _Smooth: 0.723
+    - _Smooth: 0.869
     - _SrcBlend: 5
-    - _Strenth: 1.4
+    - _Strenth: 0.31
     - _Surface: 1
     - _T: 0.528
     - _WorkflowMode: 1
