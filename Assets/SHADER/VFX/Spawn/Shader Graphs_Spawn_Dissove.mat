@@ -57,7 +57,7 @@ Material:
     - _Clip: 0
     - _Cull: 2
     - _DstBlend: 0
-    - _NoiseScale: 63.54
+    - _NoiseScale: 38.6
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
