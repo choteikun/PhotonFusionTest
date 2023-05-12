@@ -88,9 +88,9 @@ Material:
     - _Refraction: 0.03
     - _RippleStrength: 1
     - _RippleStrenth: 1
-    - _Smooth: 0.869
+    - _Smooth: 0.748
     - _SrcBlend: 5
-    - _Strenth: 0.31
+    - _Strenth: 1.49
     - _Surface: 1
     - _T: 0.528
     - _WorkflowMode: 1
