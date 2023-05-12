@@ -524,7 +524,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 491972560}
-  m_LocalRotation: {x: 0.39334583, y: 0.027506188, z: -0.011774296, w: 0.9189036}
+  m_LocalRotation: {x: 0.39334586, y: 0.027506214, z: -0.011774309, w: 0.9189036}
   m_LocalPosition: {x: -36.4, y: 34.1, z: -14.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -6805,6 +6805,9 @@ GameObject:
   - component: {fileID: 1763401218}
   - component: {fileID: 1763401217}
   - component: {fileID: 1763401216}
+  - component: {fileID: 1763401220}
+  - component: {fileID: 1763401221}
+  - component: {fileID: 1763401222}
   m_Layer: 0
   m_Name: Sphere
   m_TagString: Untagged
@@ -6846,6 +6849,7 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: ce1bbe4524dfd104f8d9a799b3e3d3ae, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -6882,14 +6886,63 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1763401215}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -58.76, y: 6.08, z: 39.42}
-  m_LocalScale: {x: 24.989, y: 24.989, z: 24.989}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -58.59, y: 2.8, z: 22.41}
+  m_LocalScale: {x: 24.989002, y: 24.989002, z: 24.989002}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 18
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1763401220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1763401215}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1da3c859867ae3a438890fcd704a5e7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1763401221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1763401215}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 574bea172f914264aa51ad3bc4c8e6de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Radius: 13.4
+  FullEffectRadiusRatio: 0.354
+  MaxImpulseSpeed: 100
+  ContinuousMotion: 0
+  MoveDistance: 10
+  LinearImpulse: 200
+  RotationAngle: 180
+  AngularImpulse: 2000
+  DrawAffectedReactorFieldGizmos: 0
+--- !u!114 &1763401222
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1763401215}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f86750809ef2bda40ac2e7c112685f8c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Shape: 0
+  Radius: 0.1
+  Height: 0.25
+  Dimensions: {x: 0.1, y: 0.1, z: 0.1}
 --- !u!1 &1765516883
 GameObject:
   m_ObjectHideFlags: 0
@@ -16786,7 +16839,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1968552427}
-  m_LocalRotation: {x: 0.39334583, y: 0.027506188, z: -0.011774296, w: 0.9189036}
+  m_LocalRotation: {x: 0.39334586, y: 0.027506214, z: -0.011774309, w: 0.9189036}
   m_LocalPosition: {x: -36.4, y: 34.1, z: -14.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -17169,13 +17222,13 @@ MonoBehaviour:
     PositionOscillationHalfLife: 1.83
     PositionOscillationFrequency: 5.04
     PositionOscillationDampingRatio: 0.165
-    MoveReactionMultiplier: 10
+    MoveReactionMultiplier: 1.91
     LinearImpulseMultiplier: 2.4
     RotationExponentialHalfLife: 0.02
-    RotationOscillationHalfLife: 0.13
+    RotationOscillationHalfLife: 0.43
     RotationOscillationFrequency: 7
     RotationOscillationDampingRatio: 0.5
-    RotationReactionMultiplier: 1.15
+    RotationReactionMultiplier: 1.74
     AngularImpulseMultiplier: 3.03
     ScaleExponentialHalfLife: 0.02
     ScaleOscillationHalfLife: 0.1
@@ -17352,10 +17405,11 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
     MaxSquash: 1
-    MaxStretch: 1.71
-  TwistPropagation: 1
+    MaxStretch: 1
+  TwistPropagation: 0
   MaxCollisionResolutionSpeed: 3
-  BoingColliders: []
+  BoingColliders:
+  - {fileID: 0}
   UnityColliders: []
   DebugDrawRawBones: 0
   DebugDrawTargetBones: 0
