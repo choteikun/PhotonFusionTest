@@ -18,6 +18,9 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField]
     private NetworkPrefabRef playerPrefab;
 
+    [SerializeField]
+    private TreasureSpawner treasureSpawner = null;
+
     private Dictionary<PlayerRef, NetworkObject> playerList = new Dictionary<PlayerRef, NetworkObject>();//用PlayerRef當Key存放剛剛生成的可以操控的角色，是為了可以記錄所有玩家的名單
 
 
@@ -29,7 +32,9 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
         networkRunner.AddCallbacks(this);
 
-        SpawnAllPlayers();
+        SpawnAllPlayers();//生成所有玩家
+
+        //啟動寶箱生成器
     }
 
     private void SpawnAllPlayers()
@@ -46,6 +51,7 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
             playerList.Add(player, networkPlayerObject);
         }
     }
+
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)//傳入的runner會是場景中的Network Runner，PlayerRef則是代表實際進入的玩家
     {
         Vector3 spawnPos = Vector3.up * 2;
