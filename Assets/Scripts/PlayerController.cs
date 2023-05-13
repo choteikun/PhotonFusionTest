@@ -480,6 +480,10 @@ public class PlayerController : NetworkBehaviour
                 teleporter.Invoke("StartTeleportingCountDown", 2f);
                 //teleporter.StartTeleportingCountDown();//傳送開始
             }
+            if(collider.TryGetComponent<TreasureBoxBehavior>(out TreasureBoxBehavior treasureBox))
+            {
+                //開啟寶箱
+            }
         }
     }
     #endregion
