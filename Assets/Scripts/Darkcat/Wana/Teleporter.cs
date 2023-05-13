@@ -21,7 +21,6 @@ public class Teleporter : NetworkBehaviour
         Debug.Log("傳送囉!!");
         startTeleporting = true;
     }
-
     public override void FixedUpdateNetwork()
     {
         if (startTeleporting == true)

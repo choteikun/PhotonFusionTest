@@ -8,6 +8,22 @@ public class TreasureSpawner : NetworkBehaviour
     [SerializeField] private NetworkObject treasureBox_;
     [SerializeField] private Vector3[] treasureBoxPlace_;
 
+    [SerializeField] public bool spawnerSwitch = false;
+    [SerializeField] private float countDownTime_;
+
+    public override void FixedUpdateNetwork()
+    {
+        if (spawnerSwitch)
+        {
+            countDownTime_ += Runner.DeltaTime;
+            if (countDownTime_>=3)
+            {
+                spawnerSwitch = false;
+                countDownTime_ = 0;
+                SpawnARandomTreasureBox();
+            }
+        }
+    }
     public void SpawnARandomTreasureBox()
     {
         var treasureBoxRandomPlace = treasureBoxPlace_[getARandomPlace()];
