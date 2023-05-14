@@ -31,6 +31,7 @@ public class GameManager : MonoBehaviour
     public event Action OnPlayerListUpdated = null;
 
     public AudioSource ThisPlayerAusioSource;
+    public SoundEffectTester SoundEffectTester;
 
     private void Awake()
     {

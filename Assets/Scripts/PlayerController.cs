@@ -558,8 +558,8 @@ public class PlayerController : NetworkBehaviour
     #region 聲音處裡
     public void PlayASoundForEachPlayer(PlayerController otherPlayer)
     {
-        ThisPlayerAudio.PlayOneShot(SoundEffectTester.TestClip);
-        otherPlayer.ThisPlayerAudio.PlayOneShot(SoundEffectTester.TestClip);
+        ThisPlayerAudio.PlayOneShot(GameManager.Instance.SoundEffectTester.TestClip);
+        otherPlayer.ThisPlayerAudio.PlayOneShot(GameManager.Instance.SoundEffectTester.TestClip);
     }
     #endregion
 
