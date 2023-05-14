@@ -1,19 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Fusion;
 
-public class SoundEffectTester : MonoBehaviour
+public class SoundEffectTester : NetworkBehaviour
 {
-    [SerializeField] private AudioSource AudioSourcePrefab;
+
     [SerializeField] private AudioSource AudioSourceGlobal;
+
+    [SerializeField] private AudioSource AudioSourcePrefab;
+    
     [SerializeField] private AudioClip TestClip;
+
+
 
     public void PlayAudioTest()
     {
         AudioSourcePrefab.PlayOneShot(TestClip);
     }
-    public void PlayAudioGlobalTest()
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
+    public void PlayAudioGlobalTest_RPC()
     {
-        AudioSourceGlobal.PlayOneShot(TestClip);
+        AudioSourceGlobal.clip = TestClip;
+        AudioSourceGlobal.Play();
     }
 }
