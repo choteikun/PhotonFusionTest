@@ -3871,6 +3871,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 69de67b835d93f341b025f4047ed61e0, type: 3}
+--- !u!114 &1181948107 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8460314369357834317, guid: 69de67b835d93f341b025f4047ed61e0,
+    type: 3}
+  m_PrefabInstance: {fileID: 1181948106}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34315d9344764574489a07a5d78e9c86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1252715721
 GameObject:
   m_ObjectHideFlags: 0
@@ -4717,7 +4729,7 @@ MonoBehaviour:
   networkRunner: {fileID: 1351351659}
   playerPrefab:
     RawGuidValue: 33b75130a926c334f8d751d13b3c0b99
-  treasureSpawner: {fileID: 0}
+  treasureSpawner: {fileID: 1181948107}
 --- !u!114 &1351351659
 MonoBehaviour:
   m_ObjectHideFlags: 0
