@@ -180,6 +180,7 @@ public class PlayerController : NetworkBehaviour
             }
             Debug.Log(this.gameObject.name);
             Bind_Camera(this.gameObject);
+            ThisPlayerAudio = GameManager.Instance.ThisPlayerAusioSource;
         }
     }
 

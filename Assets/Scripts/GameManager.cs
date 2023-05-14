@@ -30,7 +30,7 @@ public class GameManager : MonoBehaviour
 
     public event Action OnPlayerListUpdated = null;
 
-    public UnityEvent PlayerFinishCastingTeleporting = new UnityEvent();
+    public AudioSource ThisPlayerAusioSource;
 
     private void Awake()
     {
