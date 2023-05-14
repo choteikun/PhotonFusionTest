@@ -502,12 +502,33 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 105283109}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 105283111}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &105283111 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2702124149316678727, guid: 85cfe94993fbad74b8175d34d6cf8e60,
+    type: 3}
+  m_PrefabInstance: {fileID: 105283109}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &105283112
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 105283111}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91e99d8faf81d47469fc147132aa6823, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AudioSourcePrefab: {fileID: 2047350171}
+  AudioSourceGlobal: {fileID: 1821534761}
+  TestClip: {fileID: 8300000, guid: 8ac8a399f27a168488cb5541ed560381, type: 3}
 --- !u!1 &107247153
 GameObject:
   m_ObjectHideFlags: 0
@@ -4707,6 +4728,7 @@ GameObject:
   - component: {fileID: 1351351660}
   - component: {fileID: 1351351659}
   - component: {fileID: 1351351658}
+  - component: {fileID: 1351351661}
   m_Layer: 0
   m_Name: BasicSpawner
   m_TagString: Untagged
@@ -4757,6 +4779,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1351351661
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1351351657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91e99d8faf81d47469fc147132aa6823, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AudioSourcePrefab: {fileID: 2047350171}
+  AudioSourceGlobal: {fileID: 1821534761}
+  TestClip: {fileID: 8300000, guid: 8ac8a399f27a168488cb5541ed560381, type: 3}
 --- !u!1001 &1396888702
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5991,7 +6028,7 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
+  MinDistance: 200
   MaxDistance: 500
   Pan2D: 0
   rolloffMode: 0
@@ -6638,7 +6675,7 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
+  MinDistance: 200
   MaxDistance: 500
   Pan2D: 0
   rolloffMode: 0

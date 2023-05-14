@@ -483,6 +483,7 @@ public class PlayerController : NetworkBehaviour
             if(collider.TryGetComponent<TreasureBoxBehavior>(out TreasureBoxBehavior treasureBox))
             {
                 //開啟寶箱
+                treasureBox.TreasureSound();
             }
         }
     }
