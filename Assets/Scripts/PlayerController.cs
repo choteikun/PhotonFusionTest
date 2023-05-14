@@ -17,6 +17,7 @@ public class PlayerController : NetworkBehaviour
 
     public NetworkCharacterControllerPrototype Network_CharacterControllerPrototype = null;
 
+    public AudioSource ThisPlayerAudio;
     
 
     //[SerializeField]
@@ -552,4 +553,13 @@ public class PlayerController : NetworkBehaviour
         //Gizmos.DrawWireSphere(bonkCollider.transform.position + new Vector3(-0.001f, 0, 0), radius: 0.0035f);
         Gizmos.DrawWireCube(bonkCollider.transform.position + new Vector3(0f, -0.5f, 0f), new Vector3(transform.localScale.x / 1.5f, transform.localScale.y / 0.75f, transform.localScale.z / 1.5f));
     }
+
+    #region 聲音處裡
+    public void PlayASoundForEachPlayer(PlayerController otherPlayer)
+    {
+        ThisPlayerAudio.PlayOneShot(SoundEffectTester.TestClip);
+        otherPlayer.ThisPlayerAudio.PlayOneShot(SoundEffectTester.TestClip);
+    }
+    #endregion
+
 }
