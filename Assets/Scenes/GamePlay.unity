@@ -426,6 +426,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2702124149316678724, guid: 85cfe94993fbad74b8175d34d6cf8e60,
         type: 3}
+      propertyPath: NetworkedBehaviours.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2702124149316678724, guid: 85cfe94993fbad74b8175d34d6cf8e60,
+        type: 3}
+      propertyPath: NetworkedBehaviours.Array.data[1]
+      value: 
+      objectReference: {fileID: 105283112}
+    - target: {fileID: 2702124149316678724, guid: 85cfe94993fbad74b8175d34d6cf8e60,
+        type: 3}
       propertyPath: NetworkGuid.RawGuidValue.Array.data[0]
       value: 3624017126577819773
       objectReference: {fileID: 0}
@@ -433,6 +443,11 @@ PrefabInstance:
         type: 3}
       propertyPath: NetworkGuid.RawGuidValue.Array.data[1]
       value: 4331631826599676853
+      objectReference: {fileID: 0}
+    - target: {fileID: 2702124149316678725, guid: 85cfe94993fbad74b8175d34d6cf8e60,
+        type: 3}
+      propertyPath: soundEffectTester
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 2702124149316678727, guid: 85cfe94993fbad74b8175d34d6cf8e60,
         type: 3}
@@ -526,8 +541,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91e99d8faf81d47469fc147132aa6823, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AudioSourcePrefab: {fileID: 2047350171}
+  _interpolationDataSource: 0
   AudioSourceGlobal: {fileID: 1821534761}
+  AudioSourcePrefab: {fileID: 2047350171}
   TestClip: {fileID: 8300000, guid: 8ac8a399f27a168488cb5541ed560381, type: 3}
 --- !u!1 &107247153
 GameObject:
@@ -4791,8 +4807,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91e99d8faf81d47469fc147132aa6823, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AudioSourcePrefab: {fileID: 2047350171}
+  _interpolationDataSource: 0
   AudioSourceGlobal: {fileID: 1821534761}
+  AudioSourcePrefab: {fileID: 2047350171}
   TestClip: {fileID: 8300000, guid: 8ac8a399f27a168488cb5541ed560381, type: 3}
 --- !u!1001 &1396888702
 PrefabInstance:

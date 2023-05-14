@@ -5,11 +5,12 @@ using Fusion;
 public class TreasureBoxBehavior : NetworkBehaviour
 {
     [SerializeField]
-    SoundEffectTester soundEffectTester;
-    private void Start()
+    private SoundEffectTester soundEffectTester;
+    public override void Spawned()
     {
         soundEffectTester = GetComponent<SoundEffectTester>();
     }
+
     public void PlayerGetTreasure(PlayerGameData player)
     {
         player.Player_Charge();
@@ -22,6 +23,6 @@ public class TreasureBoxBehavior : NetworkBehaviour
     public void TreasureSound()
     {
         //soundEffectTester.PlayAudioTest();
-        //soundEffectTester.PlayAudioGlobalTest_RPC();
+        soundEffectTester.PlayAudioGlobalTest_RPC();
     }
 }

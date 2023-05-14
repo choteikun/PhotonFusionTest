@@ -30,9 +30,6 @@ public class GameManager : MonoBehaviour
 
     public event Action OnPlayerListUpdated = null;
 
-    public AudioSource ThisPlayerAusioSource;
-    public SoundEffectTester SoundEffectTester;
-
     private void Awake()
     {
         //為了確保 Runner 對象存在並且被創建，以便其他方法可以使用 Runner 對象

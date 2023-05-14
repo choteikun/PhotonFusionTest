@@ -13,11 +13,17 @@ public class PlayerController : NetworkBehaviour
     [SerializeField]
     private EnemyAIBehavior enemyPrefab;
 
+    [SerializeField]
+    private AudioSource playerAudioSource;
+
+    [SerializeField]
+    private AudioClip[] playerAudioClips;
+
     public PlayerGameData PlayerGameData;
 
     public NetworkCharacterControllerPrototype Network_CharacterControllerPrototype = null;
 
-    public AudioSource ThisPlayerAudio;
+    //public AudioSource ThisPlayerAudio;
     
 
     //[SerializeField]
@@ -150,6 +156,7 @@ public class PlayerController : NetworkBehaviour
         BeenHitOrNot = false;
         DrivingKeyStatus = false;
         playerEffectVisual = GetComponent<PlayerEffectVisual>();
+        playerAudioSource = GetComponent<AudioSource>();
         playerEffectVisual.InitializeVisualEffect();//因為是所有客戶端都要看到的特效，所以放在外面
         playerEffectVisual.InitializeParticleEffect();
 
@@ -180,7 +187,6 @@ public class PlayerController : NetworkBehaviour
             }
             Debug.Log(this.gameObject.name);
             Bind_Camera(this.gameObject);
-            ThisPlayerAudio = GameManager.Instance.ThisPlayerAusioSource;
         }
     }
 
@@ -454,6 +460,9 @@ public class PlayerController : NetworkBehaviour
                 {
                     playerController.AddCoefficientOfBreakDownPoint(curAttackBK);//代入普攻BK係數
                     //playerController.AddCoefficientOfBreakDownPoint(curChargeAttackBK);//代入蓄力BK係數
+
+                    //PlayASoundForEachPlayer(playerController);
+                    playerController.soundEffectPlay_RPC();
                     playerController.Network_CharacterControllerPrototype.Jump();
                     playerController.Network_CharacterControllerPrototype.Move(Vector3.zero);
                     playerController.Network_CharacterControllerPrototype.Velocity += pushDir * (PushForce + playerController.PlayerGameData.BreakPoint);//推力計算
@@ -555,11 +564,12 @@ public class PlayerController : NetworkBehaviour
         Gizmos.DrawWireCube(bonkCollider.transform.position + new Vector3(0f, -0.5f, 0f), new Vector3(transform.localScale.x / 1.5f, transform.localScale.y / 0.75f, transform.localScale.z / 1.5f));
     }
 
-    #region 聲音處裡
-    public void PlayASoundForEachPlayer(PlayerController otherPlayer)
+    #region - 聲音處理 -
+    [Rpc(RpcSources.All, RpcTargets.All)]
+    private void soundEffectPlay_RPC()
     {
-        ThisPlayerAudio.PlayOneShot(GameManager.Instance.SoundEffectTester.TestClip);
-        otherPlayer.ThisPlayerAudio.PlayOneShot(GameManager.Instance.SoundEffectTester.TestClip);
+        playerAudioSource.clip = playerAudioClips[0];
+        playerAudioSource.Play();
     }
     #endregion
 
