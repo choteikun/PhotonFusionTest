@@ -43,8 +43,9 @@ public class PlayerController : NetworkBehaviour
     [SerializeField, Tooltip("衝刺速度")]
     private float drivingSpeed;
 
-    
-    
+    [SerializeField, Tooltip("擊飛力道")]
+    private float airborneAmount;
+
 
     public AudioClip LandingAudioClip;
     public AudioClip[] FootstepAudioClips;
@@ -81,6 +82,9 @@ public class PlayerController : NetworkBehaviour
 
     [Networked][Tooltip("角色巴掌力度")]
     public float PushForce { get; private set; }
+
+    [Networked] [Tooltip("從哪裡受傷")]
+    public Vector3 LocalHurt { get; set; }
 
     [Networked][Tooltip("角色BK係數(曲線X軸)")]
     public float CoefficientOfBreakDownPoint { get; private set; }
@@ -201,20 +205,31 @@ public class PlayerController : NetworkBehaviour
 
         PlayerImmuneDamage = Winner || Loser || PlayerIsTeleporting;
 
+        if (Network_CharacterControllerPrototype.IsGrounded)
+        {
+            BeenHitOrNot = false;//被擊中後落地時變成可以再被擊中的狀態
+        }
+
         if (Winner || Loser || PlayerIsTeleporting)
             return;
-
+        
         Move();
+
+        if (BeenHitOrNot)
+        {
+            PlayerMoveLimitOrNot = true;
+        }
+        else
+        {
+            PlayerMoveLimitOrNot = false;
+        }
 
         if ((collisionAvailable && FlapAnimPlay) || (collisionAvailable && ChargeFlapAnimPlay))
         {
             PushCollision();//碰撞啟動
         }
 
-        if (Network_CharacterControllerPrototype.IsGrounded)
-        {
-            BeenHitOrNot = false;//被擊中後落地時變成可以再被擊中的狀態
-        }
+        
         
         //if (CurHp <= 0)
         //{
@@ -318,24 +333,24 @@ public class PlayerController : NetworkBehaviour
             }
             else if (!ChargeAttackOrNot && ChargeAttackBarTimer > 0.5f)//蓄力0.5秒以上
             {
-                Debug.Log("本次蓄力時間 : " + ChargeAttackBarTimer);
+                //Debug.Log("本次蓄力時間 : " + ChargeAttackBarTimer);
                 //1~5秒有效蓄力時間
                 ChargeAttackBarTimer = ChargeAttackBarTimer > 2.0f ? ChargeAttackBarTimer = 2 : ChargeAttackBarTimer;
-                Debug.Log("有效蓄力時間 : " + ChargeAttackBarTimer);
-                Debug.Log("蓄力時間百分比 : " + chargeAttackPercent);
+                //Debug.Log("有效蓄力時間 : " + ChargeAttackBarTimer);
+                //Debug.Log("蓄力時間百分比 : " + chargeAttackPercent);
                 //0%~100%蓄力時間百分比
                 chargeAttackPercent = (ChargeAttackBarTimer - 0.5f) / (2.0f - 0.5f) * 1.0f;
                 float chargeAttackCoefficient = ((float)chargeAttackMaxBK / 100 - 1) * chargeAttackPercent + 1;//基礎100%數~蓄滿力chargeAttackMaxBK%
                 curAttackBK = chargeAttackCoefficient * chargeAttackBK;
                 PushForce = chargeAttackCoefficient * PushForce;
-                Debug.Log("蓄力傷害加成 : " + chargeAttackPercent);
+                //Debug.Log("蓄力傷害加成 : " + chargeAttackPercent);
                 ChargeAttackBarTimer = 0;
             }
             else if (!ChargeAttackOrNot && ChargeAttackBarTimer > 0 && ChargeAttackBarTimer <= 0.5f) //蓄力小於0.5秒
             {
                 curAttackBK = normalAttackBK;
                 PushForce = 50;
-                Debug.Log("本次蓄力時間 : " + ChargeAttackBarTimer);
+                //Debug.Log("本次蓄力時間 : " + ChargeAttackBarTimer);
                 ChargeAttackBarTimer = 0;
                 FlapAnimPlay = true;
             }
@@ -452,6 +467,9 @@ public class PlayerController : NetworkBehaviour
                 var targetOriginPos = playerController.transform.position;
                 targetOriginPos = new Vector3(targetOriginPos.x, 0, targetOriginPos.z);
                 Vector3 pushDir = targetOriginPos - new Vector3(transform.position.x, 0, transform.position.z);
+                Vector3 airborneVec = new Vector3(0, airborneAmount, 0);
+
+                
 
                 Debug.Log(pushDir.magnitude);
 
@@ -463,13 +481,17 @@ public class PlayerController : NetworkBehaviour
 
                     //PlayASoundForEachPlayer(playerController);
                     playerController.soundEffectPlay_RPC();
-                    playerController.Network_CharacterControllerPrototype.Jump();
+                    //playerController.Network_CharacterControllerPrototype.Jump();
                     playerController.Network_CharacterControllerPrototype.Move(Vector3.zero);
-                    playerController.Network_CharacterControllerPrototype.Velocity += pushDir * (PushForce + playerController.PlayerGameData.BreakPoint);//推力計算
+                    playerController.Network_CharacterControllerPrototype.Velocity += airborneVec * (PushForce + playerController.PlayerGameData.BreakPoint);//垂直推力計算
+                    playerController.Network_CharacterControllerPrototype.Velocity += pushDir * (PushForce + playerController.PlayerGameData.BreakPoint);//水平推力計算
 
+                    playerController.LocalHurt = playerController.transform.InverseTransformDirection((playerController.transform.position - new Vector3(transform.position.x, 0, transform.position.z)));
+                    Debug.Log("X : " + playerController.LocalHurt.x + "Y : " + playerController.LocalHurt.y + "Z : " + playerController.LocalHurt.z);
                     //playerController.GetComponentInParent<CharacterController>().Move(pushDir.normalized * pushForce * Runner.DeltaTime);
                 }
                 playerController.BeenHitOrNot = true;
+
                 Debug.Log(pushDir * (PushForce + playerController.PlayerGameData.BreakPoint));
                 //playerController.GetComponentInParent<PlayerController>().TakeDamage(10);
                 //Debug.Log("Push!!!!!!!");

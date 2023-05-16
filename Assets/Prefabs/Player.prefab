@@ -450,12 +450,12 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 8ac8a399f27a168488cb5541ed560381, type: 3}
   PlayerGameData: {fileID: 16108846752584026}
   Network_CharacterControllerPrototype: {fileID: 16108846752584025}
-  ThisPlayerAudio: {fileID: -9144826342854410961}
   bonkCollider: {fileID: 7820528744076856170}
   CurBKBar: {fileID: 7732670068925813538}
   CurChargeAttackBar: {fileID: 2095902597614424196}
   skinnedMeshRenderer: {fileID: 443375718027710225}
   drivingSpeed: 100
+  airborneAmount: 0.1
   LandingAudioClip: {fileID: 0}
   FootstepAudioClips: []
   FootstepAudioVolume: 0.5

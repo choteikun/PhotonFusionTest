@@ -26,11 +26,14 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
     private NetworkMecanimAnimator networkAnimator;
 
     //提前Hash進行優化
+    readonly int h_HurtFromX = Animator.StringToHash("HurtFromX");
+    readonly int h_HurtFromY = Animator.StringToHash("HurtFromY");
+
     readonly int h_AnimMoveSpeed = Animator.StringToHash("AnimMoveSpeed");
-    readonly int h_AirborneSpeed = Animator.StringToHash("AirborneSpeed");
+    
 
     readonly int h_Idle = Animator.StringToHash("Idle");
-    readonly int h_Run = Animator.StringToHash("Run");
+    readonly int h_Jump = Animator.StringToHash("Jump");
     readonly int h_Flap = Animator.StringToHash("Flap");
     readonly int h_Charging = Animator.StringToHash("Charging");
     readonly int h_ChargeFlap = Animator.StringToHash("ChargeFlap");
@@ -42,6 +45,7 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
 
     readonly int h_InputDetected = Animator.StringToHash("InputDetected");
     readonly int h_Grounded = Animator.StringToHash("Grounded");
+    readonly int h_Airborne = Animator.StringToHash("Airborne");
 
 
     [SerializeField, Tooltip("過渡到隨機Idle動畫所需要花的時間")]
@@ -72,19 +76,20 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
 
 
         player_horizontalVel = new Vector3(playerController.Network_CharacterControllerPrototype.Velocity.x, 0, playerController.Network_CharacterControllerPrototype.Velocity.z).magnitude;
+        player_verticalVel = playerController.Network_CharacterControllerPrototype.Velocity.y;
+
         networkAnimator.Animator.SetFloat(h_AnimMoveSpeed, player_horizontalVel);
-
-        if (playerController.Network_CharacterControllerPrototype.IsGrounded)
-        {
-            player_verticalVel = -8;
-        }
-        else
-        {
-            player_verticalVel = playerController.Network_CharacterControllerPrototype.Velocity.y;
-        }
-        networkAnimator.Animator.SetFloat(h_AirborneSpeed, player_verticalVel);
-
         networkAnimator.Animator.SetBool(h_Grounded, playerController.Network_CharacterControllerPrototype.IsGrounded);
+
+
+        #region - 擊飛動畫處理 -
+
+        #endregion
+
+
+
+
+
 
         if (playerController.GetInput(out NetworkInputData data))
         {
@@ -111,6 +116,21 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
                 playerController.FlapAnimPlay = false;
                 playerController.ChargeFlapAnimPlay = false;
             }
+            #region - 擊飛動畫處理 -
+            else if (playerController.BeenHitOrNot && player_verticalVel > 0)
+            {
+                //擊飛動畫
+                playerAnimState = PlayerAnimState.BeAttack;
+
+                networkAnimator.Animator.SetFloat(h_HurtFromX, playerController.LocalHurt.x);
+                networkAnimator.Animator.SetFloat(h_HurtFromY, playerController.LocalHurt.z);
+            }
+            else if (playerController.BeenHitOrNot && player_verticalVel <= 0)
+            {
+                playerController.LocalHurt = Vector3.zero;
+                playerAnimState = PlayerAnimState.Move;
+            }
+            #endregion
             else if (data.Move == Vector3.zero && playerController.Network_CharacterControllerPrototype.IsGrounded && !playerController.FlapAnimPlay && !playerController.ChargeFlapAnimPlay)//待機狀態
             {
                 inputDetected = false;
@@ -127,6 +147,14 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
             }
             #endregion
 
+            if(playerController.Network_CharacterControllerPrototype.IsGrounded && pressed.IsSet(InputButtons.JUMP))
+            {
+                networkAnimator.Animator.SetBool(h_Jump, true);
+            }
+            else
+            {
+                networkAnimator.Animator.SetBool(h_Jump, false);
+            }
             #region - 普通攻擊動畫處理 -
             if (playerController.FlapAnimPlay && (playerAnimState == PlayerAnimState.Idle || playerAnimState == PlayerAnimState.Move))//只有在Idle & Move 狀態下可以同時播放拍巴掌動畫
             {
@@ -166,42 +194,46 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
 
 
         #region - 動畫狀態分類 -
+
         switch (playerAnimState)
         {
             case PlayerAnimState.Idle:
                 networkAnimator.Animator.SetBool(h_Idle, true);
-                networkAnimator.Animator.SetBool(h_Run, false);
                 _moveToIdleTimer = 0;
                 break;
             case PlayerAnimState.Move:   
-                networkAnimator.Animator.SetBool(h_Run, true);
                 networkAnimator.Animator.SetBool(h_Idle, false);
+                networkAnimator.Animator.SetBool(h_Airborne, false);
                 break;
             case PlayerAnimState.BeAttack:
+                networkAnimator.Animator.SetBool(h_Idle, false);
+                networkAnimator.Animator.SetBool(h_Airborne, true);
 
                 break;
             case PlayerAnimState.Dead:
-                networkAnimator.Animator.SetBool(h_Die, true);
+                networkAnimator.Animator.SetBool(h_Idle, false);
+                stopAllAttackAnimations();
 
-                resetAllMoveAnimations();
+                networkAnimator.Animator.SetBool(h_Die, true);
                 break;
             case PlayerAnimState.Win:
-                networkAnimator.Animator.SetBool(h_Win, true);
+                networkAnimator.Animator.SetBool(h_Idle, false);
+                stopAllAttackAnimations();
 
-                resetAllMoveAnimations();
+                networkAnimator.Animator.SetBool(h_Win, true);
                 break;
             case PlayerAnimState.Teleporting:
-                //networkAnimator.Animator.SetBool(h_Teleporting, true);
+                //networkAnimator.Animator.SetBool(h_Idle, false);
+                stopAllAttackAnimations();
+               
                 networkAnimator.Animator.SetBool(h_Idle, true);
-                resetAllMoveAnimations();
+                //networkAnimator.Animator.SetBool(h_Teleporting, true);
                 break;
             default:
                 break;
         }
-        void resetAllMoveAnimations()
+        void stopAllAttackAnimations()//不允許攻擊的情況
         {
-            networkAnimator.Animator.SetBool(h_Idle, false);
-            networkAnimator.Animator.SetBool(h_Run, false);
             networkAnimator.Animator.SetBool(h_Flap, false);
             networkAnimator.Animator.SetBool(h_Charging, false);
             networkAnimator.Animator.SetBool(h_ChargeFlap, false);
