@@ -10,120 +10,79 @@ using Cinemachine;
 //[RequireComponent(typeof(PlayerInput))]
 public class PlayerController : NetworkBehaviour
 {
-    [SerializeField]
-    private EnemyAIBehavior enemyPrefab;
-
-    [SerializeField]
-    private AudioSource playerAudioSource;
-
-    [SerializeField]
-    private AudioClip[] playerAudioClips;
-
-    public PlayerGameData PlayerGameData;
-
-    public NetworkCharacterControllerPrototype Network_CharacterControllerPrototype = null;
-
-    //public AudioSource ThisPlayerAudio;
-    
-
-    //[SerializeField]
-    //private Ball ballPrefab;
-
-    [SerializeField]
-    private GameObject bonkCollider;//手掌Collider(用於偵測其他人的PlayerController腳本)
-
-    [SerializeField]
-    private Image CurBKBar = null;
-    [SerializeField]
-    private Image CurChargeAttackBar = null;
-
-    [SerializeField]
-    private SkinnedMeshRenderer skinnedMeshRenderer = null;
-
-    [SerializeField, Tooltip("衝刺速度")]
-    private float drivingSpeed;
-
-    [SerializeField, Tooltip("擊飛力道")]
-    private float airborneAmount;
-
-
-    public AudioClip LandingAudioClip;
-    public AudioClip[] FootstepAudioClips;
-    [Range(0, 1)] public float FootstepAudioVolume = 0.5f;
-
-    
-
-    [SerializeField, Tooltip("Mouse Cursor Settings")]
-    private bool cursorLocked = true;
-    public bool cursorInputForLook = true;
-
-    //[SerializeField]
-    //private int maxHp = 100;
-    //[Networked(OnChanged =nameof(OnHpChanged))]//血量數值每次一有變化就刷新
-    //public int CurHp { get; set; }
-
+    #region - Player Public Networked 變量 -
     [Networked]
     public NetworkButtons ButtonsPrevious { get; set; }//上一個按鈕的資料
 
     [Networked]
     [Tooltip("贏家")]
-    public bool Winner{ get; set; }
+    public bool Winner { get; set; }
     [Networked]
     [Tooltip("輸家")]
     public bool Loser { get; set; }
 
-    [Networked][Tooltip("玩家正在使用傳送功能中")]
+    [Networked]
+    [Tooltip("玩家正在使用傳送功能中")]
     public bool PlayerIsTeleporting { get; set; }
-    [Networked][Tooltip("玩家無敵的開關")]
+    [Networked]
+    [Tooltip("玩家無敵的開關")]
     public bool PlayerImmuneDamage { get; set; }
 
-    [Networked][Tooltip("限制玩家移動的開關")]
+    [Networked]
+    [Tooltip("限制玩家移動的開關")]
     public bool PlayerMoveLimitOrNot { get; set; }
 
-    [Networked][Tooltip("角色巴掌力度")]
-    public float PushForce { get; private set; }
-
-    [Networked] [Tooltip("從哪裡受傷")]
-    public Vector3 LocalHurt { get; set; }
-
-    [Networked][Tooltip("角色BK係數(曲線X軸)")]
-    public float CoefficientOfBreakDownPoint { get; private set; }
-
-    [Networked][Tooltip("角色蓄力計時器")]
-    public float ChargeAttackBarTimer { get; private set; }
-
-
-
-
-    [Tooltip("角色普攻BK值")]
-    private int normalAttackBK = 5;
-
-    [Tooltip("角色蓄力BK值")]
-    private int chargeAttackBK = 10;
-
-    [Tooltip("角色蓄力BK傷害加成係數(百分比)的最大值")][SerializeField][Range(150,250)]
-    private int chargeAttackMaxBK;
-
-    
-
-
-
-
-    // cinemachine
-    private float cinemachineTargetYaw;
-    private float cinemachineTargetPitch;
-
-    // player HideInInspector 變量
-    [Networked][HideInInspector]
-    public bool DrivingKeyStatus { get; private set; }//衝刺鍵狀態
-    [Networked][HideInInspector]
-    public bool JumpEffectTrigger { get; private set; }//防止不斷播放跳躍特效，false為不可播放
     [Networked]
-    public bool BeenHitOrNot { get; set; }//是否被擊中過
+    [Tooltip("是否被擊中過")]
+    public bool BeenHitOrNot { get; set; }
     [Networked]
     [Tooltip("角色是否為蓄力狀態")]
     public bool ChargeAttackOrNot { get; set; }
+    [Networked]
+    [Tooltip("角色是否從船上出局")]
+    public bool OutOfTheBoat { get; set; }
 
+    [Networked]
+    [Tooltip("角色巴掌力度")]
+    public float PushForce { get; private set; }
+
+    [Networked]
+    [Tooltip("角色BK係數(曲線X軸)")]
+    public float CoefficientOfBreakDownPoint { get; private set; }
+
+    [Networked]
+    [Tooltip("角色蓄力計時器")]
+    public float ChargeAttackBarTimer { get; private set; }
+
+    [Networked]
+    [Tooltip("從哪裡受傷")]
+    public Vector3 LocalHurt { get; set; }
+
+    #endregion
+    //------------------------------------------------------------------------------------------------------------------------
+    #region - Player Public Networked HideInInspector 變量 -
+    [Networked]
+    [HideInInspector]
+    [Tooltip("衝刺鍵狀態")]
+    public bool DrivingKeyStatus { get; private set; }
+    [Networked]
+    [HideInInspector]
+    [Tooltip("防止不斷播放跳躍特效，false為不可播放")]
+    public bool JumpEffectTrigger { get; private set; }
+    #endregion
+    //------------------------------------------------------------------------------------------------------------------------
+    #region - Player Public 變量 -
+    public PlayerGameData PlayerGameData;
+
+    public NetworkCharacterControllerPrototype Network_CharacterControllerPrototype = null;
+
+    public bool cursorInputForLook = true;
+    //public AudioClip LandingAudioClip;
+    //public AudioClip[] FootstepAudioClips;
+    //[Range(0, 1)] public float FootstepAudioVolume = 0.5f;
+    #endregion
+    //------------------------------------------------------------------------------------------------------------------------
+    #region - Player Public HideInInspector 變量 -
     [HideInInspector]
     [Tooltip("播放拍巴掌動畫的狀態")]
     public bool FlapAnimPlay;
@@ -133,7 +92,72 @@ public class PlayerController : NetworkBehaviour
     [HideInInspector]
     [Tooltip("碰撞啟用")]
     public bool collisionAvailable;
+    [HideInInspector]
+    [Tooltip("播放出局動畫")]
+    public bool OutAnimPlay;
+    #endregion
+    //------------------------------------------------------------------------------------------------------------------------
+    #region - Player Private SerializeField 變量 -
+    [SerializeField, Tooltip("衝刺速度")]
+    private float drivingSpeed;
 
+    [SerializeField, Tooltip("擊飛力道")]
+    private float airborneAmount;
+
+    [Tooltip("角色蓄力BK傷害加成係數(百分比)的最大值")]
+    [SerializeField]
+    [Range(150, 250)]
+    private int chargeAttackMaxBK;
+
+
+
+    [SerializeField, Tooltip("Mouse Cursor Settings")]
+    private bool cursorLocked = true;
+    #endregion
+    //------------------------------------------------------------------------------------------------------------------------
+    #region - Player Private SerializeField Componment -
+    [SerializeField]
+    private EnemyAIBehavior enemyPrefab;
+
+    [SerializeField]
+    private AudioSource playerAudioSource;
+
+    [SerializeField]
+    private AudioClip[] playerAudioClips;
+
+    [SerializeField]
+    private GameObject bonkCollider;//手掌Collider(用於偵測其他人的PlayerController腳本)
+
+    [SerializeField]
+    private Image CurBKBar = null;
+
+    [SerializeField]
+    private Image CurChargeAttackBar = null;
+
+    [SerializeField]
+    private SkinnedMeshRenderer skinnedMeshRenderer = null;
+    #endregion
+    //------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+    //[SerializeField]
+    //private int maxHp = 100;
+    //[Networked(OnChanged =nameof(OnHpChanged))]//血量數值每次一有變化就刷新
+    //public int CurHp { get; set; }
+
+    // cinemachine
+    //private float cinemachineTargetYaw;
+    //private float cinemachineTargetPitch;
+
+
+    #region - private 變量 & Componment -
+    [Tooltip("角色普攻BK值")]
+    private int normalAttackBK = 5;
+
+    [Tooltip("角色蓄力BK值")]
+    private int chargeAttackBK = 10;
 
     [Tooltip("角色當前攻擊BK值")]
     private float curAttackBK;
@@ -141,15 +165,22 @@ public class PlayerController : NetworkBehaviour
     [Tooltip("角色蓄力百分比")]
     private float chargeAttackPercent;
 
+    [Tooltip("角色出局計時器")]
+    private float playerOutTimer;
 
+    [Tooltip("角色暫存速度")]
     private float speed;
 
+    [Tooltip("角色限制移動的參數")]
+    private int moveLimitParameter;//限制移動的參數
     private const int moveLimit_Y = 0;
     private const int moveLimit_N = 1;
-    private int moveLimitParameter;//限制移動的參數
-
+    
     private PlayerEffectVisual playerEffectVisual;
     private GameObject mainCamera;
+    #endregion
+
+
 
 
 
@@ -177,9 +208,12 @@ public class PlayerController : NetworkBehaviour
             Winner = false;
             Loser = false;
             PlayerIsTeleporting = false;
+            OutOfTheBoat = false;
             ChargeAttackOrNot = false;
             CoefficientOfBreakDownPoint = 0.0f;//初始化角色BK值
             ChargeAttackBarTimer = 0.0f;
+
+            playerOutTimer = 0.0f;
         }
         if (Object.HasInputAuthority)//在客戶端上運行
         {
@@ -210,12 +244,23 @@ public class PlayerController : NetworkBehaviour
             BeenHitOrNot = false;//被擊中後落地時變成可以再被擊中的狀態
         }
 
+        if (!OutOfTheBoat && DetectOutCollider())
+        {
+            playerOutTimer += Runner.DeltaTime;
+            if (playerOutTimer >= 1.0f)//離開船上1秒後算出局
+            {
+                OutOfTheBoat = true;
+                OutAnimPlay = true;
+                playerOutTimer = 0.0f;
+            }
+        }
+
         if (Winner || Loser || PlayerIsTeleporting)
             return;
         
         Move();
 
-        if (BeenHitOrNot)
+        if (BeenHitOrNot || OutOfTheBoat)
         {
             PlayerMoveLimitOrNot = true;
         }
@@ -230,7 +275,7 @@ public class PlayerController : NetworkBehaviour
         }
 
         
-        
+
         //if (CurHp <= 0)
         //{
         //    Respawn();
@@ -463,6 +508,7 @@ public class PlayerController : NetworkBehaviour
             if (collider.TryGetComponent<PlayerController>(out PlayerController playerController) && !playerController.BeenHitOrNot && !playerController.PlayerImmuneDamage)//判斷collider身上是否有PlayerController的腳本，並確認是否該對象被打擊過，如果Player不是無敵狀態則
             {
                 // 計算推力方向
+                collisionAvailable = false;//碰撞一次馬上關閉碰撞
 
                 var targetOriginPos = playerController.transform.position;
                 targetOriginPos = new Vector3(targetOriginPos.x, 0, targetOriginPos.z);
@@ -487,10 +533,11 @@ public class PlayerController : NetworkBehaviour
                     playerController.Network_CharacterControllerPrototype.Velocity += pushDir * (PushForce + playerController.PlayerGameData.BreakPoint);//水平推力計算
 
                     playerController.LocalHurt = playerController.transform.InverseTransformDirection((playerController.transform.position - new Vector3(transform.position.x, 0, transform.position.z)));
+                    playerController.BeenHitOrNot = true;
                     Debug.Log("X : " + playerController.LocalHurt.x + "Y : " + playerController.LocalHurt.y + "Z : " + playerController.LocalHurt.z);
                     //playerController.GetComponentInParent<CharacterController>().Move(pushDir.normalized * pushForce * Runner.DeltaTime);
                 }
-                playerController.BeenHitOrNot = true;
+                
 
                 Debug.Log(pushDir * (PushForce + playerController.PlayerGameData.BreakPoint));
                 //playerController.GetComponentInParent<PlayerController>().TakeDamage(10);
@@ -585,6 +632,24 @@ public class PlayerController : NetworkBehaviour
         //Gizmos.DrawWireSphere(bonkCollider.transform.position + new Vector3(-0.001f, 0, 0), radius: 0.0035f);
         Gizmos.DrawWireCube(bonkCollider.transform.position + new Vector3(0f, -0.5f, 0f), new Vector3(transform.localScale.x / 1.5f, transform.localScale.y / 0.75f, transform.localScale.z / 1.5f));
     }
+
+    #region - 玩家出局判斷 -
+    public bool DetectOutCollider()
+    {
+        Debug.DrawLine(transform.position, new Vector3(0, -1000, 0), Color.red);
+        RaycastHit hit;
+        Ray ray = new Ray(transform.position, -Vector3.up);
+
+        if (Physics.Raycast(ray, out hit))
+        {
+            if (hit.collider.CompareTag("OutCollider"))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    #endregion
 
     #region - 聲音處理 -
     [Rpc(RpcSources.All, RpcTargets.All)]

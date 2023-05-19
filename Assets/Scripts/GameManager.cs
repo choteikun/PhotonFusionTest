@@ -4,11 +4,15 @@ using UnityEngine;
 using System;
 using Fusion;
 using UnityEngine.Events;
+using System.Linq;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
+    public PlayerController[] winnerPlayerControllers;
+
     [SerializeField] private NetworkRunner runner = null;
+
     public NetworkRunner Runner
     {
         get
@@ -76,6 +80,33 @@ public class GameManager : MonoBehaviour
         {
             //將GamePlay場景設置為當前活動場景，以便其他組件或遊戲對象可以正確地訪問該場景中的內容
             Runner.SetActiveScene("GamePlay");
+        }
+    }
+
+    public void UpdateWinnerWhoIs()//有玩家出局就檢查玩家獲勝條件
+    {
+        int survivorCount = 0;
+        //檢查所有玩家的OutOfTheBoat
+        foreach (var playerData in PlayerList.Values)
+        {
+            if (!playerData.OutOfTheBoat)//每出局一個人
+            {
+                survivorCount++;//計算船上還有多少人
+
+                winnerPlayerControllers = GameObject.FindGameObjectWithTag("Player").GetComponents<PlayerController>(); 
+
+            }
+        }
+        if (survivorCount == 1)//當生存者只剩一個人
+        {
+            //檢查場上所有PlayerController找到playerController.OutOfTheBoat為false的PlayerController，並將他設置為Winner
+            foreach (var playerController in winnerPlayerControllers)
+            {
+                if (!playerController.OutOfTheBoat)
+                {
+                    playerController.Winner = true;
+                }
+            }
         }
     }
 

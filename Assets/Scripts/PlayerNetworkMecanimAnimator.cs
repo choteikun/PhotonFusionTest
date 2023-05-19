@@ -37,9 +37,11 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
     readonly int h_Flap = Animator.StringToHash("Flap");
     readonly int h_Charging = Animator.StringToHash("Charging");
     readonly int h_ChargeFlap = Animator.StringToHash("ChargeFlap");
-    readonly int h_BeAttack = Animator.StringToHash("BeAttack");
-    readonly int h_Win = Animator.StringToHash("Win");
+
+    readonly int h_OutOfTheBoat = Animator.StringToHash("OutOfTheBoat");
     readonly int h_Die = Animator.StringToHash("Die");
+
+    readonly int h_Win = Animator.StringToHash("Win"); 
 
     readonly int h_TimeOutToIdle = Animator.StringToHash("TimeOutToIdle");
 
@@ -81,16 +83,6 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
         networkAnimator.Animator.SetFloat(h_AnimMoveSpeed, player_horizontalVel);
         networkAnimator.Animator.SetBool(h_Grounded, playerController.Network_CharacterControllerPrototype.IsGrounded);
 
-
-        #region - 擊飛動畫處理 -
-
-        #endregion
-
-
-
-
-
-
         if (playerController.GetInput(out NetworkInputData data))
         {
             NetworkButtons buttons = data.Buttons;
@@ -101,14 +93,25 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
             //在State Authority上，建議使用NetworkMecanimAnimator的SetTrigger()方法，以確保觸發器的正確同步。
             //而對於Input Authority，可以使用Animator的原生SetTrigger()方法，因為此時狀態同步不是關鍵問題。
 
-            #region - 簡易FSM動畫邏輯處理 -
+            #region - 整體動畫邏輯處理 -
             if (playerController.Winner)
             {
                 playerAnimState = PlayerAnimState.Win;
             }
-            else if (playerController.Loser)
-            {
+            else if (playerController.OutAnimPlay)
+            { 
                 playerAnimState = PlayerAnimState.Dead;
+                if (playerController.Network_CharacterControllerPrototype.IsGrounded)
+                {
+                    networkAnimator.Animator.SetBool(h_OutOfTheBoat, false);
+                    networkAnimator.Animator.SetBool(h_Die, true);
+                    playerController.Loser = true;
+                    playerController.OutAnimPlay = false;
+                }
+                else
+                {
+                    networkAnimator.Animator.SetBool(h_OutOfTheBoat, true);
+                }
             }
             else if (playerController.PlayerIsTeleporting)//使用傳送功能時不再進入攻擊動畫
             {
@@ -170,7 +173,7 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
             #region - 蓄力攻擊動畫處理 -
             if (playerController.ChargeFlapAnimPlay && (playerAnimState == PlayerAnimState.Idle || playerAnimState == PlayerAnimState.Move))//只有在Idle & Move 狀態下可以同時播放蓄力動畫
             {
-                if ((networkAnimator.Animator.GetCurrentAnimatorStateInfo(1).shortNameHash != h_Charging) && (networkAnimator.Animator.GetCurrentAnimatorStateInfo(1).shortNameHash != h_ChargeFlap)) //如果不在蓄力攻擊狀態機以及任何的過渡條下則開始進入蓄力動畫
+                if ((networkAnimator.Animator.GetCurrentAnimatorStateInfo(1).shortNameHash != h_Charging) && (networkAnimator.Animator.GetCurrentAnimatorStateInfo(1).shortNameHash != h_ChargeFlap)) //如果不在蓄力攻擊狀態機則開始進入蓄力動畫
                 {
                     playerController.collisionAvailable = false;//蓄力時關閉碰撞
                     networkAnimator.Animator.SetBool(h_Flap, false);
@@ -212,9 +215,8 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
                 break;
             case PlayerAnimState.Dead:
                 networkAnimator.Animator.SetBool(h_Idle, false);
-                stopAllAttackAnimations();
 
-                networkAnimator.Animator.SetBool(h_Die, true);
+                stopAllAttackAnimations();
                 break;
             case PlayerAnimState.Win:
                 networkAnimator.Animator.SetBool(h_Idle, false);
@@ -232,7 +234,7 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
             default:
                 break;
         }
-        void stopAllAttackAnimations()//不允許攻擊的情況
+        void stopAllAttackAnimations()//關閉攻擊動畫
         {
             networkAnimator.Animator.SetBool(h_Flap, false);
             networkAnimator.Animator.SetBool(h_Charging, false);

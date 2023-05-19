@@ -8,6 +8,8 @@ public class PlayerNetworkData : NetworkBehaviour
 
 	[Networked(OnChanged = nameof(OnPlayerNameChanged))] public string PlayerName { get; set; }
 	[Networked(OnChanged = nameof(OnIsReadyChanged))] public NetworkBool IsReady { get; set; }
+	[Networked(OnChanged = nameof(OnGameOverChanged))] public NetworkBool OutOfTheBoat { get; set; }
+
 	public string PlayerID { get; set; }
 	public override void Spawned()
 	{
@@ -37,6 +39,12 @@ public class PlayerNetworkData : NetworkBehaviour
 	{
 		IsReady = isReady;
 	}
+
+	[Rpc(sources: RpcSources.InputAuthority, targets: RpcTargets.StateAuthority)]
+	public void SetPlayerOut_RPC(bool outOfTheBoat)
+	{
+		OutOfTheBoat = outOfTheBoat;
+	}
 	#endregion
 
 	#region - OnChanged Events -
@@ -50,6 +58,12 @@ public class PlayerNetworkData : NetworkBehaviour
 	{
 		//IsReady一變動就更新PlayerList
 		GameManager.Instance.UpdatePlayerList();
+    }
+
+	private static void OnGameOverChanged(Changed<PlayerNetworkData> changed)
+	{
+        //有玩家出局就檢查玩家獲勝條件
+        GameManager.Instance.UpdateWinnerWhoIs();
     }
 	#endregion
 }
