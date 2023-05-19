@@ -89,7 +89,7 @@ public class GameManager : MonoBehaviour
         //檢查所有玩家的OutOfTheBoat
         foreach (var playerData in PlayerList.Values)
         {
-            if (!playerData.OutOfTheBoat)//每出局一個人
+            if (playerData.OutOfTheBoat)//每出局一個人
             {
                 survivorCount++;//計算船上還有多少人
 

@@ -255,6 +255,15 @@ public class PlayerController : NetworkBehaviour
             }
         }
 
+        if (Loser)
+        {
+            var gameManager = GameManager.Instance;
+            if (gameManager.PlayerList.TryGetValue(Object.Runner.LocalPlayer, out PlayerNetworkData playerNetworkData))
+            {
+                playerNetworkData.SetPlayerOut_RPC(OutOfTheBoat);
+            }
+        }
+
         if (Winner || Loser || PlayerIsTeleporting)
             return;
         
