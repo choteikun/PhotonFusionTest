@@ -258,7 +258,7 @@ public class PlayerController : NetworkBehaviour
         if (Loser)
         {
             var gameManager = GameManager.Instance;
-            if (gameManager.PlayerList.TryGetValue(Object.Runner.LocalPlayer, out PlayerNetworkData playerNetworkData))
+            if (gameManager.PlayerList.TryGetValue(Object.Runner.LocalPlayer, out PlayerNetworkData playerNetworkData) && Object.HasInputAuthority)
             {
                 playerNetworkData.SetPlayerOut_RPC(OutOfTheBoat);
             }

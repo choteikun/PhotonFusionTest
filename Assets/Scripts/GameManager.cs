@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
-    public PlayerController[] winnerPlayerControllers;
+    public List<PlayerController> winnerPlayerControllers = new();
 
     [SerializeField] private NetworkRunner runner = null;
 
@@ -93,8 +93,10 @@ public class GameManager : MonoBehaviour
             {
                 survivorCount++;//計算船上還有多少人
 
-                winnerPlayerControllers = GameObject.FindGameObjectWithTag("Player").GetComponents<PlayerController>(); 
-
+                foreach(var gameObj in GameObject.FindGameObjectsWithTag("Player"))
+                {
+                    winnerPlayerControllers.AddRange(gameObj.GetComponents<PlayerController>());
+                }
             }
         }
         if (survivorCount == 1)//當生存者只剩一個人
