@@ -132,6 +132,7 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
             {
                 playerController.LocalHurt = Vector3.zero;
                 playerAnimState = PlayerAnimState.Move;
+                playerController.BeenHitOrNot = false;//被擊中後落地時變成可以再被擊中的狀態
             }
             #endregion
             else if (data.Move == Vector3.zero && playerController.Network_CharacterControllerPrototype.IsGrounded && !playerController.FlapAnimPlay && !playerController.ChargeFlapAnimPlay)//待機狀態

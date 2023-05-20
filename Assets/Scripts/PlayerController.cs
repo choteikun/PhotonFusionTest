@@ -239,11 +239,6 @@ public class PlayerController : NetworkBehaviour
 
         PlayerImmuneDamage = Winner || Loser || PlayerIsTeleporting;
 
-        if (Network_CharacterControllerPrototype.IsGrounded)
-        {
-            BeenHitOrNot = false;//被擊中後落地時變成可以再被擊中的狀態
-        }
-
         if (!OutOfTheBoat && DetectOutCollider())
         {
             playerOutTimer += Runner.DeltaTime;

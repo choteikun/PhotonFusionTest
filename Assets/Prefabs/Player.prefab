@@ -443,40 +443,40 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
-  enemyPrefab: {fileID: 7571370166665707169, guid: 295045a2bf29020458058c936d9616d0,
-    type: 3}
-  playerAudioSource: {fileID: 0}
-  playerAudioClips:
-  - {fileID: 8300000, guid: 8ac8a399f27a168488cb5541ed560381, type: 3}
-  PlayerGameData: {fileID: 16108846752584026}
-  Network_CharacterControllerPrototype: {fileID: 16108846752584025}
-  bonkCollider: {fileID: 7820528744076856170}
-  CurBKBar: {fileID: 7732670068925813538}
-  CurChargeAttackBar: {fileID: 2095902597614424196}
-  skinnedMeshRenderer: {fileID: 443375718027710225}
-  drivingSpeed: 100
-  airborneAmount: 0.1
-  LandingAudioClip: {fileID: 0}
-  FootstepAudioClips: []
-  FootstepAudioVolume: 0.5
-  cursorLocked: 1
-  cursorInputForLook: 1
   _Winner: 0
   _Loser: 0
   _PlayerIsTeleporting: 0
   _PlayerImmuneDamage: 0
   _PlayerMoveLimitOrNot: 0
+  _BeenHitOrNot: 0
+  _ChargeAttackOrNot: 0
+  _OutOfTheBoat: 0
   _PushForce: 50
   _CoefficientOfBreakDownPoint: 0
   _ChargeAttackBarTimer: 0
-  chargeAttackMaxBK: 250
+  _LocalHurt: {x: 0, y: 0, z: 0}
   _DrivingKeyStatus: 0
   _JumpEffectTrigger: 0
-  _BeenHitOrNot: 0
-  _ChargeAttackOrNot: 0
+  PlayerGameData: {fileID: 16108846752584026}
+  Network_CharacterControllerPrototype: {fileID: 16108846752584025}
+  cursorInputForLook: 1
   FlapAnimPlay: 0
   ChargeFlapAnimPlay: 0
   collisionAvailable: 0
+  OutAnimPlay: 0
+  drivingSpeed: 100
+  airborneAmount: 0.1
+  chargeAttackMaxBK: 250
+  cursorLocked: 1
+  enemyPrefab: {fileID: 7571370166665707169, guid: 295045a2bf29020458058c936d9616d0,
+    type: 3}
+  playerAudioSource: {fileID: 0}
+  playerAudioClips:
+  - {fileID: 8300000, guid: 8ac8a399f27a168488cb5541ed560381, type: 3}
+  bonkCollider: {fileID: 7820528744076856170}
+  CurBKBar: {fileID: 7732670068925813538}
+  CurChargeAttackBar: {fileID: 2095902597614424196}
+  skinnedMeshRenderer: {fileID: 443375718027710225}
 --- !u!114 &16108846752584026
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -482,6 +482,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8dd735b4b49724a4ca76ce1925112b1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  winnerPlayerControllers: []
   runner: {fileID: 605620938}
   PlayerName: 
 --- !u!4 &605620940
@@ -3600,10 +3601,10 @@ RectTransform:
   m_Father: {fileID: 6251818426640924691}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 130}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 332, y: -210}
+  m_SizeDelta: {x: 664, y: 130}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6251818426588186270
 CanvasRenderer:
@@ -5296,10 +5297,10 @@ RectTransform:
   m_Father: {fileID: 6251818426640924691}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 130}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 332, y: -65}
+  m_SizeDelta: {x: 664, y: 130}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &6251818427380839201
 CanvasGroup:
