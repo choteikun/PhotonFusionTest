@@ -6,12 +6,14 @@ using TMPro;
 
 public class RoomCell : MonoBehaviour
 {
+    public Button joinBtn = null;
+
     private string roomName = null;
 
     private LobbyManager lobbyManager = null;
 
     [SerializeField] private TMP_Text roomNameTxt = null;
-    //[SerializeField] private Button joinBtn = null;
+    
 
     public void SetInfo(LobbyManager lobbyManager, string roomName)
     {

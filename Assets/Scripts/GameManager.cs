@@ -78,6 +78,7 @@ public class GameManager : MonoBehaviour
 
         if (CheckAllPlayerIsReady())
         {
+            
             //將GamePlay場景設置為當前活動場景，以便其他組件或遊戲對象可以正確地訪問該場景中的內容
             Runner.SetActiveScene("GamePlay");
         }

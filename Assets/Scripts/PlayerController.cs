@@ -5,6 +5,7 @@ using UnityEngine;
 using Fusion;
 using UnityEngine.UI;
 using Cinemachine;
+using TMPro;
 
 [RequireComponent(typeof(CharacterController))]
 //[RequireComponent(typeof(PlayerInput))]
@@ -129,10 +130,13 @@ public class PlayerController : NetworkBehaviour
     private GameObject bonkCollider;//手掌Collider(用於偵測其他人的PlayerController腳本)
 
     [SerializeField]
-    private Image CurBKBar = null;
+    private Image curBKBar = null;
 
     [SerializeField]
-    private Image CurChargeAttackBar = null;
+    private Image curChargeAttackBar = null;
+
+    [SerializeField]
+    private TMP_Text playerNameText = null;
 
     [SerializeField]
     private SkinnedMeshRenderer skinnedMeshRenderer = null;
@@ -192,8 +196,9 @@ public class PlayerController : NetworkBehaviour
         DrivingKeyStatus = false;
         playerEffectVisual = GetComponent<PlayerEffectVisual>();
         playerAudioSource = GetComponent<AudioSource>();
-        playerEffectVisual.InitializeVisualEffect();//因為是所有客戶端都要看到的特效，所以放在外面
+        playerEffectVisual.InitializeVisualEffect();//因為是所有物件(包括IsProxy)都要顯示的特效，所以放在外面
         playerEffectVisual.InitializeParticleEffect();
+        
 
         if (mainCamera == null)
         {
@@ -217,18 +222,13 @@ public class PlayerController : NetworkBehaviour
         }
         if (Object.HasInputAuthority)//在客戶端上運行
         {
-            if (GameManager.Instance.PlayerList.TryGetValue(Object.InputAuthority, out var playerNetworkData))
-            {
-                //playerGameData = new PlayerGameData(playerNetworkData.PlayerName, Object.InputAuthority.PlayerId);
-                PlayerGameData.SetNameAID(playerNetworkData.PlayerName, Object.InputAuthority.PlayerId);
-                Debug.Log("PlayerName : " + PlayerGameData.PlayerName + "/PlayerId : " + PlayerGameData.PlayerID);
-            }
             Debug.Log(this.gameObject.name);
             Bind_Camera(this.gameObject);
         }
+
+        Invoke("setPlayerData_RPC", 0.2f);//因為要拿PlayerNetworkData的關係，有先後順序的問題，所以晚一點才設置角色的名稱
+
     }
-
-
     public override void FixedUpdateNetwork()//逐每個tick更新(一個tick相當1.666毫秒)
     {
         //Debug.Log("speed : " + speed + "Acceleration : " + networkCharacterControllerPrototype.MoveSpeed + "SprintSpeed : " + sprintSpeed);
@@ -252,8 +252,7 @@ public class PlayerController : NetworkBehaviour
 
         if (Loser)
         {
-            var gameManager = GameManager.Instance;
-            if (gameManager.PlayerList.TryGetValue(Object.Runner.LocalPlayer, out PlayerNetworkData playerNetworkData) && Object.HasInputAuthority)
+            if (GameManager.Instance.PlayerList.TryGetValue(Object.Runner.LocalPlayer, out PlayerNetworkData playerNetworkData) && Object.HasInputAuthority)
             {
                 playerNetworkData.SetPlayerOut_RPC(OutOfTheBoat);
             }
@@ -574,40 +573,50 @@ public class PlayerController : NetworkBehaviour
     #endregion
 
     #region - 動態UI邏輯處理 -
+    [Rpc(RpcSources.All, RpcTargets.All)]
+    private void setPlayerData_RPC()
+    {
+        if (GameManager.Instance.PlayerList.TryGetValue(Object.InputAuthority, out PlayerNetworkData playerNetworkData))
+        {
+            PlayerGameData.SetNameAID(playerNetworkData.PlayerName, Object.InputAuthority.PlayerId);
+            playerNameText.text = playerNetworkData.PlayerName.ToString();
+            Debug.Log("PlayerName : " + PlayerGameData.PlayerName + "/PlayerId : " + PlayerGameData.PlayerID);
+        }
+    }
     public void ColorChangedByBreakDownPoint()
     {
         if (CoefficientOfBreakDownPoint >= 120.0f)//120是曲線x最陡的位置
         {
-            CurBKBar.color = Color.red;
+            curBKBar.color = Color.red;
         }
         else
         {
-            CurBKBar.color = Color.green;
+            curBKBar.color = Color.green;
         }
-        CurBKBar.fillAmount = CoefficientOfBreakDownPoint / 200.0f;//200是曲線x的最末端
+        curBKBar.fillAmount = CoefficientOfBreakDownPoint / 200.0f;//200是曲線x的最末端
     }
     public void ColorChangedByChargeAttackBar()
     {
         if(ChargeAttackBarTimer > 0 && ChargeAttackBarTimer <= 0.5f)
         {
-            CurChargeAttackBar.color = Color.green;
+            curChargeAttackBar.color = Color.green;
         }
         else if(ChargeAttackBarTimer > 0.5f && ChargeAttackBarTimer < 2.0f)
         {
-            CurChargeAttackBar.color = Color.yellow;
+            curChargeAttackBar.color = Color.yellow;
         }
         else if(ChargeAttackBarTimer >= 2.0f)
         {
-            CurChargeAttackBar.color = Color.red;
+            curChargeAttackBar.color = Color.red;
         }
 
         if (ChargeAttackOrNot && ChargeAttackBarTimer > 0.5f)//蓄力條顯示
         {
-            CurChargeAttackBar.fillAmount = (ChargeAttackBarTimer - 0.5f) / (2.0f - 0.5f) * 1.0f / 1;
+            curChargeAttackBar.fillAmount = (ChargeAttackBarTimer - 0.5f) / (2.0f - 0.5f) * 1.0f / 1;
         }
         else
         {
-            CurChargeAttackBar.fillAmount = 0;
+            curChargeAttackBar.fillAmount = 0;
         }
     }
     #endregion
