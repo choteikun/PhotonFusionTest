@@ -665,7 +665,7 @@ AnimatorStateTransition:
     m_ConditionEvent: ChargeFlap
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: -6311180221706820480}
+  m_DstState: {fileID: 0}
   m_Solo: 0
   m_Mute: 0
   m_IsExit: 0
@@ -1387,14 +1387,14 @@ AnimatorStateMachine:
   - {fileID: -521581702310863340}
   m_EntryTransitions: []
   m_StateMachineTransitions:
-  - first: {fileID: -5095014563262890900}
-    second: []
   - first: {fileID: -2678700188129754523}
     second:
     - {fileID: -4935037323728614732}
   - first: {fileID: -437920684553236800}
     second:
     - {fileID: 7678882422761668070}
+  - first: {fileID: -5095014563262890900}
+    second: []
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: -780, y: -200, z: 0}
   m_EntryPosition: {x: -180, y: 70, z: 0}
