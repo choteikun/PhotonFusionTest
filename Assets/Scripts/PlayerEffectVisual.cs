@@ -79,4 +79,8 @@ public class PlayerEffectVisual : MonoBehaviour
     {
         visualEffectsList[2].Play();
     }
+    public void HitEffectStop()
+    {
+        visualEffectsList[2].Stop();
+    }
 }

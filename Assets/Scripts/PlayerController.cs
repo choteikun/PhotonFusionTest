@@ -198,7 +198,7 @@ public class PlayerController : NetworkBehaviour
         playerAudioSource = GetComponent<AudioSource>();
         playerEffectVisual.InitializeVisualEffect();//因為是所有物件(包括IsProxy)都要顯示的特效，所以放在外面
         playerEffectVisual.InitializeParticleEffect();
-        
+        playerEffectVisual.HitEffectStop();
 
         if (mainCamera == null)
         {
@@ -540,7 +540,7 @@ public class PlayerController : NetworkBehaviour
                     Debug.Log("X : " + playerController.LocalHurt.x + "Y : " + playerController.LocalHurt.y + "Z : " + playerController.LocalHurt.z);
                     //playerController.GetComponentInParent<CharacterController>().Move(pushDir.normalized * pushForce * Runner.DeltaTime);
                 }
-                
+                playerEffectVisual.HitEffectPlay();
 
                 Debug.Log(pushDir * (PushForce + playerController.PlayerGameData.BreakPoint));
                 //playerController.GetComponentInParent<PlayerController>().TakeDamage(10);

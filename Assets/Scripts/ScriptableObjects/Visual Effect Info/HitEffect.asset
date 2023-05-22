@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0bc64d135456f34c9ee0e3eb036ba91, type: 3}
   m_Name: HitEffect
   m_EditorClassIdentifier: 
-  visualEffect: {fileID: 0}
+  visualEffect: {fileID: 6209017133314800371, guid: cd7032045d7632541813eb6b894bbcc9,
+    type: 3}
