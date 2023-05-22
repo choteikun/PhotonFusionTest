@@ -70,6 +70,10 @@ public class PlayerController : NetworkBehaviour
     [HideInInspector]
     [Tooltip("防止不斷播放跳躍特效，false為不可播放")]
     public bool JumpEffectTrigger { get; private set; }
+    [Networked]
+    [HideInInspector]
+    [Tooltip("打擊特效，false為不可播放")]
+    public bool HitEffectTrigger { get; private set; }
     #endregion
     //------------------------------------------------------------------------------------------------------------------------
     #region - Player Public 變量 -
@@ -194,6 +198,7 @@ public class PlayerController : NetworkBehaviour
         FlapAnimPlay = false;
         BeenHitOrNot = false;
         DrivingKeyStatus = false;
+        HitEffectTrigger = false;
         playerEffectVisual = GetComponent<PlayerEffectVisual>();
         playerAudioSource = GetComponent<AudioSource>();
         playerEffectVisual.InitializeVisualEffect();//因為是所有物件(包括IsProxy)都要顯示的特效，所以放在外面
@@ -447,6 +452,18 @@ public class PlayerController : NetworkBehaviour
         {
             playerEffectVisual.JumpingDustEffectStop();
         }
+        if (HitEffectTrigger)
+        {
+            playerEffectVisual.HitEffectPlay();//播放打擊特效
+            HitEffectTrigger = false;
+        }
+        else
+        {
+            if ((collisionAvailable && FlapAnimPlay) || (collisionAvailable && ChargeFlapAnimPlay))
+            {
+                playerEffectVisual.HitEffectStop();//再碰撞啟動時，事先重置打擊特效
+            }
+        }
     }
     private void Update()
     {
@@ -518,10 +535,8 @@ public class PlayerController : NetworkBehaviour
                 Vector3 pushDir = targetOriginPos - new Vector3(transform.position.x, 0, transform.position.z);
                 Vector3 airborneVec = new Vector3(0, airborneAmount, 0);
 
-                
-
                 Debug.Log(pushDir.magnitude);
-
+                HitEffectTrigger = true;
                 // 推動其他角色
                 if (Object.HasStateAuthority)//只會在伺服器端上運行
                 {
@@ -540,7 +555,7 @@ public class PlayerController : NetworkBehaviour
                     Debug.Log("X : " + playerController.LocalHurt.x + "Y : " + playerController.LocalHurt.y + "Z : " + playerController.LocalHurt.z);
                     //playerController.GetComponentInParent<CharacterController>().Move(pushDir.normalized * pushForce * Runner.DeltaTime);
                 }
-                playerEffectVisual.HitEffectPlay();
+                
 
                 Debug.Log(pushDir * (PushForce + playerController.PlayerGameData.BreakPoint));
                 //playerController.GetComponentInParent<PlayerController>().TakeDamage(10);
