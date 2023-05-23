@@ -20,6 +20,15 @@ public class TreasureBoxBehavior : NetworkBehaviour
         this.gameObject.transform.position = new Vector3(1000, 1000, 1000);
         //change player shader into golden
     }
+    public void TriggerTreasureBox(NetworkObject player)
+    {
+        if (player.CompareTag("Player"))
+        {
+            
+            this.gameObject.SetActive(false);
+            this.gameObject.transform.position = new Vector3(1000, 1000, 1000);
+        }
+    }
     public void TreasureSound()
     {
         //soundEffectTester.PlayAudioTest();

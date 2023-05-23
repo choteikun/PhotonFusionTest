@@ -11,6 +11,9 @@ public class GameManager : MonoBehaviour
 
     public List<PlayerController> winnerPlayerControllers = new();
 
+    //int loserCount;
+    int survivorCount;
+
     [SerializeField] private NetworkRunner runner = null;
 
     public NetworkRunner Runner
@@ -86,20 +89,26 @@ public class GameManager : MonoBehaviour
 
     public void UpdateWinnerWhoIs()//有玩家出局就檢查玩家獲勝條件
     {
-        int survivorCount = 0;
+        int loserCount = 0;
         //檢查所有玩家的OutOfTheBoat
         foreach (var playerData in PlayerList.Values)
         {
             if (playerData.OutOfTheBoat)//每出局一個人
             {
-                survivorCount++;//計算船上還有多少人
+                winnerPlayerControllers.Clear();
 
-                foreach(var gameObj in GameObject.FindGameObjectsWithTag("Player"))
+                loserCount++;//計算出局者數量
+                
+                foreach (var gameObj in GameObject.FindGameObjectsWithTag("Player"))
                 {
                     winnerPlayerControllers.AddRange(gameObj.GetComponents<PlayerController>());
                 }
+
+                survivorCount = winnerPlayerControllers.Count - loserCount;
             }
         }
+        Debug.Log("winnerPlayerControllers.Count : " + winnerPlayerControllers.Count);
+        Debug.Log("survivorCount : " + survivorCount);
         if (survivorCount == 1)//當生存者只剩一個人
         {
             //檢查場上所有PlayerController找到playerController.OutOfTheBoat為false的PlayerController，並將他設置為Winner

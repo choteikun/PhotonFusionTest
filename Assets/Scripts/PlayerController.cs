@@ -125,6 +125,9 @@ public class PlayerController : NetworkBehaviour
     private EnemyAIBehavior enemyPrefab;
 
     [SerializeField]
+    private SkinnedMeshRenderer skinnedMeshRenderer = null;
+
+    [SerializeField]
     private AudioSource playerAudioSource;
 
     [SerializeField]
@@ -142,8 +145,6 @@ public class PlayerController : NetworkBehaviour
     [SerializeField]
     private TMP_Text playerNameText = null;
 
-    [SerializeField]
-    private SkinnedMeshRenderer skinnedMeshRenderer = null;
     #endregion
     //------------------------------------------------------------------------------------------------------------------------
 
@@ -183,7 +184,11 @@ public class PlayerController : NetworkBehaviour
     private int moveLimitParameter;//限制移動的參數
     private const int moveLimit_Y = 0;
     private const int moveLimit_N = 1;
-    
+
+    bool startTeleporting;
+
+    float playerDissolveIntensity;
+
     private PlayerEffectVisual playerEffectVisual;
     private GameObject mainCamera;
     #endregion
@@ -220,6 +225,7 @@ public class PlayerController : NetworkBehaviour
             PlayerIsTeleporting = false;
             OutOfTheBoat = false;
             ChargeAttackOrNot = false;
+            startTeleporting = false;
             CoefficientOfBreakDownPoint = 0.0f;//初始化角色BK值
             ChargeAttackBarTimer = 0.0f;
 
@@ -432,6 +438,19 @@ public class PlayerController : NetworkBehaviour
     //}
     public override void Render()
     {
+        if (PlayerIsTeleporting && !startTeleporting)
+        {
+            Debug.Log("傳送囉!!");
+            StartCoroutine(PlayerDissolveAmountTransition(1, 3));
+            startTeleporting = true;
+        }
+        if (!PlayerIsTeleporting && startTeleporting)
+        {
+            Debug.Log("抵達囉!!");
+            StartCoroutine(PlayerDissolveAmountTransition(0, 2));
+            startTeleporting = false;
+        }
+
         if (Winner || Loser || PlayerIsTeleporting)
             return;
 
@@ -581,6 +600,7 @@ public class PlayerController : NetworkBehaviour
             if(collider.TryGetComponent<TreasureBoxBehavior>(out TreasureBoxBehavior treasureBox))
             {
                 //開啟寶箱
+                treasureBox.TriggerTreasureBox(Object);
                 treasureBox.TreasureSound();
             }
         }
@@ -676,6 +696,24 @@ public class PlayerController : NetworkBehaviour
             }
         }
         return false;
+    }
+    #endregion
+
+    #region - Shader相關處理 -
+    IEnumerator PlayerDissolveAmountTransition(float targetValue, float duration)
+    {
+        float elapsedTime = 0f;
+        float startValue = skinnedMeshRenderer.material.GetFloat("_DissolveAmount"); //當前數值
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsedTime / duration);
+            skinnedMeshRenderer.material.SetFloat("_DissolveAmount", Mathf.Lerp(startValue, targetValue, t));
+            yield return null;
+        }
+
+        skinnedMeshRenderer.material.SetFloat("_DissolveAmount", targetValue); //最終設定為目標數值
     }
     #endregion
 

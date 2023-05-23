@@ -55,25 +55,28 @@ Material:
     - _AlphaClip: 1
     - _Blend: 0
     - _CastShadows: 1
-    - _Change: 0.562
-    - _Clip: 0
+    - _Change: 1
+    - _Clip: 0.483
     - _Cull: 0
-    - _DistortionAmount: 2.33
-    - _Down_Line: 0.555
+    - _DissolveAmount: 0
+    - _DistortionAmount: 2.3
+    - _Down_Line: 1
     - _DstBlend: 0
+    - _EdgeLight: 0.2
     - _Metallic: 0
-    - _NoiseScale: 130.36
-    - _Offset: 11.55
+    - _NoiseScale: 130
+    - _Offset: 11.5
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _Smoothness: 1
+    - _SmoothStepAmount: 0.7
+    - _Smoothness: 0.6
     - _SrcBlend: 1
     - _Surface: 0
     - _TIME: 1
     - _Top_Line: -4.94
     - _WW: 1.17
-    - _Width: -0.13
+    - _Width: -0.1
     - _WorkflowMode: 1
     - _ZTest: 4
     - _ZWrite: 1
@@ -82,7 +85,7 @@ Material:
     - _BASECOLOR: {r: 1, g: 1, b: 1, a: 0}
     - _COLORMOVE: {r: 10, g: 10, b: 0, a: 0}
     - _COLORSCALE: {r: 10, g: 10, b: 0, a: 0}
-    - _Color: {r: 5.992157, g: 5.992157, b: 5.992157, a: 1}
+    - _Color: {r: 11.984314, g: 11.984314, b: 11.984314, a: 1}
     - _EmissionColor: {r: 5.3403134, g: 2.9471421, b: 2.2923045, a: 0}
     - _TIME: {r: 0.3, g: 0.3, b: 0, a: 0}
     - _Top_color: {r: 3.5648699, g: 3.5648699, b: 3.5648699, a: 0}
