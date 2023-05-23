@@ -187,8 +187,6 @@ public class PlayerController : NetworkBehaviour
 
     bool startTeleporting;
 
-    float playerDissolveIntensity;
-
     private PlayerEffectVisual playerEffectVisual;
     private GameObject mainCamera;
     #endregion
@@ -237,7 +235,7 @@ public class PlayerController : NetworkBehaviour
             Bind_Camera(this.gameObject);
         }
 
-        Invoke("setPlayerData_RPC", 0.2f);//因為要拿PlayerNetworkData的關係，有先後順序的問題，所以晚一點才設置角色的名稱
+        Invoke("setPlayerData_RPC", 0.5f);//因為要拿PlayerNetworkData的關係，有先後順序的問題，所以晚一點才設置角色的名稱
 
     }
     public override void FixedUpdateNetwork()//逐每個tick更新(一個tick相當1.666毫秒)

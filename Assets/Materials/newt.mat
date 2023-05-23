@@ -62,14 +62,14 @@ Material:
     - _DistortionAmount: 2.3
     - _Down_Line: 1
     - _DstBlend: 0
-    - _EdgeLight: 0.2
+    - _EdgeLight: 1
     - _Metallic: 0
     - _NoiseScale: 130
     - _Offset: 11.5
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _SmoothStepAmount: 0.7
+    - _SmoothStepAmount: 0.2
     - _Smoothness: 0.6
     - _SrcBlend: 1
     - _Surface: 0
