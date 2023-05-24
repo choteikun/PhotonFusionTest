@@ -39,7 +39,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 316, y: -55}
-  m_SizeDelta: {x: 488, y: 108}
+  m_SizeDelta: {x: 331, y: 83}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4776564577761692346
 CanvasRenderer:
@@ -69,7 +69,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5fbaad97cf5633341bd2ae13bb08de9a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 6815905f4286a0c48a343e78196df5e5, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -91,6 +91,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3f6cbeaafbe45d4e8f523c5d4ffd909, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  joinBtn: {fileID: 0}
   roomNameTxt: {fileID: 4776564579244785302}
 --- !u!1 &4776564577797832955
 GameObject:
@@ -128,8 +129,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -30, y: 0}
-  m_SizeDelta: {x: 76, y: 68}
+  m_AnchoredPosition: {x: -5, y: 0}
+  m_SizeDelta: {x: 79, y: 79}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!222 &4776564577797832951
 CanvasRenderer:
@@ -159,7 +160,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 40358614a5584644f8c2666656bf71bf, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 4a33e9060431371408c08bcb44d4e47d, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -258,10 +259,10 @@ RectTransform:
   m_Father: {fileID: 4776564577761692344}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 15, y: 0}
-  m_SizeDelta: {x: 750, y: 50}
+  m_AnchorMin: {x: 0.65300006, y: 0.38000003}
+  m_AnchorMax: {x: 0.65300006, y: 0.38000003}
+  m_AnchoredPosition: {x: -213, y: 8}
+  m_SizeDelta: {x: 327, y: 42}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &4776564579244785297
 CanvasRenderer:
@@ -291,7 +292,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Room Name
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -354,7 +355,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -0.009277344, y: 0, z: 276.39343, w: 0}
+  m_margin: {x: 109.13246, y: 12.433624, z: 21.52449, w: -8.501007}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
