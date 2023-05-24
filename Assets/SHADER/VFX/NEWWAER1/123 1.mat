@@ -76,6 +76,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Alpha: 0.6
     - _AlphaClip: 1
     - _Blend: 0
     - _CastShadows: 1
@@ -88,7 +89,7 @@ Material:
     - _Refraction: 0.03
     - _RippleStrength: 1
     - _RippleStrenth: 1
-    - _Smooth: 0.748
+    - _Smooth: 1
     - _SrcBlend: 5
     - _Strenth: 1.49
     - _Surface: 1
@@ -101,12 +102,12 @@ Material:
     - _scale: 1
     - _speed: 1
     m_Colors:
-    - _D: {r: 0.3820755, g: 0.5386566, b: 1, a: 1}
+    - _D: {r: 0.3820755, g: 0.46885416, b: 1, a: 1}
     - _Light: {r: 0.1, g: 0.1, b: 0, a: 0}
     - _LightColor: {r: 1, g: 0, b: 0, a: 0}
     - _Speed1: {r: 0.01, g: 0.01, b: 0, a: 0}
     - _Speed2: {r: -0.03, g: -0.02, b: 0, a: 0}
-    - _U: {r: 1, g: 0.41011238, b: 0, a: 1}
+    - _U: {r: 0.50445, g: 0.53181577, b: 0.9811321, a: 1}
     - _UV1: {r: 5.54, g: 1.3, b: -3, a: -0.2}
     - _UV2: {r: 2, g: 2, b: 0, a: 0}
   m_BuildTextureStacks: []

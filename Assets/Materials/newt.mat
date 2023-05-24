@@ -10,19 +10,21 @@ Material:
   m_Name: newt
   m_Shader: {fileID: -6465566751694194690, guid: 80f66ad2b50dd424784d69b697114391,
     type: 3}
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - _ALPHATEST_ON
   m_InvalidKeywords: []
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
-  stringTagMap: {}
+  stringTagMap:
+    RenderType: TransparentCutout
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
     - _BASEMAP:
-        m_Texture: {fileID: 2800000, guid: 02e436f157b2b3a46b32b6a50aa4897e, type: 3}
+        m_Texture: {fileID: 2800000, guid: 049ea4010c70e3544b501af55897c16d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Newt_UV:
@@ -59,18 +61,18 @@ Material:
     - _Clip: 0.483
     - _Cull: 0
     - _DissolveAmount: 0
-    - _DistortionAmount: 2.3
+    - _DistortionAmount: 1.09
     - _Down_Line: 1
     - _DstBlend: 0
-    - _EdgeLight: 1
-    - _Metallic: 0
+    - _EdgeLight: 0.505
+    - _Metallic: 0.204
     - _NoiseScale: 130
     - _Offset: 11.5
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _SmoothStepAmount: 0.2
-    - _Smoothness: 0.6
+    - _SmoothStepAmount: 0
+    - _Smoothness: 1
     - _SrcBlend: 1
     - _Surface: 0
     - _TIME: 1
@@ -85,8 +87,8 @@ Material:
     - _BASECOLOR: {r: 1, g: 1, b: 1, a: 0}
     - _COLORMOVE: {r: 10, g: 10, b: 0, a: 0}
     - _COLORSCALE: {r: 10, g: 10, b: 0, a: 0}
-    - _Color: {r: 11.984314, g: 11.984314, b: 11.984314, a: 1}
-    - _EmissionColor: {r: 5.3403134, g: 2.9471421, b: 2.2923045, a: 0}
+    - _Color: {r: 3.4415908, g: 3.4415908, b: 3.4415908, a: 1}
+    - _EmissionColor: {r: 19.037518, g: 7.063479, b: 5.4777756, a: 0}
     - _TIME: {r: 0.3, g: 0.3, b: 0, a: 0}
     - _Top_color: {r: 3.5648699, g: 3.5648699, b: 3.5648699, a: 0}
     - _offset: {r: 10, g: 10, b: 0, a: 0}
