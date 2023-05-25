@@ -5,14 +5,14 @@ using UnityEngine;
 public class SoundEffectManager : ToSingletonMonoBehavior<SoundEffectManager>
 {
     public SoundEffectData soundEffectData = new SoundEffectData();
+    [SerializeField] AudioSource SingleUseAudioSource;
     protected override void init()
     {
         soundEffectData.SoundEffectDataInit();
         Debug.Log("");
     }
-    // Update is called once per frame
-    void Update()
+    public void PlayOneSE(AudioClip clip)
     {
-        
+        SingleUseAudioSource.PlayOneShot(clip);
     }
 }
