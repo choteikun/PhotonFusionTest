@@ -1,0 +1,81 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Default Local Group
+  m_EditorClassIdentifier: 
+  m_GroupName: Default Local Group
+  m_Data:
+    m_SerializedData: []
+  m_GUID: cfdfa3c3939ba9443a360051615ba92e
+  m_SerializeEntries:
+  - m_GUID: 4e264e2f0f83f3d45a019937140be739
+    m_Address: Prefabs/IntoRoom
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 277c95e8b130b9e49a798d554a8ee9a7
+    m_Address: Prefabs/ButtonClick
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 3bc0103683ec32449a0b10410ef717dc
+    m_Address: Prefabs/StartGame
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: d6d63492bda7b77448f0751aeaba28fd
+    m_Address: Prefabs/WinSoundEffect
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: ff840498b06be9b4591bcdc3fa2b4984
+    m_Address: Prefabs/LoseSoundEffect
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: a5b79536746db0a459c14e1dccb8ae71
+    m_Address: Prefabs/TreasureBoxAppearSoundEffect
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 00d6cc0f7b23cc1499c5c38c4fe639bf
+    m_Address: Prefabs/TreasureBreakSoundEffect
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: e8bc5487bce07b34691b0953969f323e
+    m_Address: Prefabs/BoxBreakSoundEffect
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: d196381507fdca34d8e9f5676e3947db
+    m_Address: Prefabs/TunnelReady
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: dd7245303ac1f164aa68c22927556630
+    m_Address: Prefabs/TunnelOut
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 5d9250bbb1a56c4488b5b081c8a743d5
+    m_Address: Prefabs/AutoAttackSwing
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: d84f650c40c979148820dea6f474802b
+    m_Address: Prefabs/IntoWaterSoundEffect
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 1fe83d56780316b479eb8e534354b92d
+    m_Address: Prefabs/WalkingSoundEffect
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 263693afbb3ed7a4091135e6b7c3bec6
+    m_Address: Prefabs/SmashSwing
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 6d877911c0ea2f64eb4a60fd431f6bce, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 59301f84557e3b542bac767fda6ebf36, type: 2}
+    - {fileID: 11400000, guid: 9ddf2d65417caab498b921e1ae4a7e73, type: 2}
