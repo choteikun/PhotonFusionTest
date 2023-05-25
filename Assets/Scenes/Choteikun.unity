@@ -655,11 +655,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8dd735b4b49724a4ca76ce1925112b1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  winnerPlayerControllers: []
   runner: {fileID: 8584437826573853753}
   PlayerName: 
-  PlayerFinishCastingTeleporting:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!4 &957907076
 Transform:
   m_ObjectHideFlags: 0
@@ -1406,6 +1404,7 @@ MonoBehaviour:
   networkRunner: {fileID: 8584437826573853753}
   playerPrefab:
     RawGuidValue: 33b75130a926c334f8d751d13b3c0b99
+  treasureSpawner: {fileID: 0}
 --- !u!114 &8584437826573853753
 MonoBehaviour:
   m_ObjectHideFlags: 0

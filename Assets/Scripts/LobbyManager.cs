@@ -18,6 +18,8 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
 {
     private GameManager gameManager = null;
 
+    private Animator anim = null;
+
     private PairState pairState = PairState.Lobby;
 
     [SerializeField] private PlayerNetworkData playerNetworkDataPrefab = null;
@@ -30,6 +32,8 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     private async void Start()
     {
         SetPairState(PairState.Lobby);
+
+        anim = GameObject.Find("CreateRoomCanvas").GetComponent<Animator>();
 
         gameManager = GameManager.Instance;
 
