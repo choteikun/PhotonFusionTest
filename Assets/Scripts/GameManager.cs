@@ -9,8 +9,8 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
-    public List<PlayerController> winnerPlayerControllers = new();
-
+    public List<PlayerController> SurvivingPlayerControllers = new();
+    public float[] AllPlayerBkPoint = new float[9];
     //int loserCount;
     int survivorCount;
 
@@ -95,24 +95,24 @@ public class GameManager : MonoBehaviour
         {
             if (playerData.OutOfTheBoat)//每出局一個人
             {
-                winnerPlayerControllers.Clear();
+                SurvivingPlayerControllers.Clear();
 
                 loserCount++;//計算出局者數量
                 
                 foreach (var gameObj in GameObject.FindGameObjectsWithTag("Player"))
                 {
-                    winnerPlayerControllers.AddRange(gameObj.GetComponents<PlayerController>());
+                    SurvivingPlayerControllers.AddRange(gameObj.GetComponents<PlayerController>());
                 }
 
-                survivorCount = winnerPlayerControllers.Count - loserCount;
+                survivorCount = SurvivingPlayerControllers.Count - loserCount;
             }
         }
-        Debug.Log("winnerPlayerControllers.Count : " + winnerPlayerControllers.Count);
+        Debug.Log("SurvivingPlayerControllers.Count : " + SurvivingPlayerControllers.Count);
         Debug.Log("survivorCount : " + survivorCount);
         if (survivorCount == 1)//當生存者只剩一個人
         {
             //檢查場上所有PlayerController找到playerController.OutOfTheBoat為false的PlayerController，並將他設置為Winner
-            foreach (var playerController in winnerPlayerControllers)
+            foreach (var playerController in SurvivingPlayerControllers)
             {
                 if (!playerController.OutOfTheBoat)
                 {
@@ -121,7 +121,13 @@ public class GameManager : MonoBehaviour
             }
         }
     }
-
+    public void UpdateAllPlayerBKData()
+    {
+        foreach (var playerNetworkData in PlayerList.Values)
+        {
+           //AllPlayerBkPoint[playerNetworkData.PlayerID格] = playerNetworkData.thisPlayerBkPoint
+        }
+    }
     public void SetPlayerNetworkData()
     {
         if (PlayerList.TryGetValue(runner.LocalPlayer, out PlayerNetworkData playerNetworkData))

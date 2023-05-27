@@ -10,7 +10,8 @@ public class PlayerNetworkData : NetworkBehaviour
 	[Networked(OnChanged = nameof(OnIsReadyChanged))] public NetworkBool IsReady { get; set; }
 	[Networked(OnChanged = nameof(OnGameOverChanged))] public NetworkBool OutOfTheBoat { get; set; }
 
-	public string PlayerID { get; set; }
+	//[Networked(OnChanged = nameof(OnPlayerBkChange))] public float ThisPlayerBkPoint { get; set; }
+	[field:SerializeField]public string PlayerID { get; set; }
 	public override void Spawned()
 	{
 		gameManager = GameManager.Instance;
@@ -65,5 +66,14 @@ public class PlayerNetworkData : NetworkBehaviour
         //有玩家出局就檢查玩家獲勝條件
         GameManager.Instance.UpdateWinnerWhoIs();
     }
+	
+	private static void OnPlayerGameDataChange(Changed<PlayerNetGameData>changed)
+    {
+		
+    }
+	private static void OnPlayerBkChange(Changed<PlayerNetworkData> changed)
+	{
+
+	}
 	#endregion
 }

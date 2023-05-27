@@ -87,5 +87,5 @@ public class PlayerGameData : NetworkBehaviour
         SuperSmashChargeOrNot = false;
         Held_ItemEnum = ItemEnum.NoItem;
     }
-
+    
 }

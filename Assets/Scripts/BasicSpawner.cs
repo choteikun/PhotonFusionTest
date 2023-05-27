@@ -55,10 +55,8 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)//傳入的runner會是場景中的Network Runner，PlayerRef則是代表實際進入的玩家
     {
         Vector3 spawnPos = Vector3.up * 2;
-        NetworkObject networkPlayerObject = runner.Spawn(playerPrefab, spawnPos, Quaternion.identity, player);//讓這個進入的玩家擁有這個生成的Prefab
-
+        NetworkObject networkPlayerObject = runner.Spawn(playerPrefab, spawnPos, Quaternion.identity, player);//讓這個進入的玩家擁有這個生成的Prefab       
         runner.SetPlayerObject(player, networkPlayerObject);
-
         playerList.Add(player, networkPlayerObject);//用list把玩家存起來                                                                         
         Debug.Log(player.PlayerId + "Join");
     }

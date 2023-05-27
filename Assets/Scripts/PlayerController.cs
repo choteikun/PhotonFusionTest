@@ -78,7 +78,7 @@ public class PlayerController : NetworkBehaviour
     //------------------------------------------------------------------------------------------------------------------------
     #region - Player Public 變量 -
     public PlayerGameData PlayerGameData;
-
+    [SerializeField]public PlayerNetworkData ThisPlayerNetworkData;
     public NetworkCharacterControllerPrototype Network_CharacterControllerPrototype = null;
 
     public bool cursorInputForLook = true;
@@ -528,6 +528,7 @@ public class PlayerController : NetworkBehaviour
     {
         CoefficientOfBreakDownPoint += cob;
         PlayerGameData.BreakPoint = PlayerGameData.BreakDownPointCurve.Evaluate(CoefficientOfBreakDownPoint);//依據BK曲線計算BK值
+        //GetANetwork
     }
     //private static void OnHpChanged(Changed<PlayerController> changed)//changed代表變化後的值，可以透過changed來存取資料
     //{
@@ -723,5 +724,15 @@ public class PlayerController : NetworkBehaviour
         playerAudioSource.Play();
     }
     #endregion
-
+    private PlayerNetworkData GetANetwork(string name)
+    {
+        foreach (var playerData in GameManager.Instance.PlayerList.Values)
+        {
+            if (playerData.name == name)//每出局一個人
+            {
+                return playerData;
+            }
+        }
+        return null;
+    }
 }
