@@ -9,6 +9,8 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
+    public Color PlayerColor = new Color(1, 1, 1, 1);
+
     public List<PlayerController> SurvivingPlayerControllers = new();
     public float[] AllPlayerBkPoint = new float[9];
     //int loserCount;
@@ -128,11 +130,15 @@ public class GameManager : MonoBehaviour
            //AllPlayerBkPoint[playerNetworkData.PlayerID格] = playerNetworkData.thisPlayerBkPoint
         }
     }
+
+
+
     public void SetPlayerNetworkData()
     {
         if (PlayerList.TryGetValue(runner.LocalPlayer, out PlayerNetworkData playerNetworkData))
         {
             playerNetworkData.SetPlayerName_RPC(PlayerName);
+            playerNetworkData.SetPlayerColor_RPC(PlayerColor);
         }
     }
 }
