@@ -484,7 +484,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8dd735b4b49724a4ca76ce1925112b1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  winnerPlayerControllers: []
+  SurvivingPlayerControllers: []
   runner: {fileID: 605620938}
   PlayerName: 
   PlayerColor: {r: 1, g: 1, b: 1, a: 1}
@@ -1720,6 +1720,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c77f19053c6c67846b964315a87dc836, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pairState: 0
   playerNetworkDataPrefab: {fileID: 8393700909703407528, guid: 5cf09e5a1e6a3ab4c84f086b6d8ccd01,
     type: 3}
   roomListPanel: {fileID: 6251818426343534624}
