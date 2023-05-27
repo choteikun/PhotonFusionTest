@@ -11,7 +11,6 @@ using TMPro;
 //[RequireComponent(typeof(PlayerInput))]
 public class PlayerController : NetworkBehaviour
 {
-    public PlayerNetworkData playerNetwork;
 
     #region - Player Public Networked 變量 -
     [Networked]
@@ -208,8 +207,7 @@ public class PlayerController : NetworkBehaviour
         playerAudioSource = GetComponent<AudioSource>();
         playerEffectVisual.InitializeVisualEffect();//因為是所有物件(包括IsProxy)都要顯示的特效，所以放在外面
         playerEffectVisual.InitializeParticleEffect();
-        playerEffectVisual.HitEffectStop();
-
+        playerEffectVisual.HitEffectStop();       
         if (mainCamera == null)
         {
             mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
@@ -238,13 +236,20 @@ public class PlayerController : NetworkBehaviour
         }
 
         Invoke("setPlayerData_RPC", 0.5f);//因為要拿PlayerNetworkData的關係，有先後順序的問題，所以晚一點才設置角色的名稱
-
+        Invoke("voidThisPlayerSetNetworkData", 1.5f);
+    }
+    private void voidThisPlayerSetNetworkData()
+    {
+        var targetNetworkObject = GetANetwork();
+        if (targetNetworkObject != null)
+        {
+            ThisPlayerNetworkData = targetNetworkObject;
+        }
     }
     public override void FixedUpdateNetwork()//逐每個tick更新(一個tick相當1.666毫秒)
     {
         //Debug.Log("speed : " + speed + "Acceleration : " + networkCharacterControllerPrototype.MoveSpeed + "SprintSpeed : " + sprintSpeed);
         //Debug.Log(Network_CharacterControllerPrototype.Velocity);
-
         ColorChangedByBreakDownPoint();//動態顯示BK狀態的顏色
         ColorChangedByChargeAttackBar();//動態顯示蓄力條的顏色
 
@@ -726,12 +731,15 @@ public class PlayerController : NetworkBehaviour
         playerAudioSource.Play();
     }
     #endregion
-    private PlayerNetworkData GetANetwork(string name)
+    private PlayerNetworkData GetANetwork()
     {
         foreach (var playerData in GameManager.Instance.PlayerList.Values)
         {
-            if (playerData.name == name)//每出局一個人
+            Debug.LogWarning(playerData.Object.InputAuthority.PlayerId);
+            Debug.LogWarning(Object.InputAuthority.PlayerId);
+            if (playerData.Object.InputAuthority.PlayerId == Object.InputAuthority.PlayerId)
             {
+                Debug.LogWarning(playerData.name);
                 return playerData;
             }
         }
