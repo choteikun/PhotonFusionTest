@@ -6,6 +6,8 @@ public class PlayerNetworkData : NetworkBehaviour
 {
 	private GameManager gameManager = null;
 
+	[Networked] public Color PlayerColor { get; set; }
+
 	[Networked(OnChanged = nameof(OnPlayerNameChanged))] public string PlayerName { get; set; }
 	[Networked(OnChanged = nameof(OnIsReadyChanged))] public NetworkBool IsReady { get; set; }
 	[Networked(OnChanged = nameof(OnGameOverChanged))] public NetworkBool OutOfTheBoat { get; set; }
@@ -24,6 +26,7 @@ public class PlayerNetworkData : NetworkBehaviour
 		if (Object.HasInputAuthority)
 		{
 			SetPlayerName_RPC(gameManager.PlayerName);
+			SetPlayerColor_RPC(gameManager.PlayerColor);
 		}
 	}
 
@@ -39,6 +42,12 @@ public class PlayerNetworkData : NetworkBehaviour
 	public void SetReady_RPC(bool isReady)
 	{
 		IsReady = isReady;
+	}
+
+	[Rpc(sources: RpcSources.InputAuthority, targets: RpcTargets.StateAuthority)]
+	public void SetPlayerColor_RPC(Color color)
+	{
+		PlayerColor = color;
 	}
 
 	[Rpc(sources: RpcSources.InputAuthority, targets: RpcTargets.StateAuthority)]

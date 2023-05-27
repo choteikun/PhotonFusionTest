@@ -18,9 +18,7 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
 {
     private GameManager gameManager = null;
 
-    private Animator anim = null;
-
-    private PairState pairState = PairState.Lobby;
+    public PairState pairState = PairState.Lobby;
 
     [SerializeField] private PlayerNetworkData playerNetworkDataPrefab = null;
 
@@ -28,6 +26,8 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField] private CreateRoomPanel createRoomPanel = null;
     [SerializeField] private InRoomPanel inRoomPanel = null;
     [SerializeField] private GameObject[] createRoomUiComponents = null;
+
+    [SerializeField]private Animator anim = null;
 
     private async void Start()
     {
@@ -118,16 +118,19 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         switch (pairState)
         {
             case PairState.Lobby:
-                SetPanel(roomListPanel);
-                CreateRoomUiComponentClose();
+                anim.SetBool("CreateRoomPanel", false);
+                //SetPanel(roomListPanel);
+                //CreateRoomUiComponentClose();
                 break;
             case PairState.CreatingRoom:
-                SetPanel(createRoomPanel);
-                CreateRoomUiComponentOpen();
+                anim.SetBool("CreateRoomPanel", true);
+                //SetPanel(createRoomPanel);
+                //CreateRoomUiComponentOpen();
                 break;
             case PairState.InRoom:
-                SetPanel(inRoomPanel);
-                CreateRoomUiComponentClose();
+                anim.SetBool("InRoomPanel", true);
+                //SetPanel(inRoomPanel);
+                //CreateRoomUiComponentClose();
                 break;
         }
     }
@@ -143,26 +146,26 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     }
     #endregion
 
-    #region - CreateRoomUi控制 -
-    private void CreateRoomUiComponentClose()
-    {
-        for (int i = 0; i < createRoomUiComponents.Length; i++)
-        {
-            createRoomUiComponents[i].GetComponent<CanvasGroup>().alpha = 0;
-            createRoomUiComponents[i].GetComponent<CanvasGroup>().interactable = false;
-            createRoomUiComponents[i].GetComponent<CanvasGroup>().blocksRaycasts = false;
-        }
-    }
-    private void CreateRoomUiComponentOpen()
-    {
-        for (int i = 0; i < createRoomUiComponents.Length; i++)
-        {
-            createRoomUiComponents[i].GetComponent<CanvasGroup>().alpha = 1;
-            createRoomUiComponents[i].GetComponent<CanvasGroup>().interactable = true;
-            createRoomUiComponents[i].GetComponent<CanvasGroup>().blocksRaycasts = true;
-        }
-    }
-    #endregion
+    //#region - CreateRoomUi控制 -
+    //private void CreateRoomUiComponentClose()
+    //{
+    //    for (int i = 0; i < createRoomUiComponents.Length; i++)
+    //    {
+    //        createRoomUiComponents[i].GetComponent<CanvasGroup>().alpha = 0;
+    //        createRoomUiComponents[i].GetComponent<CanvasGroup>().interactable = false;
+    //        createRoomUiComponents[i].GetComponent<CanvasGroup>().blocksRaycasts = false;
+    //    }
+    //}
+    //private void CreateRoomUiComponentOpen()
+    //{
+    //    for (int i = 0; i < createRoomUiComponents.Length; i++)
+    //    {
+    //        createRoomUiComponents[i].GetComponent<CanvasGroup>().alpha = 1;
+    //        createRoomUiComponents[i].GetComponent<CanvasGroup>().interactable = true;
+    //        createRoomUiComponents[i].GetComponent<CanvasGroup>().blocksRaycasts = true;
+    //    }
+    //}
+    //#endregion
 
     #region - Used Callbacks -
     public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)

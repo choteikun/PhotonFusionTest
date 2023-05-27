@@ -32,6 +32,8 @@ public class TreasureBoxBehavior : NetworkBehaviour
     public void TreasureSound()
     {
         //soundEffectTester.PlayAudioTest();
-        soundEffectTester.PlayAudioGlobalTest_RPC();
+        SoundEffectManager.Instance.PlayOneSE(SoundEffectManager.Instance.soundEffectData.TreasureBreakSoundEffect);
+
+        //soundEffectTester.PlayAudioGlobalTest_RPC();
     }
 }

@@ -11,6 +11,8 @@ using TMPro;
 //[RequireComponent(typeof(PlayerInput))]
 public class PlayerController : NetworkBehaviour
 {
+    public PlayerNetworkData playerNetwork;
+
     #region - Player Public Networked 變量 -
     [Networked]
     public NetworkButtons ButtonsPrevious { get; set; }//上一個按鈕的資料
