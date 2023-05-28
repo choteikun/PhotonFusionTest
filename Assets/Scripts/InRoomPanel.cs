@@ -52,9 +52,9 @@ public class InRoomPanel : MonoBehaviour, IPanel
 
     public void DisplayPanel(bool value)
     {
-        canvasGroup.alpha = value ? 1 : 0;
-        canvasGroup.interactable = value;
-        canvasGroup.blocksRaycasts = value;
+        //canvasGroup.alpha = value ? 1 : 0;
+        //canvasGroup.interactable = value;
+        //canvasGroup.blocksRaycasts = value;
 
         var runner = gameManager.Runner;
 

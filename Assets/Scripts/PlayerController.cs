@@ -252,6 +252,7 @@ public class PlayerController : NetworkBehaviour
         //Debug.Log(Network_CharacterControllerPrototype.Velocity);
         ColorChangedByBreakDownPoint();//動態顯示BK狀態的顏色
         ColorChangedByChargeAttackBar();//動態顯示蓄力條的顏色
+        
 
         PlayerImmuneDamage = Winner || Loser || PlayerIsTeleporting;
 

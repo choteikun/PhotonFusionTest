@@ -119,17 +119,31 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         {
             case PairState.Lobby:
                 anim.SetBool("CreateRoomPanel", false);
+                anim.SetBool("RoomListPanel", true);
                 //SetPanel(roomListPanel);
                 //CreateRoomUiComponentClose();
                 break;
             case PairState.CreatingRoom:
                 anim.SetBool("CreateRoomPanel", true);
+                
+                
                 //SetPanel(createRoomPanel);
                 //CreateRoomUiComponentOpen();
                 break;
             case PairState.InRoom:
-                anim.SetBool("InRoomPanel", true);
-                //SetPanel(inRoomPanel);
+                if (anim.GetCurrentAnimatorStateInfo(0).IsName("RoomListPanel"))
+                {
+                    anim.SetBool("RoomListPanel", false);
+                }
+                else if(anim.GetCurrentAnimatorStateInfo(0).IsName("CreateRoomPanel"))
+                {
+                    anim.SetBool("InRoomPanel", true);
+                }
+                else
+                {
+                    anim.SetBool("InRoomPanel", true);
+                }
+                SetPanel(inRoomPanel);
                 //CreateRoomUiComponentClose();
                 break;
         }

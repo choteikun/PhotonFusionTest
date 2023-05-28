@@ -41,7 +41,7 @@ public class CreateRoomPanel : MonoBehaviour, IPanel
             Debug.Log("房間人數最多不超過9人");
             return;
         }
-        
+        Debug.Log(roomName);
 
         await lobbyManager.CreateRoom(roomName, maxPlayer);
     }

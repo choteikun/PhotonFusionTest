@@ -6,24 +6,26 @@ public class PlayerDataSetter : MonoBehaviour
 {
     private GameManager gameManager = null;
 
-    [SerializeField] private MeshRenderer playerMeshRenderer = null;
+    [SerializeField] private SkinnedMeshRenderer playerSkinnedMeshRenderer = null;
     private void Start()
     {
         gameManager = GameManager.Instance;
+
+        //playerSkinnedMeshRenderer = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<SkinnedMeshRenderer>();
     }
 
     public void OnPlayerRSliderChanged(float value)
     {
         gameManager.PlayerColor.r = value / 255f;
-        playerMeshRenderer.material.color = gameManager.PlayerColor;
-
+        //Debug.Log(gameManager.PlayerColor);
+        playerSkinnedMeshRenderer.material.SetColor("_BASECOLOR", gameManager.PlayerColor);
         gameManager.SetPlayerNetworkData();
     }
 
     public void OnPlayerGSliderChanged(float value)
     {
         gameManager.PlayerColor.g = value / 255f;
-        playerMeshRenderer.material.color = gameManager.PlayerColor;
+        playerSkinnedMeshRenderer.material.SetColor("_BASECOLOR", gameManager.PlayerColor);
 
         gameManager.SetPlayerNetworkData();
     }
@@ -31,7 +33,7 @@ public class PlayerDataSetter : MonoBehaviour
     public void OnPlayerBSliderChanged(float value)
     {
         gameManager.PlayerColor.b = value / 255f;
-        playerMeshRenderer.material.color = gameManager.PlayerColor;
+        playerSkinnedMeshRenderer.material.SetColor("_BASECOLOR", gameManager.PlayerColor);
 
         gameManager.SetPlayerNetworkData();
     }
