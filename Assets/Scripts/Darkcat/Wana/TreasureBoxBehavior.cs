@@ -4,12 +4,8 @@ using UnityEngine;
 using Fusion;
 public class TreasureBoxBehavior : NetworkBehaviour
 {
-    [SerializeField]
-    private SoundEffectTester soundEffectTester;
-    public override void Spawned()
-    {
-        soundEffectTester = GetComponent<SoundEffectTester>();
-    }
+    
+
 
     public void PlayerGetTreasure(PlayerGameData player)
     {
@@ -22,12 +18,13 @@ public class TreasureBoxBehavior : NetworkBehaviour
     }
     public void TriggerTreasureBox(NetworkObject player)
     {
+        SoundEffectManager.Instance.PlayOneSE(SoundEffectManager.Instance.soundEffectData.TreasureBreakSoundEffect);
         if (player.CompareTag("Player"))
         {
             
             this.gameObject.SetActive(false);
             this.gameObject.transform.position = new Vector3(1000, 1000, 1000);
         }
-        SoundEffectManager.Instance.PlayOneSE(SoundEffectManager.Instance.soundEffectData.TreasureBreakSoundEffect);
+        
     }
 }

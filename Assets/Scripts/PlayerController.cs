@@ -8,7 +8,7 @@ using Cinemachine;
 using TMPro;
 
 [RequireComponent(typeof(CharacterController))]
-[OrderAfter(typeof(PlayerNetworkData))]//動畫在邏輯條件後進行
+[OrderAfter(typeof(PlayerNetworkData))]//PlayerNetworkData執行後進行
 //[RequireComponent(typeof(PlayerInput))]
 public class PlayerController : NetworkBehaviour
 {
@@ -30,6 +30,10 @@ public class PlayerController : NetworkBehaviour
     [Networked]
     [Tooltip("玩家無敵的開關")]
     public bool PlayerImmuneDamage { get; set; }
+
+    [Networked]
+    [Tooltip("SuperMode")]
+    public bool SuperMode { get; set; }
 
     [Networked]
     [Tooltip("限制玩家移動的開關")]
@@ -181,6 +185,9 @@ public class PlayerController : NetworkBehaviour
     [Tooltip("角色暫存速度")]
     private float speed;
 
+    [Tooltip("角色暫存擊退力")]
+    private float pushForce;
+
     [Tooltip("角色限制移動的參數")]
     private int moveLimitParameter;//限制移動的參數
     private const int moveLimit_Y = 0;
@@ -199,10 +206,12 @@ public class PlayerController : NetworkBehaviour
     public override void Spawned()
     {
         moveLimitParameter = moveLimit_N;
+        SuperMode = false;
         FlapAnimPlay = false;
         BeenHitOrNot = false;
         DrivingKeyStatus = false;
         HitEffectTrigger = false;
+        pushForce = PushForce;
         playerEffectVisual = GetComponent<PlayerEffectVisual>();
         playerAudioSource = GetComponent<AudioSource>();
         playerEffectVisual.InitializeVisualEffect();//因為是所有物件(包括IsProxy)都要顯示的特效，所以放在外面
@@ -270,6 +279,15 @@ public class PlayerController : NetworkBehaviour
             return;
         
         Move();
+
+        if (SuperMode)
+        {
+            PushForce = 10000;
+        }
+        else
+        {
+            PushForce = pushForce;
+        }
 
         if (BeenHitOrNot || OutOfTheBoat)
         {
@@ -377,7 +395,7 @@ public class PlayerController : NetworkBehaviour
             {
                 ChargeAttackBarTimer += Runner.DeltaTime;
 
-                PushForce = 50;
+                PushForce = pushForce;
 
                 if (ChargeAttackBarTimer > 0.5f)
                 {
@@ -405,7 +423,7 @@ public class PlayerController : NetworkBehaviour
             else if (!ChargeAttackOrNot && ChargeAttackBarTimer > 0 && ChargeAttackBarTimer <= 0.5f) //蓄力小於0.5秒
             {
                 curAttackBK = normalAttackBK;
-                PushForce = 50;
+                PushForce = pushForce;
                 //Debug.Log("本次蓄力時間 : " + ChargeAttackBarTimer);
                 ChargeAttackBarTimer = 0;
                 FlapAnimPlay = true;
