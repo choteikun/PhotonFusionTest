@@ -1,0 +1,108 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: helment
+  m_Shader: {fileID: -6465566751694194690, guid: 80f66ad2b50dd424784d69b697114391,
+    type: 3}
+  m_ValidKeywords:
+  - _ALPHATEST_ON
+  m_InvalidKeywords: []
+  m_LightmapFlags: 2
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 2450
+  stringTagMap:
+    RenderType: TransparentCutout
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BASEMAP:
+        m_Texture: {fileID: 2800000, guid: 049ea4010c70e3544b501af55897c16d, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Newt_UV:
+        m_Texture: {fileID: 2800000, guid: e1e79dcc7d08c8545ada46d75689a0e3, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Tex1:
+        m_Texture: {fileID: 2800000, guid: 049ea4010c70e3544b501af55897c16d, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Tex2:
+        m_Texture: {fileID: 2800000, guid: 03dde4bce4289894f92885168abafdda, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _Alpha: 1
+    - _AlphaClip: 1
+    - _Blend: 0
+    - _CastShadows: 1
+    - _Change: 1
+    - _Clip: 0.483
+    - _Cull: 0
+    - _DissolveAmount: 0
+    - _DistortionAmount: 1.09
+    - _Down_Line: 1
+    - _DstBlend: 0
+    - _EdgeLight: 0.505
+    - _Metallic: 0.204
+    - _NoiseScale: 130
+    - _Offset: 11.5
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    - _ReceiveShadows: 1
+    - _SmoothStepAmount: 0
+    - _Smoothness: 1
+    - _SrcBlend: 1
+    - _Surface: 0
+    - _TIME: 1
+    - _Top_Line: -4.94
+    - _WW: 1.17
+    - _Width: -0.1
+    - _WorkflowMode: 1
+    - _ZTest: 4
+    - _ZWrite: 1
+    - _ZWriteControl: 0
+    m_Colors:
+    - _BASECOLOR: {r: 1, g: 1, b: 1, a: 0}
+    - _COLORMOVE: {r: 10, g: 10, b: 0, a: 0}
+    - _COLORSCALE: {r: 10, g: 10, b: 0, a: 0}
+    - _Color: {r: 3.4415908, g: 3.4415908, b: 3.4415908, a: 1}
+    - _EmissionColor: {r: 19.037518, g: 7.063479, b: 5.4777756, a: 0}
+    - _TIME: {r: 0.3, g: 0.3, b: 0, a: 0}
+    - _Top_color: {r: 3.5648699, g: 3.5648699, b: 3.5648699, a: 0}
+    - _offset: {r: 10, g: 10, b: 0, a: 0}
+  m_BuildTextureStacks: []
+--- !u!114 &2808304868675017170
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 5

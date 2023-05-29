@@ -82,7 +82,8 @@ public class PlayerController : NetworkBehaviour
     public PlayerGameData PlayerGameData;
     public PlayerNetworkData PlayerNetworkData;
     public NetworkCharacterControllerPrototype Network_CharacterControllerPrototype = null;
-    public SkinnedMeshRenderer SkinnedMeshRenderer = null;
+    public SkinnedMeshRenderer SkinnedBodyMeshRenderer = null;
+    public SkinnedMeshRenderer SkinnedHelmentMeshRenderer = null;
 
     public bool cursorInputForLook = true;
     //public AudioClip LandingAudioClip;
@@ -506,7 +507,7 @@ public class PlayerController : NetworkBehaviour
     [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
     private void ChangeColor_RPC(Color newColor)
     {
-        SkinnedMeshRenderer.material.color = newColor;
+        SkinnedBodyMeshRenderer.material.color = newColor;
     }
 
     private void Respawn()//重生
@@ -621,7 +622,7 @@ public class PlayerController : NetworkBehaviour
             }
             if(PlayerNetworkData == targetNetworkObject)
             {
-                SkinnedMeshRenderer.material.SetColor("_BASECOLOR", PlayerNetworkData.PlayerColor);//設置玩家顏色
+                SkinnedBodyMeshRenderer.material.SetColor("_BASECOLOR", PlayerNetworkData.PlayerColor);//設置玩家顏色
             } 
         }
     }
@@ -710,17 +711,18 @@ public class PlayerController : NetworkBehaviour
     IEnumerator PlayerDissolveAmountTransition(float targetValue, float duration)
     {
         float elapsedTime = 0f;
-        float startValue = SkinnedMeshRenderer.material.GetFloat("_DissolveAmount"); //當前數值
+        float startValue = SkinnedBodyMeshRenderer.material.GetFloat("_DissolveAmount"); //當前數值
 
         while (elapsedTime < duration)
         {
             elapsedTime += Time.deltaTime;
             float t = Mathf.Clamp01(elapsedTime / duration);
-            SkinnedMeshRenderer.material.SetFloat("_DissolveAmount", Mathf.Lerp(startValue, targetValue, t));
+            SkinnedBodyMeshRenderer.material.SetFloat("_DissolveAmount", Mathf.Lerp(startValue, targetValue, t));
+            SkinnedHelmentMeshRenderer.material.SetFloat("_DissolveAmount", Mathf.Lerp(startValue, targetValue, t));
             yield return null;
         }
-
-        SkinnedMeshRenderer.material.SetFloat("_DissolveAmount", targetValue); //最終設定為目標數值
+        SkinnedBodyMeshRenderer.material.SetFloat("_DissolveAmount", targetValue); //最終設定為目標數值
+        SkinnedHelmentMeshRenderer.material.SetFloat("_DissolveAmount", targetValue);
     }
     #endregion
 

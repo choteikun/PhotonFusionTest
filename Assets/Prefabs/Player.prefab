@@ -52,7 +52,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d529eef3176fe8d4ab318f1e812eed51, type: 2}
+  - {fileID: 2100000, guid: cdd511947804c2e4eb42cd1a416b71f8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -579,7 +579,8 @@ MonoBehaviour:
   PlayerGameData: {fileID: 16108846752584026}
   PlayerNetworkData: {fileID: 0}
   Network_CharacterControllerPrototype: {fileID: 16108846752584025}
-  SkinnedMeshRenderer: {fileID: 443375718027710225}
+  SkinnedBodyMeshRenderer: {fileID: 443375718027710225}
+  SkinnedHelmentMeshRenderer: {fileID: 3257030168222081714}
   cursorInputForLook: 1
   FlapAnimPlay: 0
   ChargeFlapAnimPlay: 0
