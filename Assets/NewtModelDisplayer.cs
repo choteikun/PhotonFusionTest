@@ -4,8 +4,11 @@ using UnityEngine;
 
 public class NewtModelDisplayer : MonoBehaviour
 {
+
+    public float speed;
+
     private Animator anim;
-    // Start is called before the first frame update
+    
     void Start()
     {
         anim = GetComponent<Animator>();
@@ -13,9 +16,8 @@ public class NewtModelDisplayer : MonoBehaviour
         anim.SetBool("Idle", true);
     }
 
-    // Update is called once per frame
     void Update()
     {
-        
+        transform.Rotate(Vector3.up * Time.deltaTime * speed);
     }
 }

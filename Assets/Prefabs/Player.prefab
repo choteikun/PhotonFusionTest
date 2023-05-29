@@ -577,7 +577,9 @@ MonoBehaviour:
   _JumpEffectTrigger: 0
   _HitEffectTrigger: 0
   PlayerGameData: {fileID: 16108846752584026}
+  PlayerNetworkData: {fileID: 0}
   Network_CharacterControllerPrototype: {fileID: 16108846752584025}
+  SkinnedMeshRenderer: {fileID: 443375718027710225}
   cursorInputForLook: 1
   FlapAnimPlay: 0
   ChargeFlapAnimPlay: 0
@@ -589,7 +591,6 @@ MonoBehaviour:
   cursorLocked: 1
   enemyPrefab: {fileID: 7571370166665707169, guid: 295045a2bf29020458058c936d9616d0,
     type: 3}
-  skinnedMeshRenderer: {fileID: 443375718027710225}
   playerAudioSource: {fileID: 0}
   playerAudioClips:
   - {fileID: 8300000, guid: 8ac8a399f27a168488cb5541ed560381, type: 3}

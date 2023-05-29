@@ -17,6 +17,7 @@ public class BreakableWallBehaviour : NetworkBehaviour
     //}
     public void HurtThisWall()
     {
+        SoundEffectManager.Instance.PlayOneSE(SoundEffectManager.Instance.soundEffectData.BoxBreakSoundEffect);
         HealthPoint--;
         if (HealthPoint == 0)
         {

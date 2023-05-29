@@ -8,6 +8,7 @@ using Cinemachine;
 using TMPro;
 
 [RequireComponent(typeof(CharacterController))]
+[OrderAfter(typeof(PlayerNetworkData))]//動畫在邏輯條件後進行
 //[RequireComponent(typeof(PlayerInput))]
 public class PlayerController : NetworkBehaviour
 {
@@ -79,8 +80,9 @@ public class PlayerController : NetworkBehaviour
     //------------------------------------------------------------------------------------------------------------------------
     #region - Player Public 變量 -
     public PlayerGameData PlayerGameData;
-    [SerializeField]public PlayerNetworkData ThisPlayerNetworkData;
+    public PlayerNetworkData PlayerNetworkData;
     public NetworkCharacterControllerPrototype Network_CharacterControllerPrototype = null;
+    public SkinnedMeshRenderer SkinnedMeshRenderer = null;
 
     public bool cursorInputForLook = true;
     //public AudioClip LandingAudioClip;
@@ -124,9 +126,6 @@ public class PlayerController : NetworkBehaviour
     #region - Player Private SerializeField Componment -
     [SerializeField]
     private EnemyAIBehavior enemyPrefab;
-
-    [SerializeField]
-    private SkinnedMeshRenderer skinnedMeshRenderer = null;
 
     [SerializeField]
     private AudioSource playerAudioSource;
@@ -234,25 +233,16 @@ public class PlayerController : NetworkBehaviour
             Debug.Log(this.gameObject.name);
             Bind_Camera(this.gameObject);
         }
+        setPlayerData_RPC();
+        //Invoke("setPlayerData_RPC", 0.5f);//因為要拿PlayerNetworkData的關係，有先後順序的問題，所以晚一點才設置角色的Data
+    }
 
-        Invoke("setPlayerData_RPC", 0.5f);//因為要拿PlayerNetworkData的關係，有先後順序的問題，所以晚一點才設置角色的名稱
-        Invoke("voidThisPlayerSetNetworkData", 1.5f);
-    }
-    private void voidThisPlayerSetNetworkData()
-    {
-        var targetNetworkObject = GetANetwork();
-        if (targetNetworkObject != null)
-        {
-            ThisPlayerNetworkData = targetNetworkObject;
-        }
-    }
     public override void FixedUpdateNetwork()//逐每個tick更新(一個tick相當1.666毫秒)
     {
         //Debug.Log("speed : " + speed + "Acceleration : " + networkCharacterControllerPrototype.MoveSpeed + "SprintSpeed : " + sprintSpeed);
         //Debug.Log(Network_CharacterControllerPrototype.Velocity);
         ColorChangedByBreakDownPoint();//動態顯示BK狀態的顏色
         ColorChangedByChargeAttackBar();//動態顯示蓄力條的顏色
-        
 
         PlayerImmuneDamage = Winner || Loser || PlayerIsTeleporting;
 
@@ -516,7 +506,7 @@ public class PlayerController : NetworkBehaviour
     [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
     private void ChangeColor_RPC(Color newColor)
     {
-        skinnedMeshRenderer.material.color = newColor;
+        SkinnedMeshRenderer.material.color = newColor;
     }
 
     private void Respawn()//重生
@@ -608,7 +598,6 @@ public class PlayerController : NetworkBehaviour
             {
                 //開啟寶箱
                 treasureBox.TriggerTreasureBox(Object);
-                treasureBox.TreasureSound();
             }
         }
     }
@@ -622,7 +611,18 @@ public class PlayerController : NetworkBehaviour
         {
             PlayerGameData.SetNameAID(playerNetworkData.PlayerName, Object.InputAuthority.PlayerId);
             playerNameText.text = playerNetworkData.PlayerName.ToString();
+
             Debug.Log("PlayerName : " + PlayerGameData.PlayerName + "/PlayerId : " + PlayerGameData.PlayerID);
+
+            var targetNetworkObject = GetANetwork();
+            if (targetNetworkObject != null)
+            {
+                PlayerNetworkData = targetNetworkObject;
+            }
+            if(PlayerNetworkData == targetNetworkObject)
+            {
+                SkinnedMeshRenderer.material.SetColor("_BASECOLOR", PlayerNetworkData.PlayerColor);//設置玩家顏色
+            } 
         }
     }
     public void ColorChangedByBreakDownPoint()
@@ -710,17 +710,17 @@ public class PlayerController : NetworkBehaviour
     IEnumerator PlayerDissolveAmountTransition(float targetValue, float duration)
     {
         float elapsedTime = 0f;
-        float startValue = skinnedMeshRenderer.material.GetFloat("_DissolveAmount"); //當前數值
+        float startValue = SkinnedMeshRenderer.material.GetFloat("_DissolveAmount"); //當前數值
 
         while (elapsedTime < duration)
         {
             elapsedTime += Time.deltaTime;
             float t = Mathf.Clamp01(elapsedTime / duration);
-            skinnedMeshRenderer.material.SetFloat("_DissolveAmount", Mathf.Lerp(startValue, targetValue, t));
+            SkinnedMeshRenderer.material.SetFloat("_DissolveAmount", Mathf.Lerp(startValue, targetValue, t));
             yield return null;
         }
 
-        skinnedMeshRenderer.material.SetFloat("_DissolveAmount", targetValue); //最終設定為目標數值
+        SkinnedMeshRenderer.material.SetFloat("_DissolveAmount", targetValue); //最終設定為目標數值
     }
     #endregion
 

@@ -8,7 +8,7 @@ public class InRoomPanel : MonoBehaviour, IPanel
     [SerializeField]
     private GameManager gameManager = null;
 
-    [SerializeField] private CanvasGroup canvasGroup = null;
+    //[SerializeField] private CanvasGroup canvasGroup = null;
 
     [SerializeField] private TMP_Text roomNameTxt = null;
 

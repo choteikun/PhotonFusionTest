@@ -28,12 +28,6 @@ public class TreasureBoxBehavior : NetworkBehaviour
             this.gameObject.SetActive(false);
             this.gameObject.transform.position = new Vector3(1000, 1000, 1000);
         }
-    }
-    public void TreasureSound()
-    {
-        //soundEffectTester.PlayAudioTest();
         SoundEffectManager.Instance.PlayOneSE(SoundEffectManager.Instance.soundEffectData.TreasureBreakSoundEffect);
-
-        //soundEffectTester.PlayAudioGlobalTest_RPC();
     }
 }

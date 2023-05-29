@@ -25,7 +25,7 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField] private RoomListPanel roomListPanel = null;
     [SerializeField] private CreateRoomPanel createRoomPanel = null;
     [SerializeField] private InRoomPanel inRoomPanel = null;
-    [SerializeField] private GameObject[] createRoomUiComponents = null;
+    //[SerializeField] private GameObject[] createRoomUiComponents = null;
 
     [SerializeField]private Animator anim = null;
 
