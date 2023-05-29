@@ -29,7 +29,7 @@ Material:
     - _EdgeWidth: 1.329
     - _Float0: 0.025
     m_Colors:
-    - _EdgeColor: {r: 11.895287, g: 4.0209417, b: 0, a: 1}
+    - _EdgeColor: {r: 23.790579, g: 8.096271, b: 0, a: 1}
     - _MainColor: {r: 256, g: 207.81177, b: 103.40392, a: 1}
     - _Vector0: {r: 10, g: 10, b: 1, a: 1}
     - _inside: {r: 54.88552, g: 4.7352214, b: 0, a: 0}
