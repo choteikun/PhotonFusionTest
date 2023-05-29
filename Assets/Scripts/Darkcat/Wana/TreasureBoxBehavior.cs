@@ -21,7 +21,7 @@ public class TreasureBoxBehavior : NetworkBehaviour
         SoundEffectManager.Instance.PlayOneSE(SoundEffectManager.Instance.soundEffectData.TreasureBreakSoundEffect);
         if (player.CompareTag("Player"))
         {
-            
+            player.GetComponent<PlayerController>().SuperMode = true;
             this.gameObject.SetActive(false);
             this.gameObject.transform.position = new Vector3(1000, 1000, 1000);
         }

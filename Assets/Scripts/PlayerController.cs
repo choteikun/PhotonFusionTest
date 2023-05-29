@@ -23,10 +23,6 @@ public class PlayerController : NetworkBehaviour
     [Networked]
     [Tooltip("輸家")]
     public bool Loser { get; set; }
-
-    [Networked]
-    [Tooltip("玩家正在使用傳送功能中")]
-    public bool PlayerIsTeleporting { get; set; }
     [Networked]
     [Tooltip("玩家無敵的開關")]
     public bool PlayerImmuneDamage { get; set; }
@@ -34,52 +30,57 @@ public class PlayerController : NetworkBehaviour
     [Networked]
     [Tooltip("SuperMode")]
     public bool SuperMode { get; set; }
-
-    [Networked]
-    [Tooltip("限制玩家移動的開關")]
-    public bool PlayerMoveLimitOrNot { get; set; }
-
-    [Networked]
-    [Tooltip("是否被擊中過")]
-    public bool BeenHitOrNot { get; set; }
-    [Networked]
-    [Tooltip("角色是否為蓄力狀態")]
-    public bool ChargeAttackOrNot { get; set; }
     [Networked]
     [Tooltip("角色是否從船上出局")]
     public bool OutOfTheBoat { get; set; }
-
     [Networked]
     [Tooltip("角色巴掌力度")]
     public float PushForce { get; private set; }
-
-    [Networked]
-    [Tooltip("角色BK係數(曲線X軸)")]
-    public float CoefficientOfBreakDownPoint { get; private set; }
-
-    [Networked]
-    [Tooltip("角色蓄力計時器")]
-    public float ChargeAttackBarTimer { get; private set; }
-
-    [Networked]
-    [Tooltip("從哪裡受傷")]
-    public Vector3 LocalHurt { get; set; }
-
     #endregion
     //------------------------------------------------------------------------------------------------------------------------
     #region - Player Public Networked HideInInspector 變量 -
+    [Networked]
+    [HideInInspector]
+    [Tooltip("玩家正在使用傳送功能中")]
+    public bool PlayerIsTeleporting { get; set; }
+    [Networked]
+    [HideInInspector]
+    [Tooltip("限制玩家移動的開關")]
+    public bool PlayerMoveLimitOrNot { get; set; }
+    [Networked]
+    [HideInInspector]
+    [Tooltip("是否被擊中過")]
+    public bool BeenHitOrNot { get; set; }
+    [Networked]
+    [HideInInspector]
+    [Tooltip("角色是否為蓄力狀態")]
+    public bool ChargeAttackOrNot { get; set; }
     [Networked]
     [HideInInspector]
     [Tooltip("衝刺鍵狀態")]
     public bool DrivingKeyStatus { get; private set; }
     [Networked]
     [HideInInspector]
-    [Tooltip("防止不斷播放跳躍特效，false為不可播放")]
+    [Tooltip("跳躍特效觸發器，false為不可播放")]
     public bool JumpEffectTrigger { get; private set; }
     [Networked]
     [HideInInspector]
-    [Tooltip("打擊特效，false為不可播放")]
+    [Tooltip("打擊特效觸發器，false為不可播放")]
     public bool HitEffectTrigger { get; private set; }
+
+    [Networked]
+    [HideInInspector]
+    [Tooltip("角色BK係數(曲線X軸)")]
+    public float CoefficientOfBreakDownPoint { get; private set; }
+    [Networked]
+    [HideInInspector]
+    [Tooltip("角色蓄力計時器")]
+    public float ChargeAttackBarTimer { get; private set; }
+
+    [Networked]
+    [HideInInspector]
+    [Tooltip("從哪裡受傷")]
+    public Vector3 LocalHurt { get; set; }
     #endregion
     //------------------------------------------------------------------------------------------------------------------------
     #region - Player Public 變量 -
@@ -117,13 +118,19 @@ public class PlayerController : NetworkBehaviour
     [SerializeField, Tooltip("擊飛力道")]
     private float airborneAmount;
 
+    [SerializeField, Tooltip("超級蠑螈維持時間(sec)")]
+    private float superModeTime;
+
     [Tooltip("角色蓄力BK傷害加成係數(百分比)的最大值")]
     [SerializeField]
     [Range(150, 250)]
     private int chargeAttackMaxBK;
 
 
-
+    [Tooltip("超級蠑螈特效開始觸發器")]
+    private bool superModeEffectStartTrigger;
+    [Tooltip("超級蠑螈特效結束觸發器")]
+    private bool superModeEffectEndTrigger;
     [SerializeField, Tooltip("Mouse Cursor Settings")]
     private bool cursorLocked = true;
     #endregion
@@ -183,10 +190,13 @@ public class PlayerController : NetworkBehaviour
     private float playerOutTimer;
 
     [Tooltip("角色暫存速度")]
-    private float speed;
+    private float tempSpeed;
 
     [Tooltip("角色暫存擊退力")]
-    private float pushForce;
+    private float tempPushForce;
+
+    [Tooltip("超級蠑螈計時器")]
+    private float superModeCounter;
 
     [Tooltip("角色限制移動的參數")]
     private int moveLimitParameter;//限制移動的參數
@@ -210,8 +220,12 @@ public class PlayerController : NetworkBehaviour
         FlapAnimPlay = false;
         BeenHitOrNot = false;
         DrivingKeyStatus = false;
+        JumpEffectTrigger = false;
         HitEffectTrigger = false;
-        pushForce = PushForce;
+        superModeEffectStartTrigger = false;
+        superModeEffectEndTrigger = false;
+        tempPushForce = PushForce;
+        tempSpeed = Network_CharacterControllerPrototype.MoveSpeed;
         playerEffectVisual = GetComponent<PlayerEffectVisual>();
         playerAudioSource = GetComponent<AudioSource>();
         playerEffectVisual.InitializeVisualEffect();//因為是所有物件(包括IsProxy)都要顯示的特效，所以放在外面
@@ -223,7 +237,7 @@ public class PlayerController : NetworkBehaviour
         }
         //cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
 
-        speed = Network_CharacterControllerPrototype.MoveSpeed;
+        
         if (Object.HasStateAuthority)//只會在伺服器端上運行
         {
             //CurHp = maxHp;//初始化血量
@@ -282,11 +296,19 @@ public class PlayerController : NetworkBehaviour
 
         if (SuperMode)
         {
-            PushForce = 10000;
+            superModeEffectEndTrigger = false;
+            PushForce = 1000;
+            superModeCounter += Runner.DeltaTime;
+            if (superModeCounter >= superModeTime) 
+            {
+                SuperMode = false;
+                superModeCounter = 0;
+            } 
         }
         else
         {
-            PushForce = pushForce;
+            superModeEffectStartTrigger = false;
+            PushForce = tempPushForce;
         }
 
         if (BeenHitOrNot || OutOfTheBoat)
@@ -381,7 +403,7 @@ public class PlayerController : NetworkBehaviour
             #region - 蓄力攻擊邏輯處理 -
             if (!ChargeAttackOrNot)
             {
-                Network_CharacterControllerPrototype.MoveSpeed = pressed.IsSet(InputButtons.Sprint) ? drivingSpeed : released.IsSet(InputButtons.Sprint) ? speed : Network_CharacterControllerPrototype.MoveSpeed;
+                Network_CharacterControllerPrototype.MoveSpeed = pressed.IsSet(InputButtons.Sprint) ? drivingSpeed : released.IsSet(InputButtons.Sprint) ? tempSpeed : Network_CharacterControllerPrototype.MoveSpeed;
                 if (pressed.IsSet(InputButtons.Sprint))
                 {
                     DrivingKeyStatus = true;
@@ -395,11 +417,11 @@ public class PlayerController : NetworkBehaviour
             {
                 ChargeAttackBarTimer += Runner.DeltaTime;
 
-                PushForce = pushForce;
+                PushForce = tempPushForce;
 
                 if (ChargeAttackBarTimer > 0.5f)
                 {
-                    Network_CharacterControllerPrototype.MoveSpeed = speed;//回到走路速度
+                    Network_CharacterControllerPrototype.MoveSpeed = tempSpeed;//回到走路速度
                     DrivingKeyStatus = false;//關閉加速特效
 
                     ChargeFlapAnimPlay = true;
@@ -423,7 +445,7 @@ public class PlayerController : NetworkBehaviour
             else if (!ChargeAttackOrNot && ChargeAttackBarTimer > 0 && ChargeAttackBarTimer <= 0.5f) //蓄力小於0.5秒
             {
                 curAttackBK = normalAttackBK;
-                PushForce = pushForce;
+                PushForce = tempPushForce;
                 //Debug.Log("本次蓄力時間 : " + ChargeAttackBarTimer);
                 ChargeAttackBarTimer = 0;
                 FlapAnimPlay = true;
@@ -464,6 +486,18 @@ public class PlayerController : NetworkBehaviour
             Debug.Log("抵達囉!!");
             StartCoroutine(PlayerDissolveAmountTransition(0, 2));
             startTeleporting = false;
+        }
+        if (SuperMode && !superModeEffectStartTrigger)
+        {
+            Debug.Log("超級蠑螈來囉!");
+            StartCoroutine(PlayerSuperModeEffect(0, 2));
+            superModeEffectStartTrigger = true;
+        }
+        if (!SuperMode && !superModeEffectEndTrigger)
+        {
+            Debug.Log("變回普通蠑螈");
+            StartCoroutine(PlayerSuperModeEffect(1, 2));
+            superModeEffectEndTrigger = true;
         }
 
         if (Winner || Loser || PlayerIsTeleporting)
@@ -726,7 +760,7 @@ public class PlayerController : NetworkBehaviour
     #endregion
 
     #region - Shader相關處理 -
-    IEnumerator PlayerDissolveAmountTransition(float targetValue, float duration)
+    IEnumerator PlayerDissolveAmountTransition(float targetValue, float duration)//蠑螈傳送特效
     {
         float elapsedTime = 0f;
         float startValue = SkinnedBodyMeshRenderer.material.GetFloat("_DissolveAmount"); //當前數值
@@ -742,6 +776,30 @@ public class PlayerController : NetworkBehaviour
         SkinnedBodyMeshRenderer.material.SetFloat("_DissolveAmount", targetValue); //最終設定為目標數值
         SkinnedHelmentMeshRenderer.material.SetFloat("_DissolveAmount", targetValue);
     }
+    IEnumerator PlayerSuperModeEffect(float targetValue, float duration)//超級蠑螈模式的shader變化
+    {
+        if (SuperMode)
+        {
+            SkinnedBodyMeshRenderer.material.SetFloat("_EdgeLight", 0.75f);
+            SkinnedHelmentMeshRenderer.material.SetFloat("_EdgeLight", 0.75f);
+        }
+        else
+        {
+            SkinnedBodyMeshRenderer.material.SetFloat("_EdgeLight", 0);
+            SkinnedHelmentMeshRenderer.material.SetFloat("_EdgeLight", 0);
+        }
+        float elapsedTime = 0f;
+        float startValue = SkinnedHelmentMeshRenderer.material.GetFloat("_DissolveAmount"); //當前數值
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsedTime / duration);
+            SkinnedHelmentMeshRenderer.material.SetFloat("_DissolveAmount", Mathf.Lerp(startValue, targetValue, t));
+            yield return null;
+        }
+        SkinnedHelmentMeshRenderer.material.SetFloat("_DissolveAmount", targetValue);
+    }
+
     #endregion
 
     #region - 聲音處理 -

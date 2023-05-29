@@ -563,19 +563,20 @@ MonoBehaviour:
   _interpolationDataSource: 0
   _Winner: 0
   _Loser: 0
-  _PlayerIsTeleporting: 0
   _PlayerImmuneDamage: 0
+  _SuperMode: 0
+  _OutOfTheBoat: 0
+  _PushForce: 50
+  _PlayerIsTeleporting: 0
   _PlayerMoveLimitOrNot: 0
   _BeenHitOrNot: 0
   _ChargeAttackOrNot: 0
-  _OutOfTheBoat: 0
-  _PushForce: 50
-  _CoefficientOfBreakDownPoint: 0
-  _ChargeAttackBarTimer: 0
-  _LocalHurt: {x: 0, y: 0, z: 0}
   _DrivingKeyStatus: 0
   _JumpEffectTrigger: 0
   _HitEffectTrigger: 0
+  _CoefficientOfBreakDownPoint: 0
+  _ChargeAttackBarTimer: 0
+  _LocalHurt: {x: 0, y: 0, z: 0}
   PlayerGameData: {fileID: 16108846752584026}
   PlayerNetworkData: {fileID: 0}
   Network_CharacterControllerPrototype: {fileID: 16108846752584025}
@@ -588,6 +589,7 @@ MonoBehaviour:
   OutAnimPlay: 0
   drivingSpeed: 100
   airborneAmount: 0.1
+  superModeTime: 60
   chargeAttackMaxBK: 250
   cursorLocked: 1
   enemyPrefab: {fileID: 7571370166665707169, guid: 295045a2bf29020458058c936d9616d0,
@@ -2183,8 +2185,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 220}
-  m_SizeDelta: {x: 1500, y: 200}
+  m_AnchoredPosition: {x: 0, y: 400}
+  m_SizeDelta: {x: 3000, y: 500}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1961587801002651729
 CanvasRenderer:
@@ -2242,8 +2244,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 100
-  m_fontSizeBase: 100
+  m_fontSize: 500
+  m_fontSizeBase: 500
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

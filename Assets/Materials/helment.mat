@@ -60,18 +60,18 @@ Material:
     - _Change: 1
     - _Clip: 0.483
     - _Cull: 0
-    - _DissolveAmount: 0
+    - _DissolveAmount: 1
     - _DistortionAmount: 1.09
     - _Down_Line: 1
     - _DstBlend: 0
-    - _EdgeLight: 0.505
+    - _EdgeLight: 0
     - _Metallic: 0.204
     - _NoiseScale: 130
     - _Offset: 11.5
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _SmoothStepAmount: 0
+    - _SmoothStepAmount: 0.677
     - _Smoothness: 1
     - _SrcBlend: 1
     - _Surface: 0
