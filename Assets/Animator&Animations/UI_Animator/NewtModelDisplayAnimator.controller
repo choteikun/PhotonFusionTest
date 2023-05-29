@@ -174,8 +174,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   numberOfStates: 3
-  minNormTime: 8
-  maxNormTime: 12
+  minNormTime: 10
+  maxNormTime: 15
 --- !u!1102 &-574172241932424851
 AnimatorState:
   serializedVersion: 6
