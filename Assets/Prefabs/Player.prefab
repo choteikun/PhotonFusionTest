@@ -587,9 +587,11 @@ MonoBehaviour:
   ChargeFlapAnimPlay: 0
   collisionAvailable: 0
   OutAnimPlay: 0
+  TeleportAnimPlay: 0
   drivingSpeed: 100
   airborneAmount: 0.1
-  superModeTime: 60
+  superModeTime: 30
+  superSpeedBuff: 2
   chargeAttackMaxBK: 250
   cursorLocked: 1
   enemyPrefab: {fileID: 7571370166665707169, guid: 295045a2bf29020458058c936d9616d0,

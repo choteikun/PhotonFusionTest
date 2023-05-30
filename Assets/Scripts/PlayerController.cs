@@ -109,7 +109,7 @@ public class PlayerController : NetworkBehaviour
     [HideInInspector]
     [Tooltip("播放出局動畫")]
     public bool OutAnimPlay;
-    
+
     [Tooltip("播放傳送動畫")]
     public bool TeleportAnimPlay;
     #endregion
@@ -123,6 +123,8 @@ public class PlayerController : NetworkBehaviour
 
     [SerializeField, Tooltip("超級蠑螈維持時間(sec)")]
     private float superModeTime;
+    [SerializeField, Tooltip("超級蠑螈速度加成")]
+    private float superSpeedBuff;
 
     [Tooltip("角色蓄力BK傷害加成係數(百分比)的最大值")]
     [SerializeField]
@@ -204,7 +206,7 @@ public class PlayerController : NetworkBehaviour
     [Tooltip("角色限制移動的參數")]
     private int moveLimitParameter;//限制移動的參數
     private const int moveLimit_Y = 0;
-    private const int moveLimit_N = 1;
+    private const int moveLimit_N = 1; 
 
     bool startTeleporting;
 
@@ -230,6 +232,8 @@ public class PlayerController : NetworkBehaviour
         superModeEffectEndTrigger = false;
         tempPushForce = PushForce;
         tempSpeed = Network_CharacterControllerPrototype.MoveSpeed;
+
+
         playerEffectVisual = GetComponent<PlayerEffectVisual>();
         playerAudioSource = GetComponent<AudioSource>();
         playerEffectVisual.InitializeVisualEffect();//因為是所有物件(包括IsProxy)都要顯示的特效，所以放在外面
@@ -407,7 +411,16 @@ public class PlayerController : NetworkBehaviour
             #region - 蓄力攻擊邏輯處理 -
             if (!ChargeAttackOrNot)
             {
-                Network_CharacterControllerPrototype.MoveSpeed = pressed.IsSet(InputButtons.Sprint) ? drivingSpeed : released.IsSet(InputButtons.Sprint) ? tempSpeed : Network_CharacterControllerPrototype.MoveSpeed;
+                if (SuperMode)
+                {
+                    var superTempSpeed = tempSpeed * superSpeedBuff;
+                    var superDrivingSpeed = drivingSpeed * superSpeedBuff;
+                    Network_CharacterControllerPrototype.MoveSpeed = pressed.IsSet(InputButtons.Sprint) ? superDrivingSpeed : released.IsSet(InputButtons.Sprint) ? superTempSpeed : Network_CharacterControllerPrototype.MoveSpeed;
+                }
+                else
+                {
+                    Network_CharacterControllerPrototype.MoveSpeed = pressed.IsSet(InputButtons.Sprint) ? drivingSpeed : released.IsSet(InputButtons.Sprint) ? tempSpeed : Network_CharacterControllerPrototype.MoveSpeed;
+                }
                 if (pressed.IsSet(InputButtons.Sprint))
                 {
                     DrivingKeyStatus = true;
