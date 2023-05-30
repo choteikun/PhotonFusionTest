@@ -6,6 +6,7 @@ using Fusion;
 using UnityEngine.UI;
 using Cinemachine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(CharacterController))]
 [OrderAfter(typeof(PlayerNetworkData))]//PlayerNetworkData執行後進行
@@ -296,7 +297,10 @@ public class PlayerController : NetworkBehaviour
                 playerNetworkData.SetPlayerOut_RPC(OutOfTheBoat);
             }
         }
-
+        if (Winner)
+        {
+            SceneManager.LoadScene("WinnerShowScene");
+        }
         if (Winner || Loser || PlayerIsTeleporting)
             return;
         
@@ -633,7 +637,7 @@ public class PlayerController : NetworkBehaviour
                     playerController.soundEffectPlay_RPC();
                     //playerController.Network_CharacterControllerPrototype.Jump();
                     playerController.Network_CharacterControllerPrototype.Move(Vector3.zero);
-                    playerController.Network_CharacterControllerPrototype.Velocity += airborneVec * (PushForce + playerController.PlayerGameData.BreakPoint);//垂直推力計算
+                    playerController.Network_CharacterControllerPrototype.Velocity += airborneVec * (PushForce / 2 + playerController.PlayerGameData.BreakPoint);//垂直推力計算
                     playerController.Network_CharacterControllerPrototype.Velocity += pushDir * (PushForce + playerController.PlayerGameData.BreakPoint);//水平推力計算
 
                     playerController.LocalHurt = playerController.transform.InverseTransformDirection((playerController.transform.position - new Vector3(transform.position.x, 0, transform.position.z)));
