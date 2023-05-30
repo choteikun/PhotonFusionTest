@@ -109,6 +109,9 @@ public class PlayerController : NetworkBehaviour
     [HideInInspector]
     [Tooltip("播放出局動畫")]
     public bool OutAnimPlay;
+    
+    [Tooltip("播放傳送動畫")]
+    public bool TeleportAnimPlay;
     #endregion
     //------------------------------------------------------------------------------------------------------------------------
     #region - Player Private SerializeField 變量 -
@@ -218,6 +221,7 @@ public class PlayerController : NetworkBehaviour
         moveLimitParameter = moveLimit_N;
         SuperMode = false;
         FlapAnimPlay = false;
+        TeleportAnimPlay = false;
         BeenHitOrNot = false;
         DrivingKeyStatus = false;
         JumpEffectTrigger = false;
@@ -769,12 +773,25 @@ public class PlayerController : NetworkBehaviour
         {
             elapsedTime += Time.deltaTime;
             float t = Mathf.Clamp01(elapsedTime / duration);
-            SkinnedBodyMeshRenderer.material.SetFloat("_DissolveAmount", Mathf.Lerp(startValue, targetValue, t));
-            SkinnedHelmentMeshRenderer.material.SetFloat("_DissolveAmount", Mathf.Lerp(startValue, targetValue, t));
+            if (SuperMode)
+            {
+                SkinnedHelmentMeshRenderer.material.SetFloat("_DissolveAmount", Mathf.Lerp(startValue, targetValue, t));
+            }
+            else
+            {
+                SkinnedBodyMeshRenderer.material.SetFloat("_DissolveAmount", Mathf.Lerp(startValue, targetValue, t));
+            }
+            
             yield return null;
         }
-        SkinnedBodyMeshRenderer.material.SetFloat("_DissolveAmount", targetValue); //最終設定為目標數值
-        SkinnedHelmentMeshRenderer.material.SetFloat("_DissolveAmount", targetValue);
+        if (SuperMode)
+        {
+            SkinnedHelmentMeshRenderer.material.SetFloat("_DissolveAmount", targetValue);
+        }
+        else
+        {
+            SkinnedBodyMeshRenderer.material.SetFloat("_DissolveAmount", targetValue); //最終設定為目標數值 
+        }
     }
     IEnumerator PlayerSuperModeEffect(float targetValue, float duration)//超級蠑螈模式的shader變化
     {

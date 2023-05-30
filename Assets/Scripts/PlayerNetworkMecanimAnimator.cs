@@ -49,6 +49,7 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
     readonly int h_Grounded = Animator.StringToHash("Grounded");
     readonly int h_Airborne = Animator.StringToHash("Airborne");
 
+    readonly int h_Teleporting = Animator.StringToHash("Teleporting");
 
     [SerializeField, Tooltip("過渡到隨機Idle動畫所需要花的時間")]
     private float idleTimeOut;
@@ -139,15 +140,20 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
             {
                 inputDetected = false;
                 _moveToIdleTimer++;
-                if (_moveToIdleTimer >= 60.0f)
+                if (!playerController.PlayerIsTeleporting && _moveToIdleTimer >= 60.0f)
                 {
                     playerAnimState = PlayerAnimState.Idle;
                 }
             }
             else
-            {
+            { 
                 playerAnimState = PlayerAnimState.Move;
                 inputDetected = true;
+                if (!playerController.PlayerIsTeleporting && playerController.TeleportAnimPlay)
+                {
+                    networkAnimator.Animator.SetBool(h_Teleporting, false);
+                    playerController.TeleportAnimPlay = false;//關閉可以播放傳送動畫的功能
+                }
             }
             #endregion
 
@@ -208,6 +214,7 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
             case PlayerAnimState.Move:   
                 networkAnimator.Animator.SetBool(h_Idle, false);
                 networkAnimator.Animator.SetBool(h_Airborne, false);
+                networkAnimator.Animator.SetBool(h_Teleporting, false);
                 break;
             case PlayerAnimState.BeAttack:
                 networkAnimator.Animator.SetBool(h_Idle, false);
@@ -226,11 +233,14 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
                 networkAnimator.Animator.SetBool(h_Win, true);
                 break;
             case PlayerAnimState.Teleporting:
-                //networkAnimator.Animator.SetBool(h_Idle, false);
+                if (!playerController.TeleportAnimPlay)
+                {
+                    networkAnimator.Animator.SetBool(h_Teleporting, true);
+                    playerController.TeleportAnimPlay = true;
+                }
+                networkAnimator.Animator.SetBool(h_Idle, false);
                 stopAllAttackAnimations();
-               
-                networkAnimator.Animator.SetBool(h_Idle, true);
-                //networkAnimator.Animator.SetBool(h_Teleporting, true);
+
                 break;
             default:
                 break;
