@@ -60,19 +60,19 @@ Material:
     - _Change: 1
     - _Clip: 0.483
     - _Cull: 0
-    - _DissolveAmount: 0.509
-    - _DistortionAmount: 1.09
+    - _DissolveAmount: 0
+    - _DistortionAmount: 0.39
     - _Down_Line: 1
     - _DstBlend: 0
-    - _EdgeLight: 0.818
+    - _EdgeLight: 0.5
     - _Metallic: 0
     - _NoiseScale: 130
     - _Offset: 11.5
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _SmoothStepAmount: 0.359
-    - _Smoothness: 1
+    - _SmoothStepAmount: 0.65
+    - _Smoothness: 0.689
     - _SrcBlend: 1
     - _Surface: 0
     - _TIME: 1
@@ -87,8 +87,8 @@ Material:
     - _BASECOLOR: {r: 1, g: 1, b: 1, a: 0}
     - _COLORMOVE: {r: 10, g: 10, b: 0, a: 0}
     - _COLORSCALE: {r: 10, g: 10, b: 0, a: 0}
-    - _Color: {r: 3.441591, g: 3.441591, b: 3.441591, a: 1}
-    - _EmissionColor: {r: 1.9960662, g: 12.442146, b: 12.708288, a: 0}
+    - _Color: {r: 1.7207955, g: 1.7207955, b: 1.7207955, a: 1}
+    - _EmissionColor: {r: 2.3879557, g: 4.8773117, b: 4.9245777, a: 0}
     - _TIME: {r: 0.3, g: 0.3, b: 0, a: 0}
     - _Top_color: {r: 3.5648699, g: 3.5648699, b: 3.5648699, a: 0}
     - _offset: {r: 10, g: 10, b: 0, a: 0}
