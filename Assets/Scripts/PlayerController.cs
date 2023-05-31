@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using Cinemachine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.Animations;
 
 [RequireComponent(typeof(CharacterController))]
 [OrderAfter(typeof(PlayerNetworkData))]//PlayerNetworkData執行後進行
@@ -696,6 +697,7 @@ public class PlayerController : NetworkBehaviour
             if(PlayerNetworkData == targetNetworkObject)
             {
                 SkinnedBodyMeshRenderer.material.SetColor("_BASECOLOR", PlayerNetworkData.PlayerColor);//設置玩家顏色
+                transform.Find("MiniMapIcon").GetComponent<SpriteRenderer>().color = PlayerNetworkData.PlayerColor;
             } 
         }
     }
@@ -751,6 +753,15 @@ public class PlayerController : NetworkBehaviour
     public void Bind_Camera(GameObject Player)
     {
         var CinemachineVirtualCamera = Camera.main.gameObject.transform.Find("CM vcam1").GetComponent<CinemachineVirtualCamera>();
+        var MiniMapCam = GameObject.Find("MiniMapCam").GetComponent<Camera>();
+        
+        ConstraintSource constraintSource = new ConstraintSource()
+        {
+            sourceTransform = this.transform,
+            weight = 1
+        };
+        MiniMapCam.GetComponent<PositionConstraint>().AddSource(constraintSource);
+        MiniMapCam.GetComponent<PositionConstraint>().constraintActive = true;
         CinemachineVirtualCamera.LookAt = Player.transform;
         CinemachineVirtualCamera.Follow = Player.transform;
     }
@@ -793,6 +804,7 @@ public class PlayerController : NetworkBehaviour
             if (SuperMode)
             {
                 SkinnedHelmentMeshRenderer.material.SetFloat("_DissolveAmount", Mathf.Lerp(startValue, targetValue, t));
+                SkinnedBodyMeshRenderer.material.SetFloat("_DissolveAmount", Mathf.Lerp(startValue, targetValue, t));
             }
             else
             {
@@ -804,6 +816,7 @@ public class PlayerController : NetworkBehaviour
         if (SuperMode)
         {
             SkinnedHelmentMeshRenderer.material.SetFloat("_DissolveAmount", targetValue);
+            SkinnedBodyMeshRenderer.material.SetFloat("_DissolveAmount", targetValue);
         }
         else
         {
@@ -814,8 +827,8 @@ public class PlayerController : NetworkBehaviour
     {
         if (SuperMode)
         {
-            SkinnedBodyMeshRenderer.material.SetFloat("_EdgeLight", 0.75f);
-            SkinnedHelmentMeshRenderer.material.SetFloat("_EdgeLight", 0.75f);
+            SkinnedBodyMeshRenderer.material.SetFloat("_EdgeLight", 0.5f);
+            SkinnedHelmentMeshRenderer.material.SetFloat("_EdgeLight", 0.5f);
         }
         else
         {
