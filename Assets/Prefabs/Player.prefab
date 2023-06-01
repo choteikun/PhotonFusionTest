@@ -641,7 +641,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 824979266836728831}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2880a4508a3ffde40b68c339503404a1, type: 3}
   m_Name: 
@@ -692,10 +692,14 @@ MonoBehaviour:
   - Root: {fileID: 16108846752584005}
     Exclusion:
     - {fileID: 6823728741703041490}
+    - {fileID: 3204855999211150526}
+    - {fileID: 5720062981929984912}
+    - {fileID: 1119202953570941876}
     - {fileID: 2699350753875216441}
     - {fileID: 381675181383665962}
-    - {fileID: 1119202953570941876}
-    - {fileID: 5720062981929984912}
+    - {fileID: 7099401836592738849}
+    - {fileID: 1223612356656908555}
+    - {fileID: 1297596343576149935}
     - {fileID: 5864076182084229697}
     EffectorReaction: 1
     LooseRoot: 0

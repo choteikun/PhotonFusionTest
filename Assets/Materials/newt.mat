@@ -24,7 +24,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BASEMAP:
-        m_Texture: {fileID: 2800000, guid: bd70458f5c7d9b84f8d7ee49f500ff76, type: 3}
+        m_Texture: {fileID: 2800000, guid: 97a210743bed7e24392db836596e273f, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Newt_UV:
@@ -40,7 +40,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Tex2:
-        m_Texture: {fileID: 2800000, guid: 03dde4bce4289894f92885168abafdda, type: 3}
+        m_Texture: {fileID: 2800000, guid: 15a17a4316d92964a9cff7e90713ed23, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -65,18 +65,18 @@ Material:
     - _Clip: 0.483
     - _Cull: 0
     - _DissolveAmount: 0
-    - _DistortionAmount: 1.09
+    - _DistortionAmount: 5.77
     - _Down_Line: 1
     - _DstBlend: 0
     - _EdgeLight: 0.5
-    - _Metallic: 0
+    - _Metallic: 0.16
     - _NoiseScale: 130
     - _Offset: 11.5
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _SmoothStepAmount: 0
-    - _Smoothness: 0.73
+    - _Smoothness: 0.6
     - _SrcBlend: 1
     - _Surface: 0
     - _TIME: 1
@@ -91,7 +91,7 @@ Material:
     - _BASECOLOR: {r: 1, g: 1, b: 1, a: 0}
     - _COLORMOVE: {r: 10, g: 10, b: 0, a: 0}
     - _COLORSCALE: {r: 10, g: 10, b: 0, a: 0}
-    - _Color: {r: 2.6082377, g: 2.6082377, b: 2.6082377, a: 1}
+    - _Color: {r: 4.237095, g: 4.237095, b: 4.237095, a: 1}
     - _EmissionColor: {r: 4.924577, g: 2.7072282, b: 2.3978307, a: 0}
     - _TIME: {r: 0.3, g: 0.3, b: 0, a: 0}
     - _Top_color: {r: 3.5648699, g: 3.5648699, b: 3.5648699, a: 0}
