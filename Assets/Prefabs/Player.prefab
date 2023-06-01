@@ -692,11 +692,11 @@ MonoBehaviour:
   - Root: {fileID: 16108846752584005}
     Exclusion:
     - {fileID: 6823728741703041490}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
+    - {fileID: 2699350753875216441}
+    - {fileID: 381675181383665962}
+    - {fileID: 1119202953570941876}
+    - {fileID: 5720062981929984912}
+    - {fileID: 5864076182084229697}
     EffectorReaction: 1
     LooseRoot: 0
     ParamsOverride: {fileID: 0}
