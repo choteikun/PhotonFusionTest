@@ -12,7 +12,12 @@ public class GameManager : MonoBehaviour
     public Color PlayerColor = new Color(1, 1, 1, 1);
 
     public List<PlayerController> SurvivingPlayerControllers = new();
+
+
+
     public float[] AllPlayerBkPoint = new float[9];
+
+
     //int loserCount;
     int survivorCount;
 
@@ -36,6 +41,9 @@ public class GameManager : MonoBehaviour
     public string PlayerName = null;
 
     public Dictionary<PlayerRef, PlayerNetworkData> PlayerList = new Dictionary<PlayerRef, PlayerNetworkData>();
+
+
+
 
     public event Action OnPlayerListUpdated = null;
 
