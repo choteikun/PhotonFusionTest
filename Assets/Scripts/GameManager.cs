@@ -7,6 +7,7 @@ using UnityEngine.Events;
 using System.Linq;
 public class GameManager : MonoBehaviour
 {
+    public int ThisLocalPlayerId;
     public static GameManager Instance { get; private set; }
 
     public Color PlayerColor = new Color(1, 1, 1, 1);

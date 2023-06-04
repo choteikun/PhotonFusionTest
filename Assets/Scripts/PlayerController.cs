@@ -221,14 +221,6 @@ public class PlayerController : NetworkBehaviour
     private PlayerEffectVisual playerEffectVisual;
     private GameObject mainCamera;
     #endregion
-
-
-    private void Start()
-    {
-        Debug.Log("Player Start");
-    }
-
-
     public override void Spawned()
     {
         Debug.Log("Player Spawned");
@@ -282,11 +274,15 @@ public class PlayerController : NetworkBehaviour
     }
     private void Start()
     {
+        Debug.Log("Player Start");
         var gameManager = GameManager.Instance;
         Debug.Log(gameManager.ThisLocalPlayerId);
         Debug.Log(gameManager.AllPlayersColor.Count);
         Debug.Log(gameManager.AllPlayersName.Count);
-        MainGameUIController.Instance.InitPlayerBKUI(gameManager.ThisLocalPlayerId, gameManager.AllPlayersColor, gameManager.AllPlayersName);
+        if (Object.HasInputAuthority)
+        {
+            MainGameUIController.Instance.InitPlayerBKUI(_PlayerGameData.PlayerID, gameManager.AllPlayersColor, gameManager.AllPlayersName);
+        }
     }
     public override void FixedUpdateNetwork()//逐每個tick更新(一個tick相當1.666毫秒)
     {
@@ -856,7 +852,8 @@ public class PlayerController : NetworkBehaviour
             if (playerData.Object.InputAuthority.PlayerId == Object.InputAuthority.PlayerId)
             {
                 Debug.LogWarning(playerData.name);
-                GameManager.Instance.ThisLocalPlayerId = playerData.Object.InputAuthority.PlayerId;
+               
+                //GameManager.Instance.ThisLocalPlayerId = _PlayerGameData.PlayerID;
                 return playerData;
             }
         }
@@ -878,9 +875,7 @@ public class PlayerController : NetworkBehaviour
         if (GameManager.Instance.PlayerList.TryGetValue(Object.InputAuthority, out PlayerNetworkData playerNetworkData))
         {
             _PlayerGameData.SetNameAID(playerNetworkData.PlayerName, playerNetworkData.PlayerID);
-            playerNameText.text = playerNetworkData.PlayerName.ToString();
-
-            
+            playerNameText.text = playerNetworkData.PlayerName.ToString();            
 
             Debug.Log("PlayerName : " + _PlayerGameData.PlayerName + "/PlayerID : " + _PlayerGameData.PlayerID);
 

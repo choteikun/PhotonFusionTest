@@ -9,7 +9,7 @@ public class PlayerNetworkData : NetworkBehaviour
 	[Networked] public Color PlayerColor { get; set; }
 	
 	[HideInInspector]
-	[Networked] public int HostID { get; set; }//檢查用的
+	[Networked] public int HostID { get; set; }
 	public int PlayerID { get; set; }
 	[Networked(OnChanged = nameof(OnPlayerNameChanged))] public string PlayerName { get; set; }
 	[Networked(OnChanged = nameof(OnIsReadyChanged))] public NetworkBool IsReady { get; set; }
@@ -44,12 +44,16 @@ public class PlayerNetworkData : NetworkBehaviour
 	[Rpc(sources: RpcSources.InputAuthority, targets: RpcTargets.StateAuthority)]
 	public void SetPlayerID_RPC(int hostID)
 	{
-		HostID = hostID;
-		if (Object.InputAuthority.PlayerId == gameManager.HostID)
+        HostID = hostID;
+        if (Object.InputAuthority.PlayerId == gameManager.HostID)//如果網路內置的PlayerId等於房間輸入人數id-1
 		{
 			PlayerID = 0;
 		}
-		PlayerID = Object.InputAuthority.PlayerId + 1;
+        else
+        {
+			PlayerID = Object.InputAuthority.PlayerId + 1;
+		}
+		
 	}
 
 	[Rpc(sources: RpcSources.InputAuthority, targets: RpcTargets.StateAuthority)]

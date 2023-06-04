@@ -20,7 +20,7 @@ public class MainGameUIController : ToSingletonMonoBehavior<MainGameUIController
             if (i!=ThisPlayerID)
             {
                 colorPool.Add(playersColor[i]);
-                playerNamePool.Add(playerNamePool[i]);
+                playerNamePool.Add(playersName[i]);
                 IDPool.Add(i);
             }
         }
