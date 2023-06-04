@@ -268,10 +268,16 @@ public class PlayerController : NetworkBehaviour
         }
         GameManager.Instance.AllPlayersColor.Add(_PlayerNetworkData.PlayerColor);
         GameManager.Instance.AllPlayersName.Add(_PlayerGameData.PlayerName);
-
         //Invoke("setPlayerData_RPC", 0.5f);//因為要拿PlayerNetworkData的關係，有先後順序的問題，所以晚一點才設置角色的Data
     }
-
+    private void Start()
+    {
+        var gameManager = GameManager.Instance;
+        Debug.Log(gameManager.ThisLocalPlayerId);
+        Debug.Log(gameManager.AllPlayersColor.Count);
+        Debug.Log(gameManager.AllPlayersName.Count);
+        MainGameUIController.Instance.InitPlayerBKUI(gameManager.ThisLocalPlayerId, gameManager.AllPlayersColor, gameManager.AllPlayersName);
+    }
     public override void FixedUpdateNetwork()//逐每個tick更新(一個tick相當1.666毫秒)
     {
         //Debug.Log("speed : " + speed + "Acceleration : " + networkCharacterControllerPrototype.MoveSpeed + "SprintSpeed : " + sprintSpeed);

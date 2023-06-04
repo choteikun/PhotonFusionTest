@@ -5,6 +5,7 @@ using System;
 using Fusion;
 using UnityEngine.Events;
 using System.Linq;
+using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
@@ -17,7 +18,7 @@ public class GameManager : MonoBehaviour
     public List<string> AllPlayersName = new();
     public List<int> AllPlayersBkPercent = new();
     public int ThisLocalPlayerId;
-
+   
     //int loserCount;
     int survivorCount;
 
@@ -65,8 +66,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         RearrangePlayersInfoList(AllPlayersColor);
-        RearrangePlayersInfoList(AllPlayersName);
-        //RearrangePlayersInfoList(AllPlayersBkPercent);
+        RearrangePlayersInfoList(AllPlayersName);            
     }
     public void RearrangePlayersInfoList<T>(List<T> list)
     {

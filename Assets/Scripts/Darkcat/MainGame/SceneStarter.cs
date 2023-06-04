@@ -1,13 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Fusion;
 
-public class SceneStarter : MonoBehaviour
+public class SceneStarter : NetworkBehaviour
 {
-    
     private void Start()
     {
         var gameManager = GameManager.Instance;
-        MainGameUIController.Instance.InitPlayerBKUI(gameManager.ThisLocalPlayerId,gameManager.AllPlayersColor,gameManager.AllPlayersName);
+        Debug.Log(gameManager.ThisLocalPlayerId);
+        Debug.Log(gameManager.AllPlayersColor.Count);
+        Debug.Log(gameManager.AllPlayersName.Count);
     }
 }
