@@ -50,8 +50,8 @@ public class PlayerGameData : NetworkBehaviour
         {
             bkPercent = 100;
         }
-        GameManager.Instance.AllPlayersBkPercent.Remove(bkPercent);
-        GameManager.Instance.AllPlayersBkPercent.Add(bkPercent);
+        //GameManager.Instance.AllPlayersBkPercent.Remove(bkPercent);
+        //GameManager.Instance.AllPlayersBkPercent.Add(bkPercent);
     }
     public PlayerGameData(string name,int playerid)
     {
