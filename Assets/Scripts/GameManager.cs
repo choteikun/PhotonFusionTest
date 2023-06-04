@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     public List<Color> AllPlayersColor = new();
     public List<string> AllPlayersName = new();
     public List<int> AllPlayersBkPercent = new();
+    public int ThisLocalPlayerId;
 
     //int loserCount;
     int survivorCount;
@@ -65,7 +66,7 @@ public class GameManager : MonoBehaviour
     {
         RearrangePlayersInfoList(AllPlayersColor);
         RearrangePlayersInfoList(AllPlayersName);
-        RearrangePlayersInfoList(AllPlayersBkPercent);
+        //RearrangePlayersInfoList(AllPlayersBkPercent);
     }
     public void RearrangePlayersInfoList<T>(List<T> list)
     {

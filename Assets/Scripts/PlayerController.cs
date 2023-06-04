@@ -839,6 +839,7 @@ public class PlayerController : NetworkBehaviour
             if (playerData.Object.InputAuthority.PlayerId == Object.InputAuthority.PlayerId)
             {
                 Debug.LogWarning(playerData.name);
+                GameManager.Instance.ThisLocalPlayerId = playerData.Object.InputAuthority.PlayerId;
                 return playerData;
             }
         }
