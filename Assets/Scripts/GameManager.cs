@@ -61,21 +61,15 @@ public class GameManager : MonoBehaviour
         
         DontDestroyOnLoad(gameObject);
     }
-    private void Start()
-    {
-        RearrangePlayersInfoList(AllPlayersColor);
-        RearrangePlayersInfoList(AllPlayersName);
-        RearrangePlayersInfoList(AllPlayersBkPercent);
-    }
-    public void RearrangePlayersInfoList<T>(List<T> list)
-    {
-        if (list.Count > 0)
-        {
-            T firstElement = list[0];
-            list.RemoveAt(0);
-            list.Add(firstElement);
-        }
-    }
+    //public void RearrangePlayersInfoList<T>(List<T> list)
+    //{
+    //    if (list.Count > 0)
+    //    {
+    //        T firstElement = list[0];
+    //        list.RemoveAt(0);
+    //        list.Add(firstElement);
+    //    }
+    //}
     private bool CheckAllPlayerIsReady()
     {
         //如果沒有連接到服務器回傳false
