@@ -87,7 +87,9 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         });
 
         if (result.Ok)
+        {
             SetPairState(PairState.InRoom);
+        } 
         else
             Debug.LogError($"Failed to Start: {result.ShutdownReason}");
     }
@@ -104,7 +106,9 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         });
 
         if (result.Ok)
+        {
             SetPairState(PairState.InRoom);
+        } 
         else
             Debug.LogError($"Failed to Start: {result.ShutdownReason}");
     }

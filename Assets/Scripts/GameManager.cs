@@ -13,10 +13,9 @@ public class GameManager : MonoBehaviour
 
     public List<PlayerController> SurvivingPlayerControllers = new();
 
-
-
-    public float[] AllPlayerBkPoint = new float[9];
-
+    public List<Color> AllPlayersColor = new();
+    public List<string> AllPlayersName = new();
+    public List<int> AllPlayersBkPercent = new();
 
     //int loserCount;
     int survivorCount;
@@ -38,12 +37,11 @@ public class GameManager : MonoBehaviour
             return runner;
         }
     }
+    public int HostID;
+
     public string PlayerName = null;
 
     public Dictionary<PlayerRef, PlayerNetworkData> PlayerList = new Dictionary<PlayerRef, PlayerNetworkData>();
-
-
-
 
     public event Action OnPlayerListUpdated = null;
 
@@ -60,8 +58,23 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-
+        
         DontDestroyOnLoad(gameObject);
+    }
+    private void Start()
+    {
+        RearrangePlayersInfoList(AllPlayersColor);
+        RearrangePlayersInfoList(AllPlayersName);
+        RearrangePlayersInfoList(AllPlayersBkPercent);
+    }
+    public void RearrangePlayersInfoList<T>(List<T> list)
+    {
+        if (list.Count > 0)
+        {
+            T firstElement = list[0];
+            list.RemoveAt(0);
+            list.Add(firstElement);
+        }
     }
     private bool CheckAllPlayerIsReady()
     {
@@ -147,6 +160,13 @@ public class GameManager : MonoBehaviour
         {
             playerNetworkData.SetPlayerName_RPC(PlayerName);
             playerNetworkData.SetPlayerColor_RPC(PlayerColor);
+        }
+    }
+    public void SetHostID()
+    {
+        if (PlayerList.TryGetValue(runner.LocalPlayer, out PlayerNetworkData playerNetworkData))
+        {
+            playerNetworkData.SetPlayerID_RPC(HostID);
         }
     }
 }

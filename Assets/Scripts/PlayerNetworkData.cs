@@ -7,13 +7,16 @@ public class PlayerNetworkData : NetworkBehaviour
 	private GameManager gameManager = null;
 
 	[Networked] public Color PlayerColor { get; set; }
-
+	
+	[HideInInspector]
+	[Networked] public int HostID { get; set; }//檢查用的
+	public int PlayerID { get; set; }
 	[Networked(OnChanged = nameof(OnPlayerNameChanged))] public string PlayerName { get; set; }
 	[Networked(OnChanged = nameof(OnIsReadyChanged))] public NetworkBool IsReady { get; set; }
 	[Networked(OnChanged = nameof(OnGameOverChanged))] public NetworkBool OutOfTheBoat { get; set; }
 
 	//[Networked(OnChanged = nameof(OnPlayerBkChange))] public float ThisPlayerBkPoint { get; set; }
-	[field:SerializeField]public string PlayerID { get; set; }
+
 	public override void Spawned()
 	{
 		gameManager = GameManager.Instance;
@@ -25,12 +28,24 @@ public class PlayerNetworkData : NetworkBehaviour
 
 		if (Object.HasInputAuthority)
 		{
+			SetPlayerID_RPC(gameManager.HostID);//藉由確認HostID再依進入遊戲的玩家的順序逐一給Player ID
 			SetPlayerName_RPC(gameManager.PlayerName);
 			SetPlayerColor_RPC(gameManager.PlayerColor);
 		}
 	}
 
 	#region - RPCs -
+
+	[Rpc(sources: RpcSources.InputAuthority, targets: RpcTargets.StateAuthority)]
+	public void SetPlayerID_RPC(int hostID)
+	{
+		HostID = hostID;
+		if (Object.InputAuthority.PlayerId == gameManager.HostID)
+		{
+			PlayerID = 0;
+		}
+		PlayerID = Object.InputAuthority.PlayerId + 1;
+	}
 
 	[Rpc(sources: RpcSources.InputAuthority, targets: RpcTargets.StateAuthority)]
 	public void SetPlayerName_RPC(string name)

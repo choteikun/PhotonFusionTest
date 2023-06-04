@@ -22,7 +22,7 @@ public class PlayerGameData : NetworkBehaviour
     /// <summary>
     /// 玩家BK值
     /// </summary>
-    [field: SerializeField][Networked] public float BreakPoint { get; set; }
+    [Networked(OnChanged = nameof(OnBreakPointChanged))] public float BreakPoint { get; set; }
     /// <summary>
     /// 玩家是否有被充能
     /// </summary>
@@ -43,6 +43,16 @@ public class PlayerGameData : NetworkBehaviour
     [Networked] public Teleporter InWhichTeleporter { get; set; }
 
 
+    public static void OnBreakPointChanged(Changed<PlayerGameData> changed)
+    {
+        var bkPercent = (int)(Mathf.Round(changed.Behaviour.BreakPoint) / 10);
+        if (bkPercent >= 100)
+        {
+            bkPercent = 100;
+        }
+        GameManager.Instance.AllPlayersBkPercent.Remove(bkPercent);
+        GameManager.Instance.AllPlayersBkPercent.Add(bkPercent);
+    }
     public PlayerGameData(string name,int playerid)
     {
         PlayerName = name;

@@ -50,7 +50,7 @@ public class Teleporter : NetworkBehaviour
             //修改玩家狀態 使他不能操作一秒
             player.GetComponent<PlayerController>().PlayerIsTeleporting = true;
             //把自己的資料灌給player
-            player.GetComponent<PlayerController>().PlayerGameData.InWhichTeleporter = this;
+            player.GetComponent<PlayerController>()._PlayerGameData.InWhichTeleporter = this;
             canTeleport_ = false;
         }
     }

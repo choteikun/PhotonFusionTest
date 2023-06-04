@@ -8,16 +8,16 @@ public class MainGameUIController : ToSingletonMonoBehavior<MainGameUIController
     [SerializeField] GameObject[] UI_For_5_OrLessPlayer;
     [SerializeField] GameObject[] UI_ForManyPLayer;
 
-    public void InitPlayerBKUI(int MainPlayerID,List<Color>playersColor,List<string>playersName)
+    public void InitPlayerBKUI(int ThisPlayerID,List<Color>playersColor,List<string>playersName)
     {
         var totalPlayerCount = playersColor.Count; 
-        mainPlayerUI_.GetComponent<PlayerInformationBlockUpdater>().initThisBlock(MainPlayerID, playersColor[MainPlayerID],playersName[MainPlayerID]);
+        mainPlayerUI_.GetComponent<PlayerInformationBlockUpdater>().initThisBlock(ThisPlayerID, playersColor[ThisPlayerID],playersName[ThisPlayerID]);
         var colorPool = new List<Color>();
         var playerNamePool = new List<string>();
         var IDPool = new List<int>();
         for (int i = 0; i < playersColor.Count; i++)
         {
-            if (i!=MainPlayerID)
+            if (i!=ThisPlayerID)
             {
                 colorPool.Add(playersColor[i]);
                 playerNamePool.Add(playerNamePool[i]);
@@ -44,7 +44,7 @@ public class MainGameUIController : ToSingletonMonoBehavior<MainGameUIController
         }
         
     }
-    public void UpdatePlayerBKUI(int MainPlayerID, List<int>playersBK)
+    public void UpdatePlayerBKUI(int MainPlayerID, List<int> playersBK)
     {
         var totalPlayerCount = playersBK.Count;
         mainPlayerUI_.GetComponent<PlayerInformationBlockUpdater>().UpdateThisBlock(playersBK[MainPlayerID]);
@@ -59,7 +59,7 @@ public class MainGameUIController : ToSingletonMonoBehavior<MainGameUIController
         if (totalPlayerCount - 1 <= 5)
         {
             for (int i = 0; i < totalPlayerCount - 1; i++)
-            {               
+            {
                 var playerUIBlock = UI_For_5_OrLessPlayer[i].GetComponent<PlayerInformationBlockUpdater>();
                 playerUIBlock.UpdateThisBlock(playersBK[i]);
             }

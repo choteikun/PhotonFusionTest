@@ -86,8 +86,8 @@ public class PlayerController : NetworkBehaviour
     #endregion
     //------------------------------------------------------------------------------------------------------------------------
     #region - Player Public 變量 -
-    public PlayerGameData PlayerGameData;
-    public PlayerNetworkData PlayerNetworkData;
+    public PlayerGameData _PlayerGameData;
+    public PlayerNetworkData _PlayerNetworkData;
     public NetworkCharacterControllerPrototype Network_CharacterControllerPrototype = null;
     public SkinnedMeshRenderer SkinnedBodyMeshRenderer = null;
     public SkinnedMeshRenderer SkinnedHelmentMeshRenderer = null;
@@ -208,7 +208,7 @@ public class PlayerController : NetworkBehaviour
     [Tooltip("角色限制移動的參數")]
     private int moveLimitParameter;//限制移動的參數
     private const int moveLimit_Y = 0;
-    private const int moveLimit_N = 1; 
+    private const int moveLimit_N = 1;
 
     bool startTeleporting;
 
@@ -222,6 +222,8 @@ public class PlayerController : NetworkBehaviour
 
     public override void Spawned()
     {
+        SetPlayerData_RPC();
+
         moveLimitParameter = moveLimit_N;
         SuperMode = false;
         FlapAnimPlay = false;
@@ -235,19 +237,16 @@ public class PlayerController : NetworkBehaviour
         tempPushForce = PushForce;
         tempSpeed = Network_CharacterControllerPrototype.MoveSpeed;
 
-
         playerEffectVisual = GetComponent<PlayerEffectVisual>();
         playerAudioSource = GetComponent<AudioSource>();
         playerEffectVisual.InitializeVisualEffect();//因為是所有物件(包括IsProxy)都要顯示的特效，所以放在外面
         playerEffectVisual.InitializeParticleEffect();
-        playerEffectVisual.HitEffectStop();       
+        playerEffectVisual.HitEffectStop();
         if (mainCamera == null)
         {
             mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
         }
-        //cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
-
-        
+        //cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y; 
         if (Object.HasStateAuthority)//只會在伺服器端上運行
         {
             //CurHp = maxHp;//初始化血量
@@ -267,7 +266,9 @@ public class PlayerController : NetworkBehaviour
             Debug.Log(this.gameObject.name);
             Bind_Camera(this.gameObject);
         }
-        setPlayerData_RPC();
+        GameManager.Instance.AllPlayersColor.Add(_PlayerNetworkData.PlayerColor);
+        GameManager.Instance.AllPlayersName.Add(_PlayerGameData.PlayerName);
+
         //Invoke("setPlayerData_RPC", 0.5f);//因為要拿PlayerNetworkData的關係，有先後順序的問題，所以晚一點才設置角色的Data
     }
 
@@ -304,7 +305,7 @@ public class PlayerController : NetworkBehaviour
         }
         if (Winner || Loser || PlayerIsTeleporting)
             return;
-        
+
         Move();
 
         if (SuperMode)
@@ -312,11 +313,11 @@ public class PlayerController : NetworkBehaviour
             superModeEffectEndTrigger = false;
             PushForce = 1000;
             superModeCounter += Runner.DeltaTime;
-            if (superModeCounter >= superModeTime) 
+            if (superModeCounter >= superModeTime)
             {
                 SuperMode = false;
                 superModeCounter = 0;
-            } 
+            }
         }
         else
         {
@@ -338,7 +339,7 @@ public class PlayerController : NetworkBehaviour
             PushCollision();//碰撞啟動
         }
 
-        
+
 
         //if (CurHp <= 0)
         //{
@@ -575,14 +576,7 @@ public class PlayerController : NetworkBehaviour
             }
         }
     }
-    /*RPC可以遠端呼叫其他網路裝置的函數或方法
-    RPC適用於同步那些狀態更新頻率比較低的資料，雖然他看上去非常簡單易用，但因為RPC並不是以Tick同步的，也不會保存狀態，這意味者RPC的同步不及時，且後加入的玩家會無法更新加入前的RPC，所以RPC通常不會是同步資料的最佳選擇。
-    RPC使用時機：發送訊息、設定玩家資料、商城購買等等單一一次性的事件。*/
-    [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
-    private void ChangeColor_RPC(Color newColor)
-    {
-        SkinnedBodyMeshRenderer.material.color = newColor;
-    }
+    
 
     private void Respawn()//重生
     {
@@ -600,7 +594,7 @@ public class PlayerController : NetworkBehaviour
     public void AddCoefficientOfBreakDownPoint(float cob)
     {
         CoefficientOfBreakDownPoint += cob;
-        PlayerGameData.BreakPoint = PlayerGameData.BreakDownPointCurve.Evaluate(CoefficientOfBreakDownPoint);//依據BK曲線計算BK值
+        _PlayerGameData.BreakPoint = _PlayerGameData.BreakDownPointCurve.Evaluate(CoefficientOfBreakDownPoint);//依據BK曲線計算BK值
         //GetANetwork
     }
     //private static void OnHpChanged(Changed<PlayerController> changed)//changed代表變化後的值，可以透過changed來存取資料
@@ -638,17 +632,17 @@ public class PlayerController : NetworkBehaviour
                     playerController.soundEffectPlay_RPC();
                     //playerController.Network_CharacterControllerPrototype.Jump();
                     playerController.Network_CharacterControllerPrototype.Move(Vector3.zero);
-                    playerController.Network_CharacterControllerPrototype.Velocity += airborneVec * (PushForce / 2 + playerController.PlayerGameData.BreakPoint / 2);//垂直推力計算
-                    playerController.Network_CharacterControllerPrototype.Velocity += pushDir * (PushForce + playerController.PlayerGameData.BreakPoint);//水平推力計算
+                    playerController.Network_CharacterControllerPrototype.Velocity += airborneVec * (PushForce / 2 + playerController._PlayerGameData.BreakPoint / 2);//垂直推力計算
+                    playerController.Network_CharacterControllerPrototype.Velocity += pushDir * (PushForce + playerController._PlayerGameData.BreakPoint);//水平推力計算
 
                     playerController.LocalHurt = playerController.transform.InverseTransformDirection((playerController.transform.position - new Vector3(transform.position.x, 0, transform.position.z)));
                     playerController.BeenHitOrNot = true;
                     Debug.Log("X : " + playerController.LocalHurt.x + "Y : " + playerController.LocalHurt.y + "Z : " + playerController.LocalHurt.z);
                     //playerController.GetComponentInParent<CharacterController>().Move(pushDir.normalized * pushForce * Runner.DeltaTime);
                 }
-                
 
-                Debug.Log(pushDir * (PushForce + playerController.PlayerGameData.BreakPoint));
+
+                Debug.Log(pushDir * (PushForce + playerController._PlayerGameData.BreakPoint));
                 //playerController.GetComponentInParent<PlayerController>().TakeDamage(10);
                 //Debug.Log("Push!!!!!!!");
                 //Runner.Despawn(Object);
@@ -669,7 +663,7 @@ public class PlayerController : NetworkBehaviour
                 teleporter.Invoke("StartTeleportingCountDown", 2f);
                 //teleporter.StartTeleportingCountDown();//傳送開始
             }
-            if(collider.TryGetComponent<TreasureBoxBehavior>(out TreasureBoxBehavior treasureBox))
+            if (collider.TryGetComponent<TreasureBoxBehavior>(out TreasureBoxBehavior treasureBox))
             {
                 //開啟寶箱
                 treasureBox.TriggerTreasureBox(Object);
@@ -679,28 +673,7 @@ public class PlayerController : NetworkBehaviour
     #endregion
 
     #region - 動態UI邏輯處理 -
-    [Rpc(RpcSources.All, RpcTargets.All)]
-    private void setPlayerData_RPC()
-    {
-        if (GameManager.Instance.PlayerList.TryGetValue(Object.InputAuthority, out PlayerNetworkData playerNetworkData))
-        {
-            PlayerGameData.SetNameAID(playerNetworkData.PlayerName, Object.InputAuthority.PlayerId);
-            playerNameText.text = playerNetworkData.PlayerName.ToString();
 
-            Debug.Log("PlayerName : " + PlayerGameData.PlayerName + "/PlayerId : " + PlayerGameData.PlayerID);
-
-            var targetNetworkObject = GetANetwork();
-            if (targetNetworkObject != null)
-            {
-                PlayerNetworkData = targetNetworkObject;
-            }
-            if(PlayerNetworkData == targetNetworkObject)
-            {
-                SkinnedBodyMeshRenderer.material.SetColor("_BASECOLOR", PlayerNetworkData.PlayerColor);//設置玩家顏色
-                transform.Find("MiniMapIcon").GetComponent<SpriteRenderer>().color = PlayerNetworkData.PlayerColor;
-            } 
-        }
-    }
     public void ColorChangedByBreakDownPoint()
     {
         if (CoefficientOfBreakDownPoint >= 120.0f)//120是曲線x最陡的位置
@@ -715,15 +688,15 @@ public class PlayerController : NetworkBehaviour
     }
     public void ColorChangedByChargeAttackBar()
     {
-        if(ChargeAttackBarTimer > 0 && ChargeAttackBarTimer <= 0.5f)
+        if (ChargeAttackBarTimer > 0 && ChargeAttackBarTimer <= 0.5f)
         {
             curChargeAttackBar.color = Color.green;
         }
-        else if(ChargeAttackBarTimer > 0.5f && ChargeAttackBarTimer < 2.0f)
+        else if (ChargeAttackBarTimer > 0.5f && ChargeAttackBarTimer < 2.0f)
         {
             curChargeAttackBar.color = Color.yellow;
         }
-        else if(ChargeAttackBarTimer >= 2.0f)
+        else if (ChargeAttackBarTimer >= 2.0f)
         {
             curChargeAttackBar.color = Color.red;
         }
@@ -754,7 +727,7 @@ public class PlayerController : NetworkBehaviour
     {
         var CinemachineVirtualCamera = Camera.main.gameObject.transform.Find("CM vcam1").GetComponent<CinemachineVirtualCamera>();
         var MiniMapCam = GameObject.Find("MiniMapCam").GetComponent<Camera>();
-        
+
         ConstraintSource constraintSource = new ConstraintSource()
         {
             sourceTransform = this.transform,
@@ -810,7 +783,7 @@ public class PlayerController : NetworkBehaviour
             {
                 SkinnedBodyMeshRenderer.material.SetFloat("_DissolveAmount", Mathf.Lerp(startValue, targetValue, t));
             }
-            
+
             yield return null;
         }
         if (SuperMode)
@@ -871,4 +844,37 @@ public class PlayerController : NetworkBehaviour
         }
         return null;
     }
+
+    #region - RPC Functions -
+    /*RPC可以遠端呼叫其他網路裝置的函數或方法
+    RPC適用於同步那些狀態更新頻率比較低的資料，雖然他看上去非常簡單易用，但因為RPC並不是以Tick同步的，也不會保存狀態，這意味者RPC的同步不及時，且後加入的玩家會無法更新加入前的RPC，所以RPC通常不會是同步資料的最佳選擇。
+    RPC使用時機：發送訊息、設定玩家資料、商城購買等等單一一次性的事件。*/
+    [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
+    private void ChangeColor_RPC(Color newColor)
+    {
+        SkinnedBodyMeshRenderer.material.color = newColor;
+    }
+    [Rpc(RpcSources.All, RpcTargets.All)]
+    private void SetPlayerData_RPC()//設置所有playerController的networkData參數(包括 Local simulation)
+    {
+        if (GameManager.Instance.PlayerList.TryGetValue(Object.InputAuthority, out PlayerNetworkData playerNetworkData))
+        {
+            _PlayerGameData.SetNameAID(playerNetworkData.PlayerName, playerNetworkData.PlayerID);
+            playerNameText.text = playerNetworkData.PlayerName.ToString();
+            
+            Debug.Log("PlayerName : " + _PlayerGameData.PlayerName + "/PlayerID : " + _PlayerGameData.PlayerID);
+
+            var targetNetworkObject = GetANetwork();
+            if (targetNetworkObject != null)
+            {
+                _PlayerNetworkData = targetNetworkObject;
+
+                SkinnedBodyMeshRenderer.material.SetColor("_BASECOLOR", _PlayerNetworkData.PlayerColor);//設置玩家顏色
+                transform.Find("MiniMapIcon").GetComponent<SpriteRenderer>().color = _PlayerNetworkData.PlayerColor;
+                //MainGameUIController.Instance.InitPlayerBKUI(Object.InputAuthority.PlayerId, GameManager.Instance.AllPlayersColor, GameManager.Instance.AllPlayersName);
+            }
+        }
+    }
+
+    #endregion
 }

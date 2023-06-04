@@ -36,6 +36,9 @@ public class CreateRoomPanel : MonoBehaviour, IPanel
         string roomName = roomNameInputField.text;
         int maxPlayer = int.Parse(maxPlayerInputField.text);
 
+        GameManager.Instance.HostID = maxPlayer - 1;
+        GameManager.Instance.SetHostID();
+
         if (maxPlayer > 9)
         {
             Debug.Log("房間人數最多不超過9人");

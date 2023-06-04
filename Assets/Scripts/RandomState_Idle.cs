@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class RandomState_Idle : StateMachineBehaviour
 {
+    [SerializeField] private int animLayer;
 
     private float randomMotionTime = 0;
 
@@ -28,7 +29,7 @@ public class RandomState_Idle : StateMachineBehaviour
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         //Debug.Log("randomIdleTime:" + randomIdleTime/60 + "     randomIdleTimer:" + randomIdleTimer);
-        if (animator.GetCurrentAnimatorStateInfo(0).IsName("Idle") && !animator.IsInTransition(0))//如果當前狀態是idle且不處於過渡條下
+        if (animator.GetCurrentAnimatorStateInfo(animLayer).IsName("Idle") && !animator.IsInTransition(animLayer))//如果當前狀態是idle且不處於過渡條下
         {
 
             randomMotionTime++;

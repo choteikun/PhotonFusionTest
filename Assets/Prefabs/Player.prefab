@@ -392,8 +392,8 @@ MonoBehaviour:
   _CoefficientOfBreakDownPoint: 0
   _ChargeAttackBarTimer: 0
   _LocalHurt: {x: 0, y: 0, z: 0}
-  PlayerGameData: {fileID: 16108846752584026}
-  PlayerNetworkData: {fileID: 0}
+  _PlayerGameData: {fileID: 16108846752584026}
+  _PlayerNetworkData: {fileID: 0}
   Network_CharacterControllerPrototype: {fileID: 16108846752584025}
   SkinnedBodyMeshRenderer: {fileID: 8184626516883231272}
   SkinnedHelmentMeshRenderer: {fileID: 7301036285729101164}
@@ -436,7 +436,7 @@ MonoBehaviour:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 100
+      value: 0
       inSlope: 0.47819367
       outSlope: 0.47819367
       tangentMode: 0
@@ -444,22 +444,22 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0.13188647
     - serializedVersion: 3
-      time: 76.74484
-      value: 157.68292
-      inSlope: 0.9490744
-      outSlope: 0.9490744
+      time: 78.88739
+      value: 107.36232
+      inSlope: 2.921642
+      outSlope: 2.921642
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.24839942
-      outWeight: 0.16117804
+      inWeight: 0.11091718
+      outWeight: 0.2626578
     - serializedVersion: 3
       time: 106.49229
       value: 241.4219
-      inSlope: 6.481341
-      outSlope: 6.481341
+      inSlope: 6.9143424
+      outSlope: 6.9143424
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
+      inWeight: 0.22730403
       outWeight: 0.8599616
     - serializedVersion: 3
       time: 115
