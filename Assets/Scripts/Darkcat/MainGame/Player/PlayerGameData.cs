@@ -22,7 +22,7 @@ public class PlayerGameData : NetworkBehaviour
     /// <summary>
     /// 玩家BK值
     /// </summary>
-    [Networked(OnChanged = nameof(OnBreakPointChanged))] public float BreakPoint { get; set; }
+    [Networked(OnChanged = nameof(OnBreakPointChanged))] public int BreakPercent { get; set; }
     /// <summary>
     /// 玩家是否有被充能
     /// </summary>
@@ -45,10 +45,9 @@ public class PlayerGameData : NetworkBehaviour
 
     public static void OnBreakPointChanged(Changed<PlayerGameData> changed)
     {
-        var bkPercent = (int)(Mathf.Round(changed.Behaviour.BreakPoint) / 10);
-        if (bkPercent >= 100)
+        if (changed.Behaviour.BreakPercent >= 100)
         {
-            bkPercent = 100;
+            changed.Behaviour.BreakPercent = 100;
         }
         //GameManager.Instance.AllPlayersBkPercent.Remove(bkPercent);
         //GameManager.Instance.AllPlayersBkPercent.Add(bkPercent);
@@ -57,7 +56,7 @@ public class PlayerGameData : NetworkBehaviour
     {
         PlayerName = name;
         PlayerID = playerid;
-        BreakPoint = 0;
+        BreakPercent = 0;
         SuperSmashChargeOrNot = false;
         Held_ItemEnum = ItemEnum.NoItem;
         m_PlayerStatus = PlayerStatusEnum.Playing;
@@ -83,9 +82,9 @@ public class PlayerGameData : NetworkBehaviour
     {
         SuperSmashChargeOrNot = true;
     }
-    public void Player_Be_Damage(float damage)
+    public void Player_Be_Damage(int damage)
     {
-        BreakPoint += damage;
+        BreakPercent += damage;
     }
     public void PlayerAddScore()
     {
@@ -93,7 +92,7 @@ public class PlayerGameData : NetworkBehaviour
     }
     public void PlayerRevive()
     {
-        BreakPoint = 0;
+        BreakPercent = 0;
         SuperSmashChargeOrNot = false;
         Held_ItemEnum = ItemEnum.NoItem;
     }

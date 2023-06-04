@@ -5,7 +5,6 @@ using System;
 using Fusion;
 using UnityEngine.Events;
 using System.Linq;
-using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
@@ -17,8 +16,7 @@ public class GameManager : MonoBehaviour
     public List<Color> AllPlayersColor = new();
     public List<string> AllPlayersName = new();
     public List<int> AllPlayersBkPercent = new();
-    public int ThisLocalPlayerId;
-   
+
     //int loserCount;
     int survivorCount;
 
@@ -63,20 +61,15 @@ public class GameManager : MonoBehaviour
         
         DontDestroyOnLoad(gameObject);
     }
-    private void Start()
-    {
-        RearrangePlayersInfoList(AllPlayersColor);
-        RearrangePlayersInfoList(AllPlayersName);            
-    }
-    public void RearrangePlayersInfoList<T>(List<T> list)
-    {
-        if (list.Count > 0)
-        {
-            T firstElement = list[0];
-            list.RemoveAt(0);
-            list.Add(firstElement);
-        }
-    }
+    //public void RearrangePlayersInfoList<T>(List<T> list)
+    //{
+    //    if (list.Count > 0)
+    //    {
+    //        T firstElement = list[0];
+    //        list.RemoveAt(0);
+    //        list.Add(firstElement);
+    //    }
+    //}
     private bool CheckAllPlayerIsReady()
     {
         //如果沒有連接到服務器回傳false

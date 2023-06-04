@@ -74,6 +74,12 @@ public class PlayerController : NetworkBehaviour
     [HideInInspector]
     [Tooltip("角色BK係數(曲線X軸)")]
     public float CoefficientOfBreakDownPoint { get; private set; }
+
+    [Networked]
+    [HideInInspector]
+    [Tooltip("角色BK Point")]
+    public float BreakPoint { get; private set; }
+
     [Networked]
     [HideInInspector]
     [Tooltip("角色蓄力計時器")]
@@ -217,11 +223,15 @@ public class PlayerController : NetworkBehaviour
     #endregion
 
 
-
+    private void Start()
+    {
+        Debug.Log("Player Start");
+    }
 
 
     public override void Spawned()
     {
+        Debug.Log("Player Spawned");
         SetPlayerData_RPC();
 
         moveLimitParameter = moveLimit_N;
@@ -600,7 +610,8 @@ public class PlayerController : NetworkBehaviour
     public void AddCoefficientOfBreakDownPoint(float cob)
     {
         CoefficientOfBreakDownPoint += cob;
-        _PlayerGameData.BreakPoint = _PlayerGameData.BreakDownPointCurve.Evaluate(CoefficientOfBreakDownPoint);//依據BK曲線計算BK值
+        BreakPoint = _PlayerGameData.BreakDownPointCurve.Evaluate(CoefficientOfBreakDownPoint);//依據BK曲線計算BK值
+        _PlayerGameData.BreakPercent = (int)(Mathf.Round(BreakPoint) / 10);
         //GetANetwork
     }
     //private static void OnHpChanged(Changed<PlayerController> changed)//changed代表變化後的值，可以透過changed來存取資料
@@ -638,8 +649,8 @@ public class PlayerController : NetworkBehaviour
                     playerController.soundEffectPlay_RPC();
                     //playerController.Network_CharacterControllerPrototype.Jump();
                     playerController.Network_CharacterControllerPrototype.Move(Vector3.zero);
-                    playerController.Network_CharacterControllerPrototype.Velocity += airborneVec * (PushForce / 2 + playerController._PlayerGameData.BreakPoint / 2);//垂直推力計算
-                    playerController.Network_CharacterControllerPrototype.Velocity += pushDir * (PushForce + playerController._PlayerGameData.BreakPoint);//水平推力計算
+                    playerController.Network_CharacterControllerPrototype.Velocity += airborneVec * (PushForce / 2 + playerController.BreakPoint / 2);//垂直推力計算
+                    playerController.Network_CharacterControllerPrototype.Velocity += pushDir * (PushForce + playerController.BreakPoint);//水平推力計算
 
                     playerController.LocalHurt = playerController.transform.InverseTransformDirection((playerController.transform.position - new Vector3(transform.position.x, 0, transform.position.z)));
                     playerController.BeenHitOrNot = true;
@@ -648,7 +659,7 @@ public class PlayerController : NetworkBehaviour
                 }
 
 
-                Debug.Log(pushDir * (PushForce + playerController._PlayerGameData.BreakPoint));
+                Debug.Log(pushDir * (PushForce + playerController.BreakPoint));
                 //playerController.GetComponentInParent<PlayerController>().TakeDamage(10);
                 //Debug.Log("Push!!!!!!!");
                 //Runner.Despawn(Object);
@@ -868,7 +879,9 @@ public class PlayerController : NetworkBehaviour
         {
             _PlayerGameData.SetNameAID(playerNetworkData.PlayerName, playerNetworkData.PlayerID);
             playerNameText.text = playerNetworkData.PlayerName.ToString();
+
             
+
             Debug.Log("PlayerName : " + _PlayerGameData.PlayerName + "/PlayerID : " + _PlayerGameData.PlayerID);
 
             var targetNetworkObject = GetANetwork();

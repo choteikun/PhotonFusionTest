@@ -15,10 +15,15 @@ public class PlayerNetworkData : NetworkBehaviour
 	[Networked(OnChanged = nameof(OnIsReadyChanged))] public NetworkBool IsReady { get; set; }
 	[Networked(OnChanged = nameof(OnGameOverChanged))] public NetworkBool OutOfTheBoat { get; set; }
 
-	//[Networked(OnChanged = nameof(OnPlayerBkChange))] public float ThisPlayerBkPoint { get; set; }
+    //[Networked(OnChanged = nameof(OnPlayerBkChange))] public float ThisPlayerBkPoint { get; set; }
 
-	public override void Spawned()
+    public void Start()
+    {
+		Debug.Log("PlayerNetworkData Start");
+    }
+    public override void Spawned()
 	{
+		Debug.Log("PlayerNetworkData Spawned");
 		gameManager = GameManager.Instance;
 
 		transform.SetParent(GameManager.Instance.transform);
