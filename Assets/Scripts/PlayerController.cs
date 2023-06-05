@@ -663,7 +663,7 @@ public class PlayerController : NetworkBehaviour
                     //playerController.Network_CharacterControllerPrototype.Jump();
                     playerController.Network_CharacterControllerPrototype.Move(Vector3.zero);
                     playerController.Network_CharacterControllerPrototype.Velocity += airborneVec * (PushForce / 2 + playerController.BreakPoint / 2);//垂直推力計算
-                    playerController.Network_CharacterControllerPrototype.Velocity += pushDir * (PushForce + playerController.BreakPoint);//水平推力計算
+                    playerController.Network_CharacterControllerPrototype.Velocity += pushDir * (PushForce + playerController.BreakPoint * 2);//水平推力計算
 
                     playerController.LocalHurt = playerController.transform.InverseTransformDirection((playerController.transform.position - new Vector3(transform.position.x, 0, transform.position.z)));
                     playerController.BeenHitOrNot = true;
