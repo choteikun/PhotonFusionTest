@@ -44,16 +44,17 @@ public class MainGameUIController : ToSingletonMonoBehavior<MainGameUIController
         }
         
     }
-    public void UpdatePlayerBKUI(int MainPlayerID, List<int> playersBK)
+
+    public void UpdatePlayerBKUI(int ThisPlayerID, List<int> playersBK)
     {
         var totalPlayerCount = playersBK.Count;
-        mainPlayerUI_.GetComponent<PlayerInformationBlockUpdater>().UpdateThisBlock(playersBK[MainPlayerID]);
+        mainPlayerUI_.GetComponent<PlayerInformationBlockUpdater>().UpdateThisBlock(playersBK[ThisPlayerID]);//HasinputAuthority的BK設置
         var playerBKPool = new List<int>();
         for (int i = 0; i < playersBK.Count; i++)
         {
-            if (i != MainPlayerID)
+            if (i != ThisPlayerID)
             {
-                playersBK.Add(playersBK[i]);
+                playerBKPool.Add(playersBK[i]);//這個ID玩家以外的BK值加進這個pool裡面
             }
         }
         if (totalPlayerCount - 1 <= 5)
@@ -61,7 +62,7 @@ public class MainGameUIController : ToSingletonMonoBehavior<MainGameUIController
             for (int i = 0; i < totalPlayerCount - 1; i++)
             {
                 var playerUIBlock = UI_For_5_OrLessPlayer[i].GetComponent<PlayerInformationBlockUpdater>();
-                playerUIBlock.UpdateThisBlock(playersBK[i]);
+                playerUIBlock.UpdateThisBlock(playerBKPool[i]);
             }
         }
         else
@@ -69,7 +70,7 @@ public class MainGameUIController : ToSingletonMonoBehavior<MainGameUIController
             for (int i = 0; i < totalPlayerCount - 1; i++)
             {
                 var playerUIBlock = UI_ForManyPLayer[i].GetComponent<PlayerInformationBlockUpdater>();
-                playerUIBlock.UpdateThisBlock(playersBK[i]);
+                playerUIBlock.UpdateThisBlock(playerBKPool[i]);
             }
         }
     }

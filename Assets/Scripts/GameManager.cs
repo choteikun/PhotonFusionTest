@@ -143,7 +143,16 @@ public class GameManager : MonoBehaviour
     {
         foreach (var playerNetworkData in PlayerList.Values)
         {
-           //AllPlayerBkPoint[playerNetworkData.PlayerID格] = playerNetworkData.thisPlayerBkPoint
+            Debug.Log(playerNetworkData.PlayerID);
+            
+            AllPlayersBkPercent[playerNetworkData.PlayerID] = playerNetworkData.PlayerBkPercent;
+            if (playerNetworkData.HasInputAuthority)
+            {
+                playerNetworkData.SetPlayerBkPercent_RPC(playerNetworkData.PlayerBkPercent);//沒有RPC，HasInputAuthority只能發給主機
+
+                MainGameUIController.Instance.UpdatePlayerBKUI(playerNetworkData.PlayerID, AllPlayersBkPercent);
+
+            }
         }
     }
 

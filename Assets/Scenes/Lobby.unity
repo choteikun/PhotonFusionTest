@@ -582,11 +582,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8dd735b4b49724a4ca76ce1925112b1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ThisLocalPlayerId: 0
   PlayerColor: {r: 1, g: 1, b: 1, a: 1}
   SurvivingPlayerControllers: []
   AllPlayersColor: []
   AllPlayersName: []
-  AllPlayersBkPercent: 
+  AllPlayersBkPercent: 000000000000000000000000000000000000000000000000000000000000000000000000
   runner: {fileID: 605620938}
   HostID: 0
   PlayerName: 

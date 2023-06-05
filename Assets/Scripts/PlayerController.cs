@@ -76,14 +76,14 @@ public class PlayerController : NetworkBehaviour
     public float CoefficientOfBreakDownPoint { get; private set; }
 
     [Networked]
-    [HideInInspector]
+    //[HideInInspector]
     [Tooltip("角色BK Point")]
-    public float BreakPoint { get; private set; }
+    public float BreakPoint { get;  set; }
 
     [Networked]
     [HideInInspector]
     [Tooltip("角色蓄力計時器")]
-    public float ChargeAttackBarTimer { get; private set; }
+    public float ChargeAttackBarTimer { get; set; }
 
     [Networked]
     [HideInInspector]
@@ -224,7 +224,11 @@ public class PlayerController : NetworkBehaviour
     public override void Spawned()
     {
         Debug.Log("Player Spawned");
+
         SetPlayerData_RPC();
+
+        GameManager.Instance.AllPlayersColor.Add(_PlayerNetworkData.PlayerColor);
+        GameManager.Instance.AllPlayersName.Add(_PlayerGameData.PlayerName);
 
         moveLimitParameter = moveLimit_N;
         SuperMode = false;
@@ -268,28 +272,24 @@ public class PlayerController : NetworkBehaviour
             Debug.Log(this.gameObject.name);
             Bind_Camera(this.gameObject);
         }
-        GameManager.Instance.AllPlayersColor.Add(_PlayerNetworkData.PlayerColor);
-        GameManager.Instance.AllPlayersName.Add(_PlayerGameData.PlayerName);
+        
         //Invoke("setPlayerData_RPC", 0.5f);//因為要拿PlayerNetworkData的關係，有先後順序的問題，所以晚一點才設置角色的Data
     }
+
     private void Start()
     {
         Debug.Log("Player Start");
-        var gameManager = GameManager.Instance;
-        Debug.Log(gameManager.ThisLocalPlayerId);
-        Debug.Log(gameManager.AllPlayersColor.Count);
-        Debug.Log(gameManager.AllPlayersName.Count);
-        if (Object.HasInputAuthority)
-        {
-            MainGameUIController.Instance.InitPlayerBKUI(_PlayerGameData.PlayerID, gameManager.AllPlayersColor, gameManager.AllPlayersName);
-        }
+        Invoke("PlayerUISet", 0.5f);
     }
+
+    
     public override void FixedUpdateNetwork()//逐每個tick更新(一個tick相當1.666毫秒)
     {
         //Debug.Log("speed : " + speed + "Acceleration : " + networkCharacterControllerPrototype.MoveSpeed + "SprintSpeed : " + sprintSpeed);
         //Debug.Log(Network_CharacterControllerPrototype.Velocity);
         ColorChangedByBreakDownPoint();//動態顯示BK狀態的顏色
         ColorChangedByChargeAttackBar();//動態顯示蓄力條的顏色
+        
 
         PlayerImmuneDamage = Winner || Loser || PlayerIsTeleporting;
 
@@ -607,7 +607,23 @@ public class PlayerController : NetworkBehaviour
     {
         CoefficientOfBreakDownPoint += cob;
         BreakPoint = _PlayerGameData.BreakDownPointCurve.Evaluate(CoefficientOfBreakDownPoint);//依據BK曲線計算BK值
-        _PlayerGameData.BreakPercent = (int)(Mathf.Round(BreakPoint) / 10);
+
+        foreach (var playerNetworkData in GameManager.Instance.PlayerList.Values)
+        {
+            if (playerNetworkData.PlayerID == _PlayerGameData.PlayerID)
+            {
+                Debug.Log("00000000000000000000000000000000");
+                playerNetworkData.PlayerBkPercent = (int)Mathf.Round(BreakPoint / 10);
+                //playerNetworkData.SetPlayerBkPercent_RPC(playerNetworkData.PlayerBkPercent);
+                if (playerNetworkData.PlayerBkPercent >= 100)
+                {
+                    playerNetworkData.PlayerBkPercent = 100;
+                }
+                _PlayerGameData.BreakPercent = playerNetworkData.PlayerBkPercent;
+                
+            }
+        }
+
         //GetANetwork
     }
     //private static void OnHpChanged(Changed<PlayerController> changed)//changed代表變化後的值，可以透過changed來存取資料
@@ -623,7 +639,7 @@ public class PlayerController : NetworkBehaviour
 
         foreach (var collider in colliders)
         {
-            if (collider.TryGetComponent<PlayerController>(out PlayerController playerController) && !playerController.BeenHitOrNot && !playerController.PlayerImmuneDamage)//判斷collider身上是否有PlayerController的腳本，並確認是否該對象被打擊過，如果Player不是無敵狀態則
+            if (collider.TryGetComponent<PlayerController>(out PlayerController playerController) && !playerController.BeenHitOrNot && !playerController.PlayerImmuneDamage && playerController._PlayerGameData.PlayerID != _PlayerGameData.PlayerID)//判斷collider身上是否有PlayerController的腳本，並確認是否該對象被打擊過，如果Player不是無敵狀態則
             {
                 // 計算推力方向
                 collisionAvailable = false;//碰撞一次馬上關閉碰撞
@@ -632,6 +648,7 @@ public class PlayerController : NetworkBehaviour
                 targetOriginPos = new Vector3(targetOriginPos.x, 0, targetOriginPos.z);
                 Vector3 pushDir = targetOriginPos - new Vector3(transform.position.x, 0, transform.position.z);
                 Vector3 airborneVec = new Vector3(0, airborneAmount, 0);
+                
 
                 Debug.Log(pushDir.magnitude);
                 HitEffectTrigger = true;
@@ -653,8 +670,6 @@ public class PlayerController : NetworkBehaviour
                     Debug.Log("X : " + playerController.LocalHurt.x + "Y : " + playerController.LocalHurt.y + "Z : " + playerController.LocalHurt.z);
                     //playerController.GetComponentInParent<CharacterController>().Move(pushDir.normalized * pushForce * Runner.DeltaTime);
                 }
-
-
                 Debug.Log(pushDir * (PushForce + playerController.BreakPoint));
                 //playerController.GetComponentInParent<PlayerController>().TakeDamage(10);
                 //Debug.Log("Push!!!!!!!");
@@ -686,7 +701,15 @@ public class PlayerController : NetworkBehaviour
     #endregion
 
     #region - 動態UI邏輯處理 -
+    public void PlayerUISet()
+    {
+        if (Object.HasInputAuthority)
+        {
+            Debug.Log(_PlayerGameData.PlayerID);
+            MainGameUIController.Instance.InitPlayerBKUI(_PlayerGameData.PlayerID, GameManager.Instance.AllPlayersColor, GameManager.Instance.AllPlayersName);
+        }
 
+    }
     public void ColorChangedByBreakDownPoint()
     {
         if (CoefficientOfBreakDownPoint >= 120.0f)//120是曲線x最陡的位置
@@ -697,7 +720,8 @@ public class PlayerController : NetworkBehaviour
         {
             curBKBar.color = Color.green;
         }
-        curBKBar.fillAmount = CoefficientOfBreakDownPoint / 200.0f;//200是曲線x的最末端
+        curBKBar.fillAmount = _PlayerGameData.BreakPercent * 0.01f;//200是曲線x的最末端
+
     }
     public void ColorChangedByChargeAttackBar()
     {
@@ -886,7 +910,7 @@ public class PlayerController : NetworkBehaviour
 
                 SkinnedBodyMeshRenderer.material.SetColor("_BASECOLOR", _PlayerNetworkData.PlayerColor);//設置玩家顏色
                 transform.Find("MiniMapIcon").GetComponent<SpriteRenderer>().color = _PlayerNetworkData.PlayerColor;
-                //MainGameUIController.Instance.InitPlayerBKUI(Object.InputAuthority.PlayerId, GameManager.Instance.AllPlayersColor, GameManager.Instance.AllPlayersName);
+                Debug.Log("Player setDataRPC");
             }
         }
     }

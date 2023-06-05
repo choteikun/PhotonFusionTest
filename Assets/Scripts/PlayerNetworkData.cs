@@ -10,12 +10,12 @@ public class PlayerNetworkData : NetworkBehaviour
 	
 	[HideInInspector]
 	[Networked] public int HostID { get; set; }
-	public int PlayerID { get; set; }
+	[Networked] public int PlayerID { get; set; }
 	[Networked(OnChanged = nameof(OnPlayerNameChanged))] public string PlayerName { get; set; }
 	[Networked(OnChanged = nameof(OnIsReadyChanged))] public NetworkBool IsReady { get; set; }
 	[Networked(OnChanged = nameof(OnGameOverChanged))] public NetworkBool OutOfTheBoat { get; set; }
 
-    //[Networked(OnChanged = nameof(OnPlayerBkChange))] public float ThisPlayerBkPoint { get; set; }
+    [Networked(OnChanged = nameof(OnPlayerBkChange))] public int PlayerBkPercent { get; set; }
 
     public void Start()
     {
@@ -79,6 +79,11 @@ public class PlayerNetworkData : NetworkBehaviour
 	{
 		OutOfTheBoat = outOfTheBoat;
 	}
+	[Rpc(sources: RpcSources.InputAuthority, targets: RpcTargets.All)]
+	public void SetPlayerBkPercent_RPC(int bkPercent)
+	{
+		PlayerBkPercent = bkPercent;
+	}
 	#endregion
 
 	#region - OnChanged Events -
@@ -100,13 +105,10 @@ public class PlayerNetworkData : NetworkBehaviour
         GameManager.Instance.UpdateWinnerWhoIs();
     }
 	
-	private static void OnPlayerGameDataChange(Changed<PlayerNetGameData>changed)
-    {
-		
-    }
 	private static void OnPlayerBkChange(Changed<PlayerNetworkData> changed)
 	{
-
+		//PlayerNetworkData的BK值一變動就更新列表中所屬ID的BK值
+		GameManager.Instance.UpdateAllPlayerBKData();
 	}
 	#endregion
 }

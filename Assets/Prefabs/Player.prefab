@@ -390,6 +390,7 @@ MonoBehaviour:
   _JumpEffectTrigger: 0
   _HitEffectTrigger: 0
   _CoefficientOfBreakDownPoint: 0
+  _BreakPoint: 0
   _ChargeAttackBarTimer: 0
   _LocalHurt: {x: 0, y: 0, z: 0}
   _PlayerGameData: {fileID: 16108846752584026}
@@ -511,7 +512,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   _PlayerName: 
   _PlayerID: 0
-  _BreakPoint: 0
+  _BreakPercent: 0
   _SuperSmashChargeOrNot: 0
   _PlayerScore: 0
   _Held_ItemEnum: 0
@@ -641,7 +642,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 824979266836728831}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2880a4508a3ffde40b68c339503404a1, type: 3}
   m_Name: 
