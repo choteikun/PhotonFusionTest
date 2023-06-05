@@ -4,13 +4,16 @@ using UnityEngine;
 
 public class MainGameUIController : ToSingletonMonoBehavior<MainGameUIController>
 {
+    public int ThisGameMaxPlayer;
+
     [SerializeField] GameObject mainPlayerUI_;
     [SerializeField] GameObject[] UI_For_5_OrLessPlayer;
     [SerializeField] GameObject[] UI_ForManyPLayer;
 
     public void InitPlayerBKUI(int ThisPlayerID,List<Color>playersColor,List<string>playersName)
     {
-        var totalPlayerCount = playersColor.Count; 
+        var totalPlayerCount = playersColor.Count;
+        ThisGameMaxPlayer = totalPlayerCount;
         mainPlayerUI_.GetComponent<PlayerInformationBlockUpdater>().initThisBlock(ThisPlayerID, playersColor[ThisPlayerID],playersName[ThisPlayerID]);
         var colorPool = new List<Color>();
         var playerNamePool = new List<string>();
@@ -47,7 +50,7 @@ public class MainGameUIController : ToSingletonMonoBehavior<MainGameUIController
 
     public void UpdatePlayerBKUI(int ThisPlayerID, List<int> playersBK)
     {
-        var totalPlayerCount = playersBK.Count;
+        var totalPlayerCount = ThisGameMaxPlayer;
         mainPlayerUI_.GetComponent<PlayerInformationBlockUpdater>().UpdateThisBlock(playersBK[ThisPlayerID]);//HasinputAuthority的BK設置
         var playerBKPool = new List<int>();
         for (int i = 0; i < playersBK.Count; i++)

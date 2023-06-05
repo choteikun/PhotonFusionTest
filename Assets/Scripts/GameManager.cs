@@ -150,7 +150,7 @@ public class GameManager : MonoBehaviour
             {
                 playerNetworkData.SetPlayerBkPercent_RPC(playerNetworkData.PlayerBkPercent);//沒有RPC，HasInputAuthority只能發給主機
             }
-            
+            MainGameUIController.Instance.UpdatePlayerBKUI(GameManager.Instance.ThisLocalPlayerId, GameManager.Instance.AllPlayersBkPercent);
         }
     }
 

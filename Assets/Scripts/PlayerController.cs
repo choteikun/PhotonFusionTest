@@ -665,13 +665,12 @@ public class PlayerController : NetworkBehaviour
                     playerController.Network_CharacterControllerPrototype.Velocity += airborneVec * (PushForce / 2 + playerController.BreakPoint / 2);//垂直推力計算
                     playerController.Network_CharacterControllerPrototype.Velocity += pushDir * (PushForce + playerController.BreakPoint);//水平推力計算
 
-                    MainGameUIController.Instance.UpdatePlayerBKUI(GameManager.Instance.ThisLocalPlayerId, GameManager.Instance.AllPlayersBkPercent);
-
                     playerController.LocalHurt = playerController.transform.InverseTransformDirection((playerController.transform.position - new Vector3(transform.position.x, 0, transform.position.z)));
                     playerController.BeenHitOrNot = true;
                     Debug.Log("X : " + playerController.LocalHurt.x + "Y : " + playerController.LocalHurt.y + "Z : " + playerController.LocalHurt.z);
                     //playerController.GetComponentInParent<CharacterController>().Move(pushDir.normalized * pushForce * Runner.DeltaTime);
                 }
+
                 Debug.Log(pushDir * (PushForce + playerController.BreakPoint));
                 //playerController.GetComponentInParent<PlayerController>().TakeDamage(10);
                 //Debug.Log("Push!!!!!!!");
