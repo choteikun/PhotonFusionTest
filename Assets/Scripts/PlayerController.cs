@@ -424,7 +424,7 @@ public class PlayerController : NetworkBehaviour
             moveLimitParameter = PlayerMoveLimitOrNot ? moveLimit_Y : moveLimit_N;
             if (BeenHitOrNot)
             {
-                Network_CharacterControllerPrototype.Move(PushDir_myself * Runner.DeltaTime);
+                Network_CharacterControllerPrototype.Move(PushDir_myself * BreakPoint * 2 * Runner.DeltaTime);
             }
             else
             {
