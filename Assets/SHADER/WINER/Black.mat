@@ -43,8 +43,9 @@ Material:
     m_Ints: []
     m_Floats:
     - _AlphaCutoff: 0.5
-    - _Float0: 0
+    - _Float0: 0.343
     - _Float1: 0.1
+    - _Keyword0: 0
     - _QueueControl: 1
     - _QueueOffset: 1
     - _UVx: 0.1
