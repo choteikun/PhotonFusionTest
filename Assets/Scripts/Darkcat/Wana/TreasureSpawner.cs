@@ -10,19 +10,30 @@ public class TreasureSpawner : NetworkBehaviour
 
     [SerializeField] public bool spawnerSwitch = false;
     [SerializeField] private float countDownTime_;
+    [SerializeField] private float nextSpawnTime_;
 
     public override void FixedUpdateNetwork()
     {
         if (spawnerSwitch)
         {
             countDownTime_ += Runner.DeltaTime;
-            if (countDownTime_>=3)
+            if (countDownTime_>=5)
             {
                 spawnerSwitch = false;
                 countDownTime_ = 0;
                 SpawnARandomTreasureBox();
             }
         }
+        else
+        {
+            nextSpawnTime_ += Runner.DeltaTime;
+            if (nextSpawnTime_ >= 60)
+            {
+                spawnerSwitch = true;
+                nextSpawnTime_ = 0;
+            }
+        }
+
     }
     public void SpawnARandomTreasureBox()
     {

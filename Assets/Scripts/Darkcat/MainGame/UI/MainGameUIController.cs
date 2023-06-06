@@ -27,7 +27,7 @@ public class MainGameUIController : ToSingletonMonoBehavior<MainGameUIController
                 IDPool.Add(i);
             }
         }
-        if (totalPlayerCount-1<=5)
+        if (totalPlayerCount-1<5)
         {
             for (int i = 0; i < totalPlayerCount-1; i++)
             {
@@ -60,7 +60,7 @@ public class MainGameUIController : ToSingletonMonoBehavior<MainGameUIController
                 playerBKPool.Add(playersBK[i]);//這個ID玩家以外的BK值加進這個pool裡面
             }
         }
-        if (totalPlayerCount - 1 <= 5)
+        if (totalPlayerCount - 1 < 5)
         {
             for (int i = 0; i < totalPlayerCount - 1; i++)
             {

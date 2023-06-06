@@ -69,6 +69,10 @@ public class PlayerController : NetworkBehaviour
     [HideInInspector]
     [Tooltip("打擊特效觸發器，false為不可播放")]
     public bool HitEffectTrigger { get; private set; }
+    [Networked]
+    [HideInInspector]
+    [Tooltip("死亡特效觸發器，false為不可播放")]
+    public bool DeadEffectTrigger { get; private set; }
 
     [Networked]
     [HideInInspector]
@@ -187,6 +191,9 @@ public class PlayerController : NetworkBehaviour
 
 
     #region - private 變量 & Componment -
+    [Tooltip("Cinemachine虛擬相機")]
+    private CinemachineVirtualCamera cinemachineVirtualCamera;
+
     [Tooltip("角色普攻BK值")]
     private int normalAttackBK = 5;
 
@@ -238,6 +245,7 @@ public class PlayerController : NetworkBehaviour
         DrivingKeyStatus = false;
         JumpEffectTrigger = false;
         HitEffectTrigger = false;
+        DeadEffectTrigger = false;
         superModeEffectStartTrigger = false;
         superModeEffectEndTrigger = false;
         tempPushForce = PushForce;
@@ -269,6 +277,7 @@ public class PlayerController : NetworkBehaviour
         }
         if (Object.HasInputAuthority)//在客戶端上運行
         {
+
             Debug.Log(this.gameObject.name);
             Bind_Camera(this.gameObject);
         }
@@ -310,6 +319,13 @@ public class PlayerController : NetworkBehaviour
             {
                 playerNetworkData.SetPlayerOut_RPC(OutOfTheBoat);
             }
+            if (!DeadEffectTrigger)
+            {
+                playerEffectVisual.DeadEffectPlay();
+                StartCoroutine(PlayerDissolveAmountTransition(1, 3));
+                DeadEffectTrigger = true;
+            }
+            
         }
         if (Winner)
         {
@@ -526,12 +542,14 @@ public class PlayerController : NetworkBehaviour
         {
             Debug.Log("超級蠑螈來囉!");
             StartCoroutine(PlayerSuperModeEffect(0, 2));
+            playerEffectVisual.StarEffectPlay();
             superModeEffectStartTrigger = true;
         }
         if (!SuperMode && !superModeEffectEndTrigger)
         {
             Debug.Log("變回普通蠑螈");
             StartCoroutine(PlayerSuperModeEffect(1, 2));
+            playerEffectVisual.StarEffectStop();
             superModeEffectEndTrigger = true;
         }
 
@@ -542,7 +560,7 @@ public class PlayerController : NetworkBehaviour
         {
             playerEffectVisual.DrivingDustEffectPlay();//播放衝刺特效
         }
-        else
+        else if(!DrivingKeyStatus)
         {
             playerEffectVisual.DrivingDustEffectStop();
         }
@@ -764,7 +782,7 @@ public class PlayerController : NetworkBehaviour
 
     public void Bind_Camera(GameObject Player)
     {
-        var CinemachineVirtualCamera = Camera.main.gameObject.transform.Find("CM vcam1").GetComponent<CinemachineVirtualCamera>();
+        cinemachineVirtualCamera = Camera.main.gameObject.transform.Find("CM vcam1").GetComponent<CinemachineVirtualCamera>();
         var MiniMapCam = GameObject.Find("MiniMapCam").GetComponent<Camera>();
 
         ConstraintSource constraintSource = new ConstraintSource()
@@ -774,8 +792,8 @@ public class PlayerController : NetworkBehaviour
         };
         MiniMapCam.GetComponent<PositionConstraint>().AddSource(constraintSource);
         MiniMapCam.GetComponent<PositionConstraint>().constraintActive = true;
-        CinemachineVirtualCamera.LookAt = Player.transform;
-        CinemachineVirtualCamera.Follow = Player.transform;
+        cinemachineVirtualCamera.LookAt = Player.transform;
+        cinemachineVirtualCamera.Follow = Player.transform;
     }
     private void OnDrawGizmosSelected()
     {

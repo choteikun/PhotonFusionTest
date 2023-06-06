@@ -59,6 +59,18 @@ public class PlayerEffectVisual : MonoBehaviour
             }
         }
     }
+    public void StarEffectPlay()
+    {
+        particleEffectsList[1].Play();
+    }
+    public void StarEffectStop()
+    {
+        particleEffectsList[1].Stop();
+    }
+    public void DeadEffectPlay()
+    {
+        particleEffectsList[0].Play();
+    }
     public void DrivingDustEffectPlay()
     {
         visualEffectsList[0].Play();

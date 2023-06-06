@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Fusion;
-using UnityEngine.Events;
-using System.Linq;
 public class GameManager : MonoBehaviour
 {
     public int ThisLocalPlayerId;
