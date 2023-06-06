@@ -227,6 +227,12 @@ public class PlayerController : NetworkBehaviour
 
     private PlayerEffectVisual playerEffectVisual;
     private GameObject mainCamera;
+
+    [Networked]
+    public Vector3 PushDir { get; set; }
+    public Vector3 PushDir_myself = Vector3.one;
+    Vector3 airborneVec;
+
     #endregion
     public override void Spawned()
     {
@@ -416,10 +422,15 @@ public class PlayerController : NetworkBehaviour
             // move the player
             Vector3 moveVector = data.Move.normalized;
             moveLimitParameter = PlayerMoveLimitOrNot ? moveLimit_Y : moveLimit_N;
-            if (!BeenHitOrNot)
+            if (BeenHitOrNot)
+            {
+                Network_CharacterControllerPrototype.Move(PushDir_myself * Runner.DeltaTime);
+            }
+            else
             {
                 Network_CharacterControllerPrototype.Move(moveVector * moveLimitParameter * Runner.DeltaTime);
             }
+            
             
 
 
@@ -674,11 +685,11 @@ public class PlayerController : NetworkBehaviour
 
                 var targetOriginPos = playerController.transform.position;
                 targetOriginPos = new Vector3(targetOriginPos.x, 0, targetOriginPos.z);
-                Vector3 pushDir = targetOriginPos - new Vector3(transform.position.x, 0, transform.position.z);
-                Vector3 airborneVec = new Vector3(0, airborneAmount, 0);
+                PushDir = targetOriginPos - new Vector3(transform.position.x, 0, transform.position.z);
+                airborneVec = new Vector3(0, airborneAmount, 0);
                 
 
-                Debug.Log(pushDir.magnitude);
+                Debug.Log(PushDir.magnitude);
                 HitEffectTrigger = true;
                 // 推動其他角色
                 if (Object.HasStateAuthority)//只會在伺服器端上運行
@@ -690,8 +701,9 @@ public class PlayerController : NetworkBehaviour
                     playerController.soundEffectPlay_RPC();
                     //playerController.Network_CharacterControllerPrototype.Jump();
                     playerController.BeenHitOrNot = true;
-                    playerController.Network_CharacterControllerPrototype.Move(Vector3.zero);
-                    playerController.Network_CharacterControllerPrototype.Velocity += pushDir * (PushForce + playerController.BreakPoint * 2);//水平推力計算
+                    //playerController.Network_CharacterControllerPrototype.Move(Vector3.zero);
+                    playerController.Network_CharacterControllerPrototype.Velocity += PushDir * (PushForce + playerController.BreakPoint * 2);//水平推力計算
+                    playerController.PushVec(PushDir);
                     playerController.Network_CharacterControllerPrototype.Velocity += airborneVec * (PushForce / 2 + playerController.BreakPoint / 5);//垂直推力計算
 
 
@@ -702,7 +714,7 @@ public class PlayerController : NetworkBehaviour
                     //playerController.GetComponentInParent<CharacterController>().Move(pushDir.normalized * pushForce * Runner.DeltaTime);
                 }
 
-                Debug.Log(pushDir * (PushForce + playerController.BreakPoint));
+                Debug.Log(PushDir * (PushForce + playerController.BreakPoint));
                 //playerController.GetComponentInParent<PlayerController>().TakeDamage(10);
                 //Debug.Log("Push!!!!!!!");
                 //Runner.Despawn(Object);
@@ -731,7 +743,10 @@ public class PlayerController : NetworkBehaviour
         }
     }
     #endregion
-
+    public void PushVec(Vector3 pushvec)
+    {
+        PushDir_myself = pushvec;
+    }
     #region - 動態UI邏輯處理 -
     public void PlayerUISet()
     {
