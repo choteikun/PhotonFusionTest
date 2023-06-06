@@ -50,7 +50,7 @@ public class PlayerController : NetworkBehaviour
     [Tooltip("限制玩家移動的開關")]
     public bool PlayerMoveLimitOrNot { get; set; }
     [Networked]
-    [HideInInspector]
+    //[HideInInspector]
     [Tooltip("是否被擊中過")]
     public bool BeenHitOrNot { get; set; }
     [Networked]
@@ -335,16 +335,8 @@ public class PlayerController : NetworkBehaviour
             return;
 
 
-        if (BeenHitOrNot || OutOfTheBoat)
-        {
-            PlayerMoveLimitOrNot = true;
-        }
-        else
-        {
-            Move();
-            PlayerMoveLimitOrNot = false;
-        }
         
+        Move();
 
         if (SuperMode)
         {
@@ -362,6 +354,17 @@ public class PlayerController : NetworkBehaviour
             superModeEffectStartTrigger = false;
             PushForce = tempPushForce;
         }
+
+        if (BeenHitOrNot || OutOfTheBoat)
+        {
+            PlayerMoveLimitOrNot = true;
+        }
+        else
+        {
+
+            PlayerMoveLimitOrNot = false;
+        }
+        
 
         
 
@@ -413,7 +416,11 @@ public class PlayerController : NetworkBehaviour
             // move the player
             Vector3 moveVector = data.Move.normalized;
             moveLimitParameter = PlayerMoveLimitOrNot ? moveLimit_Y : moveLimit_N;
-            Network_CharacterControllerPrototype.Move(moveVector * moveLimitParameter * Runner.DeltaTime);
+            if (!BeenHitOrNot)
+            {
+                Network_CharacterControllerPrototype.Move(moveVector * moveLimitParameter * Runner.DeltaTime);
+            }
+            
 
 
             //if (pressed.IsSet(InputButtons.Attack))
@@ -685,8 +692,7 @@ public class PlayerController : NetworkBehaviour
                     playerController.BeenHitOrNot = true;
                     playerController.Network_CharacterControllerPrototype.Move(Vector3.zero);
                     playerController.Network_CharacterControllerPrototype.Velocity += pushDir * (PushForce + playerController.BreakPoint * 2);//水平推力計算
-                    playerController.Network_CharacterControllerPrototype.Velocity += airborneVec * (PushForce);//垂直推力計算
-                                                                                                                                                      //playerController.Network_CharacterControllerPrototype.Velocity += airborneVec * (PushForce / 2 + playerController.BreakPoint / 2);//垂直推力計算
+                    playerController.Network_CharacterControllerPrototype.Velocity += airborneVec * (PushForce / 2 + playerController.BreakPoint / 5);//垂直推力計算
 
 
 
