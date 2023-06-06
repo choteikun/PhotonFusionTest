@@ -20,6 +20,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _T2:
+        m_Texture: {fileID: 2800000, guid: 154e8e9c9d97a2e438c127256f6d6b38, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _TextureSample0:
         m_Texture: {fileID: 2800000, guid: 1a5ec58190d149942be145bc53f75ec8, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -29,7 +33,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TextureSample2:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: c444e3d02d2fcff4d9fe5211d67652a0, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -63,6 +67,8 @@ Material:
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _Speed: {r: 9.27, g: 0, b: 0, a: 0}
     - _Vector0: {r: 0.5, g: 0.5, b: 0, a: 0}
-    - _Vector1: {r: 0.1, g: 48.67, b: 0, a: 0}
+    - _Vector1: {r: 0.1, g: 20, b: 0, a: 0}
     - _Vector2: {r: 1, g: 0, b: 0, a: 0}
+    - _Vector4: {r: 0.1, g: 50, b: 0, a: 0}
+    - _Vector5: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
