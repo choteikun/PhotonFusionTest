@@ -9,6 +9,7 @@ public class TreasureSpawner : NetworkBehaviour
     [SerializeField] private Vector3[] treasureBoxPlace_;
 
     [SerializeField] public bool spawnerSwitch = false;
+
     [SerializeField] private float countDownTime_;
     [SerializeField] private float nextSpawnTime_;
 
@@ -21,24 +22,30 @@ public class TreasureSpawner : NetworkBehaviour
             {
                 spawnerSwitch = false;
                 countDownTime_ = 0;
+                
                 SpawnARandomTreasureBox();
             }
         }
         else
         {
-            nextSpawnTime_ += Runner.DeltaTime;
-            if (nextSpawnTime_ >= 60)
+            if (!treasureBox_.GetComponent<TreasureBoxBehavior>().ImUsefull)
             {
-                spawnerSwitch = true;
-                nextSpawnTime_ = 0;
+                nextSpawnTime_ += Runner.DeltaTime;
+                if (nextSpawnTime_ >= 60)
+                {
+                    spawnerSwitch = true;
+                    nextSpawnTime_ = 0;
+                }
             }
+            
         }
 
     }
     public void SpawnARandomTreasureBox()
     {
         var treasureBoxRandomPlace = treasureBoxPlace_[getARandomPlace()];
-        treasureBox_.gameObject.SetActive(true);
+        //treasureBox_.gameObject.SetActive(true);
+        treasureBox_.GetComponent<TreasureBoxBehavior>().ImUsefull = true;
         treasureBox_.gameObject.transform.position = treasureBoxRandomPlace;
         //playTreasureBox Spawn animation and partical;        
     }

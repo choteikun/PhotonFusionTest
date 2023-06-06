@@ -704,7 +704,7 @@ public class PlayerController : NetworkBehaviour
                     //playerController.Network_CharacterControllerPrototype.Move(Vector3.zero);
                     playerController.Network_CharacterControllerPrototype.Velocity += PushDir * (PushForce + playerController.BreakPoint * 2);//水平推力計算
                     playerController.PushVec(PushDir);
-                    playerController.Network_CharacterControllerPrototype.Velocity += airborneVec * (PushForce / 2 + playerController.BreakPoint / 2);//垂直推力計算
+                    playerController.Network_CharacterControllerPrototype.Velocity += airborneVec * (PushForce + playerController.BreakPoint / 2);//垂直推力計算
 
 
 
@@ -739,6 +739,7 @@ public class PlayerController : NetworkBehaviour
             {
                 //開啟寶箱
                 treasureBox.TriggerTreasureBox(Object);
+                treasureBox.ImUsefull = false;
             }
         }
     }
