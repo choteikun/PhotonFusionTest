@@ -334,7 +334,17 @@ public class PlayerController : NetworkBehaviour
         if (Winner || Loser || PlayerIsTeleporting)
             return;
 
-        Move();
+
+        if (BeenHitOrNot || OutOfTheBoat)
+        {
+            PlayerMoveLimitOrNot = true;
+        }
+        else
+        {
+            Move();
+            PlayerMoveLimitOrNot = false;
+        }
+        
 
         if (SuperMode)
         {
@@ -353,14 +363,7 @@ public class PlayerController : NetworkBehaviour
             PushForce = tempPushForce;
         }
 
-        if (BeenHitOrNot || OutOfTheBoat)
-        {
-            PlayerMoveLimitOrNot = true;
-        }
-        else
-        {
-            PlayerMoveLimitOrNot = false;
-        }
+        
 
         if ((collisionAvailable && FlapAnimPlay) || (collisionAvailable && ChargeFlapAnimPlay))
         {
@@ -679,13 +682,16 @@ public class PlayerController : NetworkBehaviour
                     //PlayASoundForEachPlayer(playerController);
                     playerController.soundEffectPlay_RPC();
                     //playerController.Network_CharacterControllerPrototype.Jump();
+                    playerController.BeenHitOrNot = true;
                     playerController.Network_CharacterControllerPrototype.Move(Vector3.zero);
-                    //playerController.Network_CharacterControllerPrototype.Velocity += airborneVec * (PushForce / 2 + playerController.BreakPoint / 2);//垂直推力計算
                     playerController.Network_CharacterControllerPrototype.Velocity += pushDir * (PushForce + playerController.BreakPoint * 2);//水平推力計算
-                    playerController.Network_CharacterControllerPrototype.Jump();
+                    playerController.Network_CharacterControllerPrototype.Velocity += airborneVec * (PushForce);//垂直推力計算
+                                                                                                                                                      //playerController.Network_CharacterControllerPrototype.Velocity += airborneVec * (PushForce / 2 + playerController.BreakPoint / 2);//垂直推力計算
+
+
 
                     playerController.LocalHurt = playerController.transform.InverseTransformDirection((playerController.transform.position - new Vector3(transform.position.x, 0, transform.position.z)));
-                    playerController.BeenHitOrNot = true;
+                    
                     Debug.Log("X : " + playerController.LocalHurt.x + "Y : " + playerController.LocalHurt.y + "Z : " + playerController.LocalHurt.z);
                     //playerController.GetComponentInParent<CharacterController>().Move(pushDir.normalized * pushForce * Runner.DeltaTime);
                 }
