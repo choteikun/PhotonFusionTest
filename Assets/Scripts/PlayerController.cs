@@ -363,7 +363,7 @@ public class PlayerController : NetworkBehaviour
             if (SuperModeCounter >= superModeTime)
             {
                 SuperMode = false;
-                DrivingKeyStatus = false;//中斷衝刺持續狀態
+                //DrivingKeyStatus = false;//中斷衝刺持續狀態
                 SuperModeCounter = 0;
             }
         }
@@ -508,7 +508,8 @@ public class PlayerController : NetworkBehaviour
 
                 if (ChargeAttackBarTimer > 0.5f)
                 {
-                    Network_CharacterControllerPrototype.MoveSpeed = tempSpeed;//回到走路速度
+                    var superTempSpeed = tempSpeed * superSpeedBuff;
+                    Network_CharacterControllerPrototype.MoveSpeed = SuperMode ? superTempSpeed : tempSpeed;//回到走路速度
                     DrivingKeyStatus = false;//關閉加速特效
 
                     ChargeFlapAnimPlay = true;
