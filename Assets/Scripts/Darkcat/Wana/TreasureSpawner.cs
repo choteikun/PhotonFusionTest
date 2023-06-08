@@ -2,26 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
+using UniRx;
 
 public class TreasureSpawner : NetworkBehaviour
 {
     [SerializeField] private NetworkObject treasureBox_;
     [SerializeField] private Vector3[] treasureBoxPlace_;
 
-    [SerializeField] public bool spawnerSwitch = false;
+    public bool SpawnerSwitch;
 
-    [SerializeField] private float countDownTime_;
-    [SerializeField] private float nextSpawnTime_;
+    public float CountDownTime_;//只要有Networked 命名都要大寫開頭規範 
+    public float NextSpawnTime_;
 
+    void Start()
+    {
+        SpawnerSwitch = true;//啟動寶箱生成器
+    }
     public override void FixedUpdateNetwork()
     {
-        if (spawnerSwitch)
+        if (SpawnerSwitch)
         {
-            countDownTime_ += Runner.DeltaTime;
-            if (countDownTime_>=5)
+            CountDownTime_ += Runner.DeltaTime;
+            if (CountDownTime_ >= 5) 
             {
-                spawnerSwitch = false;
-                countDownTime_ = 0;
+                SpawnerSwitch = false;
+                CountDownTime_ = 0;
                 
                 SpawnARandomTreasureBox();
             }
@@ -30,11 +35,11 @@ public class TreasureSpawner : NetworkBehaviour
         {
             if (!treasureBox_.GetComponent<TreasureBoxBehavior>().ImUsefull)
             {
-                nextSpawnTime_ += Runner.DeltaTime;
-                if (nextSpawnTime_ >= 60)
+                NextSpawnTime_ += Runner.DeltaTime;
+                if (NextSpawnTime_ >= 60)
                 {
-                    spawnerSwitch = true;
-                    nextSpawnTime_ = 0;
+                    SpawnerSwitch = true;
+                    NextSpawnTime_ = 0;
                 }
             }
             

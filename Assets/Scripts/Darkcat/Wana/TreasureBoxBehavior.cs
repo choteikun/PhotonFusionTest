@@ -4,7 +4,8 @@ using UnityEngine;
 using Fusion;
 public class TreasureBoxBehavior : NetworkBehaviour
 {
-    public bool ImUsefull;
+    [Networked]
+    public bool ImUsefull { get; set; }
     public bool TreasureBoxAppear;
     [SerializeField]
     private MeshRenderer meshRenderer;
@@ -43,6 +44,7 @@ public class TreasureBoxBehavior : NetworkBehaviour
             StartCoroutine(TreasureBoxDissolveAmountTransition(1, 3));
             Invoke("OutMap", 3f);
             TreasureBoxAppear = false;
+            ImUsefull = false;
         }
         
     }

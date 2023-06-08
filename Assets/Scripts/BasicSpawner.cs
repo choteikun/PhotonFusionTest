@@ -33,8 +33,6 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
         networkRunner.AddCallbacks(this);
 
         SpawnAllPlayers();//生成所有玩家
-
-        treasureSpawner.spawnerSwitch = true;//啟動寶箱生成器
     }
 
     private void SpawnAllPlayers()

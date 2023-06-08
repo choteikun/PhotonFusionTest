@@ -28,7 +28,9 @@ public class PlayerController : NetworkBehaviour
     [Networked]
     [Tooltip("玩家無敵的開關")]
     public bool PlayerImmuneDamage { get; set; }
-
+    [Networked]
+    [Tooltip("超級蠑螈計時器")]
+    public float SuperModeCounter { get; set; }
     [Networked]
     [Tooltip("SuperMode")]
     public bool SuperMode { get; set; }
@@ -45,6 +47,11 @@ public class PlayerController : NetworkBehaviour
     [HideInInspector]
     [Tooltip("玩家正在使用傳送功能中")]
     public bool PlayerIsTeleporting { get; set; }
+    [Networked]
+    [HideInInspector]
+    [Tooltip("玩家開始傳送")]
+
+    public bool StartTeleporting { get; set; }
     [Networked]
     [HideInInspector]
     [Tooltip("限制玩家移動的開關")]
@@ -73,6 +80,14 @@ public class PlayerController : NetworkBehaviour
     [HideInInspector]
     [Tooltip("死亡特效觸發器，false為不可播放")]
     public bool DeadEffectTrigger { get; private set; }
+    [Networked]
+    [HideInInspector]
+    [Tooltip("超級蠑螈特效開始觸發器")]
+    public bool SuperModeEffectStartTrigger { get; set; }
+    [Networked]
+    [HideInInspector]
+    [Tooltip("超級蠑螈特效結束觸發器")]
+    public bool SuperModeEffectEndTrigger { get; set; }
 
     [Networked]
     [HideInInspector]
@@ -143,13 +158,10 @@ public class PlayerController : NetworkBehaviour
     [Range(150, 250)]
     private int chargeAttackMaxBK;
 
-
-    [Tooltip("超級蠑螈特效開始觸發器")]
-    private bool superModeEffectStartTrigger;
-    [Tooltip("超級蠑螈特效結束觸發器")]
-    private bool superModeEffectEndTrigger;
+    
     [SerializeField, Tooltip("Mouse Cursor Settings")]
     private bool cursorLocked = true;
+
     #endregion
     //------------------------------------------------------------------------------------------------------------------------
     #region - Player Private SerializeField Componment -
@@ -215,15 +227,14 @@ public class PlayerController : NetworkBehaviour
     [Tooltip("角色暫存擊退力")]
     private float tempPushForce;
 
-    [Tooltip("超級蠑螈計時器")]
-    private float superModeCounter;
+    
 
     [Tooltip("角色限制移動的參數")]
     private int moveLimitParameter;//限制移動的參數
     private const int moveLimit_Y = 0;
     private const int moveLimit_N = 1;
 
-    bool startTeleporting;
+    
 
     private PlayerEffectVisual playerEffectVisual;
     private GameObject mainCamera;
@@ -252,8 +263,8 @@ public class PlayerController : NetworkBehaviour
         JumpEffectTrigger = false;
         HitEffectTrigger = false;
         DeadEffectTrigger = false;
-        superModeEffectStartTrigger = false;
-        superModeEffectEndTrigger = false;
+        SuperModeEffectStartTrigger = false;
+        SuperModeEffectEndTrigger = false;
         tempPushForce = PushForce;
         tempSpeed = Network_CharacterControllerPrototype.MoveSpeed;
 
@@ -275,7 +286,7 @@ public class PlayerController : NetworkBehaviour
             PlayerIsTeleporting = false;
             OutOfTheBoat = false;
             ChargeAttackOrNot = false;
-            startTeleporting = false;
+            StartTeleporting = false;
             CoefficientOfBreakDownPoint = 0.0f;//初始化角色BK值
             ChargeAttackBarTimer = 0.0f;
 
@@ -346,18 +357,19 @@ public class PlayerController : NetworkBehaviour
 
         if (SuperMode)
         {
-            superModeEffectEndTrigger = false;
+            SuperModeEffectEndTrigger = false;
             PushForce = 1000;
-            superModeCounter += Runner.DeltaTime;
-            if (superModeCounter >= superModeTime)
+            SuperModeCounter += Runner.DeltaTime;
+            if (SuperModeCounter >= superModeTime)
             {
                 SuperMode = false;
-                superModeCounter = 0;
+                DrivingKeyStatus = false;//中斷衝刺持續狀態
+                SuperModeCounter = 0;
             }
         }
         else
         {
-            superModeEffectStartTrigger = false;
+            SuperModeEffectStartTrigger = false;
             PushForce = tempPushForce;
         }
 
@@ -466,16 +478,6 @@ public class PlayerController : NetworkBehaviour
             #region - 蓄力攻擊邏輯處理 -
             if (!ChargeAttackOrNot)
             {
-                if (SuperMode)
-                {
-                    var superTempSpeed = tempSpeed * superSpeedBuff;
-                    var superDrivingSpeed = drivingSpeed * superSpeedBuff;
-                    Network_CharacterControllerPrototype.MoveSpeed = pressed.IsSet(InputButtons.Sprint) ? superDrivingSpeed : released.IsSet(InputButtons.Sprint) ? superTempSpeed : Network_CharacterControllerPrototype.MoveSpeed;
-                }
-                else
-                {
-                    Network_CharacterControllerPrototype.MoveSpeed = pressed.IsSet(InputButtons.Sprint) ? drivingSpeed : released.IsSet(InputButtons.Sprint) ? tempSpeed : Network_CharacterControllerPrototype.MoveSpeed;
-                }
                 if (pressed.IsSet(InputButtons.Sprint))
                 {
                     DrivingKeyStatus = true;
@@ -484,6 +486,19 @@ public class PlayerController : NetworkBehaviour
                 {
                     DrivingKeyStatus = false;
                 }
+                if (SuperMode)
+                {
+                    var superTempSpeed = tempSpeed * superSpeedBuff;
+                    var superDrivingSpeed = drivingSpeed * superSpeedBuff;
+                    //Network_CharacterControllerPrototype.MoveSpeed = pressed.IsSet(InputButtons.Sprint) ? superDrivingSpeed : released.IsSet(InputButtons.Sprint) ? superTempSpeed : Network_CharacterControllerPrototype.MoveSpeed;
+                    Network_CharacterControllerPrototype.MoveSpeed = DrivingKeyStatus ? superDrivingSpeed : superTempSpeed;
+                }
+                else
+                {
+                    //Network_CharacterControllerPrototype.MoveSpeed = pressed.IsSet(InputButtons.Sprint) ? drivingSpeed : released.IsSet(InputButtons.Sprint) ? tempSpeed : Network_CharacterControllerPrototype.MoveSpeed;
+                    Network_CharacterControllerPrototype.MoveSpeed = DrivingKeyStatus ? drivingSpeed : tempSpeed;
+                }
+                
             }
             if (ChargeAttackOrNot)//蓄力計時開始
             {
@@ -547,31 +562,31 @@ public class PlayerController : NetworkBehaviour
     //}
     public override void Render()
     {
-        if (PlayerIsTeleporting && !startTeleporting)
+        if (PlayerIsTeleporting && !StartTeleporting)
         {
             Debug.Log("傳送囉!!");
             StartCoroutine(PlayerDissolveAmountTransition(1, 3));
-            startTeleporting = true;
+            StartTeleporting = true;
         }
-        if (!PlayerIsTeleporting && startTeleporting)
+        if (!PlayerIsTeleporting && StartTeleporting)
         {
             Debug.Log("抵達囉!!");
             StartCoroutine(PlayerDissolveAmountTransition(0, 2));
-            startTeleporting = false;
+            StartTeleporting = false;
         }
-        if (SuperMode && !superModeEffectStartTrigger)
+        if (SuperMode && !SuperModeEffectStartTrigger)
         {
             Debug.Log("超級蠑螈來囉!");
             StartCoroutine(PlayerSuperModeEffect(0, 2));
             playerEffectVisual.StarEffectPlay();
-            superModeEffectStartTrigger = true;
+            SuperModeEffectStartTrigger = true;
         }
-        if (!SuperMode && !superModeEffectEndTrigger)
+        if (!SuperMode && !SuperModeEffectEndTrigger)
         {
             Debug.Log("變回普通蠑螈");
             StartCoroutine(PlayerSuperModeEffect(1, 2));
             playerEffectVisual.StarEffectStop();
-            superModeEffectEndTrigger = true;
+            SuperModeEffectEndTrigger = true;
         }
 
         if (Winner || Loser || PlayerIsTeleporting)
@@ -731,7 +746,6 @@ public class PlayerController : NetworkBehaviour
             if (collider.TryGetComponent<Teleporter>(out Teleporter teleporter))//傳送
             {
                 teleporter.TriggerTeleporter(Object);//觸發傳送
-                Network_CharacterControllerPrototype.Velocity = Vector3.zero;
                 teleporter.Invoke("StartTeleportingCountDown", 2f);
                 //teleporter.StartTeleportingCountDown();//傳送開始
             }
