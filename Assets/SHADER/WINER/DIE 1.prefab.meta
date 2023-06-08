@@ -1,6 +1,11 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/SHADER/WINER/DIE 1.prefab.meta
 guid: 648352c4e9ea277468424106bf82aafa
 PrefabImporter:
+========
+guid: 71799519d12379b49b6b53aea974bea5
+AssemblyDefinitionImporter:
+>>>>>>>> fec05ec (Player所有Name&BK字體顏色改白，衝刺問題修復，寶箱生成器&寶箱本體bug修復，旋轉柱bug修復，蠑螈dissolve特效顯示修復):Assets/Plugins/UniRx/Examples/UniRx.Examples.asmdef.meta
   externalObjects: {}
   userData: 
   assetBundleName: 
