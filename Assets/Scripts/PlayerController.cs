@@ -204,6 +204,7 @@ public class PlayerController : NetworkBehaviour
 
 
     #region - private 變量 & Componment -
+    [SerializeField]
     [Tooltip("Cinemachine虛擬相機")]
     private CinemachineVirtualCamera cinemachineVirtualCamera;
 
@@ -342,6 +343,10 @@ public class PlayerController : NetworkBehaviour
                 playerEffectVisual.DeadEffectPlay();
                 StartCoroutine(PlayerDissolveAmountTransition(1, 3));
                 DeadEffectTrigger = true;
+                if (Object.HasInputAuthority)//在客戶端上運行
+                {
+                    Invoke("Bind_DeathCamera", 3f);
+                }
             }
             
         }
@@ -841,6 +846,37 @@ public class PlayerController : NetworkBehaviour
         MiniMapCam.GetComponent<PositionConstraint>().constraintActive = true;
         cinemachineVirtualCamera.LookAt = Player.transform;
         cinemachineVirtualCamera.Follow = Player.transform;
+    }
+    public void Bind_DeathCamera()
+    {
+        List<PlayerController> SurvivingPlayerControllers = new();
+        foreach (var gameObj in GameObject.FindGameObjectsWithTag("Player"))
+        {
+            if(gameObj.GetComponent<PlayerController>()._PlayerGameData.PlayerID != _PlayerGameData.PlayerID)
+            {
+                SurvivingPlayerControllers.AddRange(gameObj.GetComponents<PlayerController>());
+            }
+        }
+        var randomSurvivingPlayerController = Random.Range(0, SurvivingPlayerControllers.Count);
+        Transform OtherPlayerTransform = SurvivingPlayerControllers[randomSurvivingPlayerController].transform;
+        cinemachineVirtualCamera.LookAt = OtherPlayerTransform;
+        cinemachineVirtualCamera.Follow = OtherPlayerTransform;
+
+        //if (cinemachineVirtualCamera.gameObject.activeSelf)
+        //{
+        //    cinemachineVirtualCamera.gameObject.SetActive(false);
+        //}
+        //else
+        //{
+        //    if (!cinemachineVirtualCamera || (cinemachineVirtualCamera != Camera.main.gameObject.transform.Find("CM vcam2").GetComponent<CinemachineVirtualCamera>()))
+        //    {
+        //        cinemachineVirtualCamera = Camera.main.gameObject.transform.Find("CM vcam2").GetComponent<CinemachineVirtualCamera>();
+        //        cinemachineVirtualCamera.gameObject.SetActive(true);
+        //    }
+
+        //    cinemachineVirtualCamera.LookAt = GameManager.Instance.SurvivingPlayerControllers[0].transform;
+        //    cinemachineVirtualCamera.Follow = GameManager.Instance.SurvivingPlayerControllers[0].transform;
+        //}
     }
     private void OnDrawGizmosSelected()
     {

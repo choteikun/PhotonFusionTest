@@ -1330,7 +1330,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1423754458}
         m_TargetAssemblyTypeName: ExitGame, Assembly-CSharp
-        m_MethodName: QuitGame
+        m_MethodName: TitleScene
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
