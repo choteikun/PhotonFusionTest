@@ -79,6 +79,10 @@ public class PlayerController : NetworkBehaviour
     public bool HitEffectTrigger { get; private set; }
     [Networked]
     [HideInInspector]
+    [Tooltip("木箱特效觸發器，false為不可播放")]
+    public bool BoxDustTrigger { get; private set; }
+    [Networked]
+    [HideInInspector]
     [Tooltip("死亡特效觸發器，false為不可播放")]
     public bool DeadEffectTrigger { get; private set; }
     [Networked]
@@ -265,6 +269,7 @@ public class PlayerController : NetworkBehaviour
         JumpEffectTrigger = false;
         HitEffectTrigger = false;
         DeadEffectTrigger = false;
+        BoxDustTrigger = false;
         SuperModeEffectStartTrigger = false;
         SuperModeEffectEndTrigger = false;
         tempPushForce = PushForce;
@@ -275,6 +280,7 @@ public class PlayerController : NetworkBehaviour
         playerEffectVisual.InitializeVisualEffect();//因為是所有物件(包括IsProxy)都要顯示的特效，所以放在外面
         playerEffectVisual.InitializeParticleEffect();
         playerEffectVisual.HitEffectStop();
+        playerEffectVisual.BoxDustStop();
         if (mainCamera == null)
         {
             mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
@@ -628,6 +634,11 @@ public class PlayerController : NetworkBehaviour
                 playerEffectVisual.HitEffectStop();//再碰撞啟動時，事先重置打擊特效
             }
         }
+        if (BoxDustTrigger)
+        {
+            playerEffectVisual.BoxDustPlay();
+            BoxDustTrigger = false;
+        }
     }
     private void Update()
     {
@@ -749,6 +760,7 @@ public class PlayerController : NetworkBehaviour
 
             if (collider.TryGetComponent<BreakableWallBehaviour>(out BreakableWallBehaviour breakableWall) && Object.HasStateAuthority)//破壞牆
             {
+                BoxDustTrigger = true;
                 breakableWall.HurtThisWall();
             }
 

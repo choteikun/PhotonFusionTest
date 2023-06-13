@@ -64,6 +64,7 @@ Transform:
   - {fileID: 272734260485016505}
   - {fileID: 5424302379272910888}
   - {fileID: 2505338402909810368}
+  - {fileID: 1122724051614639276}
   m_Father: {fileID: 16108846752584005}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -381,10 +382,12 @@ MonoBehaviour:
   _Winner: 0
   _Loser: 0
   _PlayerImmuneDamage: 0
+  _SuperModeCounter: 0
   _SuperMode: 0
   _OutOfTheBoat: 0
   _PushForce: 50
   _PlayerIsTeleporting: 0
+  _StartTeleporting: 0
   _PlayerMoveLimitOrNot: 0
   _BeenHitOrNot: 0
   _ChargeAttackOrNot: 0
@@ -392,6 +395,8 @@ MonoBehaviour:
   _JumpEffectTrigger: 0
   _HitEffectTrigger: 0
   _DeadEffectTrigger: 0
+  _SuperModeEffectStartTrigger: 0
+  _SuperModeEffectEndTrigger: 0
   _CoefficientOfBreakDownPoint: 0
   _BreakPoint: 0
   _ChargeAttackBarTimer: 0
@@ -422,6 +427,9 @@ MonoBehaviour:
   curBKBar: {fileID: 7732670068925813538}
   curChargeAttackBar: {fileID: 2095902597614424196}
   playerNameText: {fileID: 7992485150715145744}
+  cinemachineVirtualCamera: {fileID: 0}
+  _PushDir: {x: 0, y: 0, z: 0}
+  PushDir_myself: {x: 1, y: 1, z: 1}
 --- !u!114 &16108846752584026
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -539,6 +547,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 8ded79ee56e475e4cbf0d4c1de0abaf3, type: 2}
   - {fileID: 11400000, guid: cf5d1b20bf1b5dc428516bf9ddd0ab08, type: 2}
   - {fileID: 11400000, guid: 44f1888d2b889eb479ea7a0fe80ef233, type: 2}
+  - {fileID: 11400000, guid: e45c51d24d4af4d41acc5505e6b4f529, type: 2}
   particleEffectInfos:
   - {fileID: 11400000, guid: 74f72d69512acde469297b9237318529, type: 2}
   - {fileID: 11400000, guid: 95953546dd9d4114c91d006e1909eb7b, type: 2}
@@ -1867,6 +1876,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2970026706167978100}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4785544502821126290
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1122724051614639276}
+  m_Layer: 0
+  m_Name: BoxDust
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1122724051614639276
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4785544502821126290}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7958330572652584730}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4861472293716064029
 GameObject:

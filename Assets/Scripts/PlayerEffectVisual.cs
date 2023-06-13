@@ -95,4 +95,12 @@ public class PlayerEffectVisual : MonoBehaviour
     {
         visualEffectsList[2].Stop();
     }
+    public void BoxDustPlay()
+    {
+        visualEffectsList[3].Play();
+    }
+    public void BoxDustStop()
+    {
+        visualEffectsList[3].Stop();
+    }
 }
