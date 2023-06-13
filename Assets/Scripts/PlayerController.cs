@@ -8,6 +8,7 @@ using Cinemachine;
 using TMPro;
 using UnityEngine.SceneManagement;
 using UnityEngine.Animations;
+using UniRx;
 
 [RequireComponent(typeof(CharacterController))]
 [OrderAfter(typeof(PlayerNetworkData))]//PlayerNetworkData執行後進行
@@ -740,17 +741,19 @@ public class PlayerController : NetworkBehaviour
                 // 沒有找到組件
                 // 做一些錯誤處理
             }
-            if (collider.TryGetComponent<BreakableWallBehaviour>(out BreakableWallBehaviour breakableWall))//破壞牆
+
+            if (collider.TryGetComponent<BreakableWallBehaviour>(out BreakableWallBehaviour breakableWall) && Object.HasStateAuthority)//破壞牆
             {
                 breakableWall.HurtThisWall();
             }
-            if (collider.TryGetComponent<Teleporter>(out Teleporter teleporter))//傳送
+
+            if (collider.TryGetComponent<Teleporter>(out Teleporter teleporter) && Object.HasStateAuthority)//傳送
             {
                 teleporter.TriggerTeleporter(Object);//觸發傳送
                 teleporter.Invoke("StartTeleportingCountDown", 2f);
                 //teleporter.StartTeleportingCountDown();//傳送開始
             }
-            if (collider.TryGetComponent<TreasureBoxBehavior>(out TreasureBoxBehavior treasureBox))
+            if (collider.TryGetComponent<TreasureBoxBehavior>(out TreasureBoxBehavior treasureBox) && Object.HasStateAuthority)
             {
                 //開啟寶箱
                 treasureBox.TriggerTreasureBox(Object);

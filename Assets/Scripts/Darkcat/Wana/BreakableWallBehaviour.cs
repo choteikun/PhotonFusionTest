@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
+using UniRx;
 
 public class BreakableWallBehaviour : NetworkBehaviour
 {
@@ -17,8 +18,8 @@ public class BreakableWallBehaviour : NetworkBehaviour
     //}
     public void HurtThisWall()
     {
-        SoundEffectManager.Instance.PlayOneSE(SoundEffectManager.Instance.soundEffectData.BoxBreakSoundEffect);
         HealthPoint--;
+        SoundEffectManager.Instance.PlayOneSE(SoundEffectManager.Instance.soundEffectData.BoxBreakSoundEffect);
         if (HealthPoint == 0)
         {
             DestroyThisBox();
