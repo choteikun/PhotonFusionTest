@@ -294,6 +294,18 @@ public class PlayerNetworkMecanimAnimator : NetworkBehaviour
     {
         playerController.collisionAvailable = false;
     }
+    public void FlapSwingSE()
+    {
+        SoundEffectManager.Instance.PlayOneSE(SoundEffectManager.Instance.soundEffectData.AutoAttackSwing);
+    }
+    public void FlapStrongSE()
+    {
+        SoundEffectManager.Instance.PlayOneSE(SoundEffectManager.Instance.soundEffectData.StrongSmash);
+    }
+    public void TunnelEnterSE()
+    {
+        SoundEffectManager.Instance.PlayOneSE(SoundEffectManager.Instance.soundEffectData.TunnelReady);
+    }
     #endregion
 
 

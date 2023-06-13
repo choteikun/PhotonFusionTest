@@ -22,6 +22,8 @@ public class SoundEffectData
     public AudioClip SmashSwing { get; set; }
     //public AudioClip JumpSoundEffect { get; set; }
     public AudioClip IntoWaterSoundEffect { get; set; }
+    public AudioClip WaterSink { get; set; }
+    public AudioClip StrongSmash { get; set; }
     #endregion
     #region WanaSoundEffect
     public AudioClip BoxBreakSoundEffect { get; set; }

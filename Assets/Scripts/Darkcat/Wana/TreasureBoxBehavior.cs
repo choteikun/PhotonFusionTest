@@ -19,6 +19,7 @@ public class TreasureBoxBehavior : NetworkBehaviour
     {
         if (!TreasureBoxAppear && ImUsefull)
         {
+            SoundEffectManager.Instance.PlayOneSE(SoundEffectManager.Instance.soundEffectData.TreasureBoxAppearSoundEffect);
             StartCoroutine(TreasureBoxDissolveAmountTransition(0, 1));
             TreasureBoxAppear = true;
         }

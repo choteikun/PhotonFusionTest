@@ -347,6 +347,8 @@ public class PlayerController : NetworkBehaviour
             if (!DeadEffectTrigger)
             {
                 playerEffectVisual.DeadEffectPlay();
+                SoundEffectManager.Instance.PlayOneSE(SoundEffectManager.Instance.soundEffectData.IntoWaterSoundEffect);
+                SoundEffectManager.Instance.PlayOneSE(SoundEffectManager.Instance.soundEffectData.WaterSink);
                 StartCoroutine(PlayerDissolveAmountTransition(1, 3));
                 DeadEffectTrigger = true;
                 if (Object.HasInputAuthority)//在客戶端上運行
@@ -581,12 +583,16 @@ public class PlayerController : NetworkBehaviour
             StartCoroutine(PlayerDissolveAmountTransition(1, 3));
             StartTeleporting = true;
         }
-        if (!PlayerIsTeleporting && StartTeleporting)
+        else
         {
-            Debug.Log("抵達囉!!");
-            StartCoroutine(PlayerDissolveAmountTransition(0, 2));
-            StartTeleporting = false;
+            if (!PlayerIsTeleporting && StartTeleporting)
+            {
+                Debug.Log("抵達囉!!");
+                StartCoroutine(PlayerDissolveAmountTransition(0, 2));
+                StartTeleporting = false;
+            }
         }
+        
         if (SuperMode && !SuperModeEffectStartTrigger)
         {
             Debug.Log("超級蠑螈來囉!");
@@ -594,13 +600,17 @@ public class PlayerController : NetworkBehaviour
             playerEffectVisual.StarEffectPlay();
             SuperModeEffectStartTrigger = true;
         }
-        if (!SuperMode && !SuperModeEffectEndTrigger)
+        else
         {
-            Debug.Log("變回普通蠑螈");
-            StartCoroutine(PlayerSuperModeEffect(1, 2));
-            playerEffectVisual.StarEffectStop();
-            SuperModeEffectEndTrigger = true;
+            if (!SuperMode && !SuperModeEffectEndTrigger)
+            {
+                Debug.Log("變回普通蠑螈");
+                StartCoroutine(PlayerSuperModeEffect(1, 2));
+                playerEffectVisual.StarEffectStop();
+                SuperModeEffectEndTrigger = true;
+            }
         }
+        
 
         if (Winner || Loser || PlayerIsTeleporting)
             return;
@@ -862,17 +872,23 @@ public class PlayerController : NetworkBehaviour
     public void Bind_DeathCamera()
     {
         List<PlayerController> SurvivingPlayerControllers = new();
+        bool checkPlayerID = false;
         foreach (var gameObj in GameObject.FindGameObjectsWithTag("Player"))
         {
             if(gameObj.GetComponent<PlayerController>()._PlayerGameData.PlayerID != _PlayerGameData.PlayerID)
             {
+                checkPlayerID = true;
                 SurvivingPlayerControllers.AddRange(gameObj.GetComponents<PlayerController>());
             }
         }
-        var randomSurvivingPlayerController = Random.Range(0, SurvivingPlayerControllers.Count);
-        Transform OtherPlayerTransform = SurvivingPlayerControllers[randomSurvivingPlayerController].transform;
-        cinemachineVirtualCamera.LookAt = OtherPlayerTransform;
-        cinemachineVirtualCamera.Follow = OtherPlayerTransform;
+        if (checkPlayerID)
+        {
+            var randomSurvivingPlayerController = Random.Range(0, SurvivingPlayerControllers.Count);
+            Transform OtherPlayerTransform = SurvivingPlayerControllers[randomSurvivingPlayerController].transform;
+            cinemachineVirtualCamera.LookAt = OtherPlayerTransform;
+            cinemachineVirtualCamera.Follow = OtherPlayerTransform;
+        }
+        
 
         //if (cinemachineVirtualCamera.gameObject.activeSelf)
         //{

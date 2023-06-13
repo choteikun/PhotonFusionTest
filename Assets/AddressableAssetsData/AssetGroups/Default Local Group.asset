@@ -53,7 +53,7 @@ MonoBehaviour:
     m_Address: Prefabs/TunnelOut
     m_ReadOnly: 0
     m_SerializedLabels: []
-  - m_GUID: 5d9250bbb1a56c4488b5b081c8a743d5
+  - m_GUID: 795a1e4cc91c0ba458eda25ae14519bc
     m_Address: Prefabs/AutoAttackSwing
     m_ReadOnly: 0
     m_SerializedLabels: []
@@ -71,6 +71,14 @@ MonoBehaviour:
     m_SerializedLabels: []
   - m_GUID: 2de08910e0699f949ab4c552d352993a
     m_Address: Prefabs/BoxBreakSoundEffect
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: a09e941ab52f31a4987f0a9b32cceb35
+    m_Address: Prefabs/WaterSink
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: e27a480fe86230c44a8fb2f4356a3dc6
+    m_Address: Prefabs/StrongSmash
     m_ReadOnly: 0
     m_SerializedLabels: []
   m_ReadOnly: 0
